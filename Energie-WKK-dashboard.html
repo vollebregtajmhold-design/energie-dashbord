@@ -678,21 +678,13 @@
       </div>
     </div>
     <div class="accordion-item">
-      <button class="accordion-titel" type="button">Cloud-opslag (Google Sheets) <span class="accordion-pijl">&#9656;</span></button>
+      <button class="accordion-titel" type="button">Cloud-opslag (Firebase, live sync) <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
-        <div class="sub" style="margin-bottom:14px;">Deel je gegevens tussen meerdere pc's via een Google Sheet. Eenmalig instellen met een Google Apps Script-webadres (zie uitleg in de chat). Zolang deze pagina open staat wordt automatisch elke 30 minuten opgeslagen naar Google Sheets; met de knoppen hieronder kun je ook op elk moment zelf op- of afhalen.</div>
-        <div class="settings" style="margin-bottom:10px;">
-          <div class="veld" style="min-width:340px;">
-            <label>Apps Script-webadres (URL)</label>
-            <input type="text" id="cloudSyncUrl" placeholder="https://script.google.com/macros/s/.../exec" style="width:100%;padding:7px 9px;border:1px solid var(--rand);border-radius:6px;font-size:13px;">
-          </div>
-        </div>
+        <div class="sub" style="margin-bottom:14px;">Automatische live synchronisatie tussen pc's via Firebase Realtime Database. Zodra deze pagina open staat, wordt elke wijziging direct gedeeld — geen knoppen nodig.</div>
         <div class="toolbar">
-          <button class="actie secundair" id="cloudOphalen" type="button">Ophalen vanuit Google Sheets</button>
-          <button class="actie secundair" id="cloudOpslaan" type="button">Opslaan naar Google Sheets</button>
-          <span id="cloudStatus" class="sub" style="margin:0;"></span>
+          <span id="firebaseStatus" class="sub" style="margin:0;">Verbinden...</span>
         </div>
-        <div class="sub" style="margin-top:8px;">Let op: "Ophalen" vervangt al je huidige gegevens door de gegevens uit Google Sheets. Werk je op 2 pc's tegelijk, sla dan steeds op v&oacute;&oacute;rdat je op de andere pc verdergaat, anders overschrijf je elkaars werk.</div>
+        <div class="sub" style="margin-top:8px;">Let op: als 2 pc's tegelijk op hetzelfde moment dezelfde regel wijzigen, wint de laatste wijziging. Voor de rest synchroniseert alles automatisch.</div>
       </div>
     </div>
     <div class="accordion-item">
@@ -752,18 +744,20 @@
         <ol style="font-size:13.5px;line-height:1.8;color:var(--tekst);padding-left:20px;">
           <li>Zorg dat je het nieuwste HTML-bestand op de andere pc hebt staan (zelfde bestandsnaam, overschrijf de oude versie).</li>
           <li>Open het bestand in Chrome.</li>
-          <li>Ga naar Instellingen &rarr; Cloud-opslag en vul hetzelfde Google Apps Script-webadres in als op je andere pc.</li>
-          <li>Klik op "Ophalen vanuit Google Sheets" om de laatste gegevens op te halen.</li>
-          <li>Werk je op 2 pc's tegelijk: sla altijd eerst op (Opslaan naar Google Sheets) voordat je op de andere pc verdergaat.</li>
+          <li>Ga naar Instellingen &rarr; Cloud-opslag: staat er "Live synchronisatie actief"? Dan werkt alles automatisch.</li>
+          <li>Wijzigingen op deze pc verschijnen vanzelf op je andere pc('s), en andersom — geen knoppen nodig.</li>
         </ol>
         <div class="sub" style="margin-top:14px;margin-bottom:6px;font-weight:600;color:var(--tekst);">Eigen notities</div>
         <textarea class="plak-invoer" id="handleidingNotitie" style="min-height:110px;"></textarea>
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 18 juli 2026, 11:11</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 18 juli 2026, 14:57</footer>
 </div>
 </div>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-database-compat.js"></script>
 <script>
 const STORAGE_KEY = 'energie-wkk-app-v1';
 const maandNamenLijst = ['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
@@ -1156,6 +1150,7 @@ function loadState(){
 }
 function saveState(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if(typeof firebaseOpslaanGedebouncet === 'function') firebaseOpslaanGedebouncet();
 }
 let state = loadState();
 function maandenNu(){ return state.jaren[state.huidigJaarOverzicht].maanden; }
@@ -2166,87 +2161,80 @@ function importBackup(bestand){
   };
   reader.readAsText(bestand);
 }
-function cloudOphalen(){
-  const urlEl = document.getElementById('cloudSyncUrl');
-  const statusEl = document.getElementById('cloudStatus');
-  const url = (urlEl.value || '').trim();
-  if(!url){ alert('Vul eerst het Apps Script-webadres in.'); return; }
-  const zeker = confirm('Weet je het zeker? Al je huidige gegevens worden vervangen door de gegevens uit Google Sheets.');
-  if(!zeker) return;
-  statusEl.textContent = 'Bezig met ophalen...';
-  statusEl.className = 'sub';
-  fetch(url)
-    .then(res=> res.json())
-    .then(json=>{
-      if(!json || typeof json !== 'object' || !json.jaren){
-        throw new Error('Geen geldige data ontvangen uit Google Sheets.');
-      }
-      state = normaliseerState(json);
-      state.cloudSyncUrl = url;
-      saveState();
-      laadAlleJaarOpties();
-      checkBackupHerinnering();
-      render();
-      statusEl.textContent = 'Opgehaald — ' + new Date().toLocaleString('nl-NL');
-      statusEl.className = 'sub opgeslagen';
-    })
-    .catch(err=>{
-      statusEl.textContent = 'Fout bij ophalen: ' + err.message;
-      statusEl.className = 'sub';
-    });
+// ---------- Cloud-opslag: Firebase Realtime Database (live sync) ----------
+const firebaseConfig = {
+  apiKey: "AIzaSyBbK0onX6V5n-Ut7k6GwngDgs8VFT5sHEM",
+  authDomain: "energie-wkk-dashboard.firebaseapp.com",
+  databaseURL: "https://energie-wkk-dashboard-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "energie-wkk-dashboard",
+  storageBucket: "energie-wkk-dashboard.firebasestorage.app",
+  messagingSenderId: "355665496610",
+  appId: "1:355665496610:web:d73bbffa1e152e573cd87b"
+};
+let firebaseActief = false;
+let firebaseDbRef = null;
+let firebaseSchrijfTimer = null;
+let laatsteFirebaseJson = null;
+function toonFirebaseStatus(tekst, opgeslagen){
+  const el = document.getElementById('firebaseStatus');
+  if(el){
+    el.textContent = tekst;
+    el.className = opgeslagen ? 'sub opgeslagen' : 'sub';
+  }
 }
-function cloudOpslaan(){
-  const urlEl = document.getElementById('cloudSyncUrl');
-  const statusEl = document.getElementById('cloudStatus');
-  const url = (urlEl.value || '').trim();
-  if(!url){ alert('Vul eerst het Apps Script-webadres in.'); return; }
-  state.cloudSyncUrl = url;
-  saveState();
-  statusEl.textContent = 'Bezig met opslaan...';
-  statusEl.className = 'sub';
-  fetch(url, {
-    method:'POST',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body: JSON.stringify(state)
-  })
-    .then(res=> res.json())
-    .then(()=>{
-      statusEl.textContent = 'Opgeslagen — ' + new Date().toLocaleString('nl-NL');
-      statusEl.className = 'sub opgeslagen';
-    })
-    .catch(err=>{
-      statusEl.textContent = 'Fout bij opslaan: ' + err.message;
-      statusEl.className = 'sub';
-    });
+function firebaseVerwerkOntvangen(data){
+  const json = JSON.stringify(data);
+  if(json === laatsteFirebaseJson) return; // eigen echo, negeren
+  laatsteFirebaseJson = json;
+  state = normaliseerState(data);
+  laadAlleJaarOpties();
+  laadPositieJaarOpties('gas');
+  laadPositieJaarOpties('elektra');
+  checkBackupHerinnering();
+  render();
+  toonFirebaseStatus('Bijgewerkt vanaf ander apparaat — ' + new Date().toLocaleTimeString('nl-NL'), true);
 }
-document.getElementById('cloudSyncUrl').value = state.cloudSyncUrl || '';
-document.getElementById('cloudOphalen').addEventListener('click', cloudOphalen);
-document.getElementById('cloudOpslaan').addEventListener('click', cloudOpslaan);
-const CLOUD_AUTO_INTERVAL_MS = 30 * 60 * 1000;
-setInterval(()=>{
-  const url = (state.cloudSyncUrl || '').trim();
-  if(!url) return;
-  fetch(url, {
-    method:'POST',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body: JSON.stringify(state)
-  })
-    .then(res=> res.json())
-    .then(()=>{
-      const statusEl = document.getElementById('cloudStatus');
-      if(statusEl){
-        statusEl.textContent = 'Automatisch opgeslagen — ' + new Date().toLocaleString('nl-NL');
-        statusEl.className = 'sub opgeslagen';
-      }
-    })
-    .catch(()=>{
-      const statusEl = document.getElementById('cloudStatus');
-      if(statusEl){
-        statusEl.textContent = 'Automatisch opslaan mislukt — controleer de verbinding.';
-        statusEl.className = 'sub';
-      }
+function firebaseOpslaanGedebouncet(){
+  if(!firebaseActief || !firebaseDbRef) return;
+  if(firebaseSchrijfTimer) clearTimeout(firebaseSchrijfTimer);
+  firebaseSchrijfTimer = setTimeout(()=>{
+    const json = JSON.stringify(state);
+    if(json === laatsteFirebaseJson) return;
+    laatsteFirebaseJson = json;
+    firebaseDbRef.set(state)
+      .then(()=> toonFirebaseStatus('Live synchronisatie actief — laatst gedeeld om ' + new Date().toLocaleTimeString('nl-NL'), true))
+      .catch(err=> toonFirebaseStatus('Synchroniseren mislukt: ' + err.message, false));
+  }, 800);
+}
+function firebaseInit(){
+  if(typeof firebase === 'undefined'){
+    toonFirebaseStatus('Firebase kon niet laden (geen internetverbinding?).', false);
+    return;
+  }
+  try{
+    firebase.initializeApp(firebaseConfig);
+    firebase.auth().signInAnonymously().then(()=>{
+      firebaseDbRef = firebase.database().ref('energie-wkk');
+      firebaseDbRef.on('value', snap=>{
+        const data = snap.val();
+        if(!data){
+          // Nog niks in Firebase: zet onze huidige data er meteen in.
+          laatsteFirebaseJson = JSON.stringify(state);
+          firebaseDbRef.set(state);
+          return;
+        }
+        firebaseVerwerkOntvangen(data);
+      });
+      firebaseActief = true;
+      toonFirebaseStatus('Verbonden — live synchronisatie actief.', true);
+    }).catch(err=>{
+      toonFirebaseStatus('Kon niet verbinden met Firebase: ' + err.message, false);
     });
-}, CLOUD_AUTO_INTERVAL_MS);
+  }catch(err){
+    toonFirebaseStatus('Firebase-configuratie fout: ' + err.message, false);
+  }
+}
+firebaseInit();
 document.getElementById('backupNu').addEventListener('click', exportBackup);
 document.getElementById('backupLater').addEventListener('click', ()=>{
   document.getElementById('backupBanner').style.display = 'none';
