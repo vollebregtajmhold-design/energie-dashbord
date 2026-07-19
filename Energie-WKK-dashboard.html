@@ -556,7 +556,7 @@
   <div class="tab-paneel" id="wpberekening">
     <div class="panel">
       <h2>WP berekening &mdash; Investering warmtepomp (Locatie 250)</h2>
-      <div class="sub" style="margin-bottom:14px;">Losse rekentool, onafhankelijk van je factuurgegevens. Je vult zelf de uitgangspunten in; de rekentool gebruikt daarnaast de offici&euml;le energiebelasting/ODE-schijven voor gas en elektriciteit (2026&ndash;2030) voor het belastingdeel.</div>
+      <div class="sub" style="margin-bottom:14px;">Losse rekentool, onafhankelijk van je factuurgegevens. Je vult zelf de uitgangspunten in; de rekentool gebruikt daarnaast de offici&euml;le energiebelasting/ODE-schijven &oacute;n de marktprijzen (forward-curve) voor gas en elektriciteit (2026&ndash;2030) &mdash; beide per jaar, zodat je ziet hoe belasting &eacute;n markt samen de business case be&iuml;nvloeden.</div>
       <div class="wp2-layout">
         <div class="wp2-kolom">
           <div class="veld">
@@ -572,16 +572,11 @@
             <input type="number" step="1" min="0" max="100" id="wp2PctVervangen">
           </div>
           <div class="veld">
-            <label>Netto gasprijs inkoop (&euro;/m&sup3;)<br><span style="font-weight:400;font-size:12.5px;color:var(--sub);">excl. EB/ODE</span></label>
-            <input type="number" step="0.001" id="wp2GasprijsInkoop">
-          </div>
-          <div class="veld">
-            <label>Netto stroomprijs inkoop (&euro;/kWh)<br><span style="font-weight:400;font-size:12.5px;color:var(--sub);">excl. EB/ODE</span></label>
-            <input type="number" step="0.001" id="wp2StroomprijsInkoop">
-          </div>
-          <div class="veld">
             <label>COP / SCOP warmtepomp</label>
             <input type="number" step="0.1" id="wp2Cop">
+          </div>
+          <div class="veld" style="align-items:flex-start;">
+            <label style="font-weight:400;font-size:12px;color:var(--sub);line-height:1.5;">Marktprijzen gas &amp; stroom (excl. EB/ODE) vul je per jaar in bij de resultatentabel hieronder &mdash; op basis van de forward-curve uit Instellingen &rarr; Energietarieven.</label>
           </div>
         </div>
         <div class="wp2-kolom">
@@ -616,7 +611,7 @@
     <div class="tussenregel-blauw"></div>
     <div class="panel">
       <h2>Resultaat per jaar (2026&ndash;2030)</h2>
-      <div class="sub" style="margin-bottom:14px;">Gebruikt de offici&euml;le EB/ODE-schijven per jaar. Beweeg over een regelnaam voor de rekenwijze. Hier kun je niets invoeren.</div>
+      <div class="sub" style="margin-bottom:14px;">Gebruikt de offici&euml;le EB/ODE-schijven per jaar. De 2 gele rijen (marktprijs gas/stroom) zijn vooraf ingevuld met de forward-curve en zelf aan te passen &mdash; de rest is automatisch. Beweeg over een regelnaam voor de rekenwijze.</div>
       <div class="tafel-scroll tafel-transposed">
         <table>
           <thead id="theadWp2"></thead>
@@ -675,14 +670,21 @@
           <span id="backupStatus" class="sub" style="margin:0;"></span>
         </div>
         <div class="sub" style="margin-top:8px;">Let op: terugzetten vervangt al je huidige gegevens door de gegevens uit het back-upbestand.</div>
+        <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">De app zelf (HTML-bestand)</div>
+        <div class="sub" style="margin-bottom:14px;">Dit is niet je data, maar het programma zelf — handig als extra kopie naast GitHub, of om op een andere pc te zetten.</div>
+        <div class="toolbar">
+          <button class="actie secundair" id="downloadAppHtml" type="button">App downloaden (HTML)</button>
+          <span id="downloadAppStatus" class="sub" style="margin:0;"></span>
+        </div>
       </div>
     </div>
     <div class="accordion-item">
       <button class="accordion-titel" type="button">Cloud-opslag (Firebase, live sync) <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
-        <div class="sub" style="margin-bottom:14px;">Automatische live synchronisatie tussen pc's via Firebase Realtime Database. Zodra deze pagina open staat, wordt elke wijziging direct gedeeld — geen knoppen nodig.</div>
+        <div class="sub" style="margin-bottom:14px;">Automatische live synchronisatie tussen pc's via Firebase Realtime Database. Zodra deze pagina open staat, wordt elke wijziging direct gedeeld — geen knoppen nodig. Bij elke wijziging wordt ook automatisch een tijdgestempelde reservekopie in Firebase bewaard (de laatste 30), zodat er altijd op terug te vallen is.</div>
         <div class="toolbar">
           <span id="firebaseStatus" class="sub" style="margin:0;">Verbinden...</span>
+          <button class="actie secundair" id="firebaseUploadEerste" type="button" style="display:none;">Mijn huidige data naar Firebase uploaden</button>
         </div>
         <div class="sub" style="margin-top:8px;">Let op: als 2 pc's tegelijk op hetzelfde moment dezelfde regel wijzigen, wint de laatste wijziging. Voor de rest synchroniseert alles automatisch.</div>
       </div>
@@ -752,7 +754,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 18 juli 2026, 14:57</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 09:15</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -917,6 +919,8 @@ const seedData = {
   wp2PctVervangen: 100,
   wp2GasprijsInkoop: 0,
   wp2StroomprijsInkoop: 0,
+  wp2GasprijsPerJaar: { '2026':0.547, '2027':0.446, '2028':0.314, '2029':0.259, '2030':0.240 },
+  wp2StroomprijsPerJaar: { '2026':0.158, '2027':0.145, '2028':0.130, '2029':0.122, '2030':0.116 },
   wp2Cop: 3.8,
   wp2MaxCapaciteit: 0,
   wp2Draaiuren: 0,
@@ -1036,6 +1040,12 @@ function normaliseerState(s){
   if(!s.wkkGasFactor) s.wkkGasFactor = seedData.wkkGasFactor;
   ['wp2Gasverbruik','wp2Stroomverbruik','wp2PctVervangen','wp2GasprijsInkoop','wp2StroomprijsInkoop','wp2Cop','wp2MaxCapaciteit','wp2Draaiuren','wp2Investering','wp2Subsidie','wp2Onderhoud','wp2GewensteTerugverdientijd'].forEach(veld=>{
     if(s[veld]===undefined) s[veld] = seedData[veld];
+  });
+  ['wp2GasprijsPerJaar','wp2StroomprijsPerJaar'].forEach(sleutel=>{
+    if(!s[sleutel] || typeof s[sleutel]!=='object') s[sleutel] = {};
+    ['2026','2027','2028','2029','2030'].forEach(jaar=>{
+      if(s[sleutel][jaar]===undefined) s[sleutel][jaar] = seedData[sleutel][jaar];
+    });
   });
   ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop'].forEach(veld=>{
     if(s[veld]===undefined) s[veld] = seedData[veld];
@@ -1921,8 +1931,6 @@ function renderWpScenario(){
   const gasHuidig = state.wp2Gasverbruik || 0;
   const stroomHuidig = Math.abs(state.wp2Stroomverbruik || 0);
   const pct = Math.max(0, Math.min(100, state.wp2PctVervangen || 0));
-  const gasprijsInkoop = state.wp2GasprijsInkoop || 0;
-  const stroomprijsInkoop = state.wp2StroomprijsInkoop || 0;
   const cop = state.wp2Cop || 0;
   const onderhoud = state.wp2Onderhoud || 0;
   const subsidie = state.wp2Subsidie || 0;
@@ -1938,6 +1946,8 @@ function renderWpScenario(){
   const wpOndergedimensioneerd = maxCapaciteit>0 && draaiurenPerJaar>0 && maxJaarcapaciteitKwh < warmteVervangenKwh;
   const jaren = [2026,2027,2028,2029,2030];
   const perJaar = jaren.map(jaar=>{
+    const gasprijsInkoop = (state.wp2GasprijsPerJaar||{})[jaar] || 0;
+    const stroomprijsInkoop = (state.wp2StroomprijsPerJaar||{})[jaar] || 0;
     const nettoGasKostenHuidig = gasHuidig * gasprijsInkoop;
     const ebGasHuidig = ebGasKostenOverRange(jaar, 0, gasHuidig);
     const nettoStroomKostenHuidig = stroomHuidig * stroomprijsInkoop;
@@ -1951,7 +1961,7 @@ function renderWpScenario(){
     const rendement = nettoInvestering ? (besparing / nettoInvestering * 100) : 0;
     const maxNettoInvestering = besparing > 0 ? besparing * gewensteTerugverdientijd : 0;
     const maxBrutoInvestering = maxNettoInvestering + subsidie;
-    return {jaar, nettoGasKostenHuidig, ebGasHuidig, nettoStroomKostenHuidig, ebStroomHuidig, kostenGas, kostenWp, besparing, terugverdientijd, rendement, maxNettoInvestering, maxBrutoInvestering};
+    return {jaar, gasprijsInkoop, stroomprijsInkoop, nettoGasKostenHuidig, ebGasHuidig, nettoStroomKostenHuidig, ebStroomHuidig, kostenGas, kostenWp, besparing, terugverdientijd, rendement, maxNettoInvestering, maxBrutoInvestering};
   });
   const gemiddeldeBesparing = perJaar.reduce((s,r)=> s + r.besparing, 0) / perJaar.length;
   function kaart(label, waarde, cls, uitleg){
@@ -1984,6 +1994,12 @@ function renderWpScenario(){
     return `<span${cls}>${fmtEuro(v,dec)}</span>`;
   }
   let bodyHtml = '';
+  bodyHtml += `<tr><td class="naam"><span class="tt tt-formule" data-tt="Kale marktprijs gas, excl. EB/ODE. Vooraf ingevuld op basis van de forward-curve (Instellingen → Energietarieven), zelf aan te passen.">Marktprijs gas (€/m³, excl. EB/ODE)</span></td>`;
+  perJaar.forEach(r=> bodyHtml += `<td class="geel" style="text-align:right;"><input type="number" step="0.001" data-wpprijs="gas" data-wpjaar="${r.jaar}" value="${r.gasprijsInkoop}"></td>`);
+  bodyHtml += '</tr>';
+  bodyHtml += `<tr><td class="naam"><span class="tt tt-formule" data-tt="Kale marktprijs stroom, excl. EB/ODE. Vooraf ingevuld op basis van de forward-curve (Instellingen → Energietarieven), zelf aan te passen.">Marktprijs stroom (€/kWh, excl. EB/ODE)</span></td>`;
+  perJaar.forEach(r=> bodyHtml += `<td class="geel" style="text-align:right;"><input type="number" step="0.001" data-wpprijs="stroom" data-wpjaar="${r.jaar}" value="${r.stroomprijsInkoop}"></td>`);
+  bodyHtml += '</tr>';
   bodyHtml += `<tr class="rubriek-rij"><td class="naam"><span class="tt tt-formule" data-tt="Huidig gasverbruik (m³) × netto gasprijs inkoop.">Huidige netto gaskosten</span></td>`;
   perJaar.forEach(r=> bodyHtml += `<td>${euroCelLokaal(r.nettoGasKostenHuidig,0)}</td>`);
   bodyHtml += '</tr>';
@@ -2021,6 +2037,19 @@ function renderWpScenario(){
   perJaar.forEach(r=> bodyHtml += `<td>${euroCelLokaal(r.maxNettoInvestering,0)}</td>`);
   bodyHtml += '</tr>';
   tbodyEl.innerHTML = bodyHtml;
+  tbodyEl.querySelectorAll('input[data-wpprijs]').forEach(inp=>{
+    inp.addEventListener('focus', ()=> inp.select());
+    inp.addEventListener('change', e=>{
+      const soort = e.target.getAttribute('data-wpprijs');
+      const jaar = e.target.getAttribute('data-wpjaar');
+      const waarde = parseFloat(String(e.target.value).replace(',','.')) || 0;
+      const sleutel = soort==='gas' ? 'wp2GasprijsPerJaar' : 'wp2StroomprijsPerJaar';
+      if(!state[sleutel]) state[sleutel] = {};
+      state[sleutel][jaar] = waarde;
+      saveState();
+      renderWpScenario();
+    });
+  });
 }
 function exportCsvFact(){
   const velden = alleVeldenFact();
@@ -2173,8 +2202,10 @@ const firebaseConfig = {
 };
 let firebaseActief = false;
 let firebaseDbRef = null;
+let firebaseHistoryRef = null;
 let firebaseSchrijfTimer = null;
 let laatsteFirebaseJson = null;
+const FIREBASE_HISTORY_BEWAREN = 30; // aantal tijdgestempelde reservekopieën dat bewaard blijft
 function toonFirebaseStatus(tekst, opgeslagen){
   const el = document.getElementById('firebaseStatus');
   if(el){
@@ -2194,6 +2225,26 @@ function firebaseVerwerkOntvangen(data){
   render();
   toonFirebaseStatus('Bijgewerkt vanaf ander apparaat — ' + new Date().toLocaleTimeString('nl-NL'), true);
 }
+// Bewaart een tijdgestempelde kopie in "energie-wkk-history" vóór/bij elke wijziging, en ruimt
+// oude kopieën op zodat er nooit meer dan FIREBASE_HISTORY_BEWAREN overblijven. Dit is de vangnet
+// tegen dataverlies: bij problemen kun je in de Firebase-console (Realtime Database → Data →
+// energie-wkk-history) een oudere kopie terugvinden en handmatig terugzetten.
+function firebaseHistorieBewaren(data){
+  if(!firebaseHistoryRef) return;
+  const sleutel = new Date().toISOString().replace(/[.:]/g,'-');
+  firebaseHistoryRef.child(sleutel).set(data).then(()=>{
+    firebaseHistoryRef.orderByKey().once('value').then(snap=>{
+      const sleutels = [];
+      snap.forEach(child=>{ sleutels.push(child.key); });
+      const teVeel = sleutels.length - FIREBASE_HISTORY_BEWAREN;
+      if(teVeel > 0){
+        const updates = {};
+        sleutels.slice(0, teVeel).forEach(k=> updates[k] = null);
+        firebaseHistoryRef.update(updates);
+      }
+    });
+  }).catch(()=>{});
+}
 function firebaseOpslaanGedebouncet(){
   if(!firebaseActief || !firebaseDbRef) return;
   if(firebaseSchrijfTimer) clearTimeout(firebaseSchrijfTimer);
@@ -2202,9 +2253,23 @@ function firebaseOpslaanGedebouncet(){
     if(json === laatsteFirebaseJson) return;
     laatsteFirebaseJson = json;
     firebaseDbRef.set(state)
-      .then(()=> toonFirebaseStatus('Live synchronisatie actief — laatst gedeeld om ' + new Date().toLocaleTimeString('nl-NL'), true))
+      .then(()=>{
+        toonFirebaseStatus('Live synchronisatie actief — laatst gedeeld om ' + new Date().toLocaleTimeString('nl-NL'), true);
+        firebaseHistorieBewaren(state);
+      })
       .catch(err=> toonFirebaseStatus('Synchroniseren mislukt: ' + err.message, false));
   }, 800);
+}
+function firebaseUploadEersteKeer(){
+  const zeker = confirm('Er staat nog niks in Firebase. Wil je jouw huidige data (op dit apparaat) als beginpunt gebruiken voor de synchronisatie?');
+  if(!zeker) return;
+  laatsteFirebaseJson = JSON.stringify(state);
+  firebaseDbRef.set(state).then(()=>{
+    firebaseHistorieBewaren(state);
+    toonFirebaseStatus('Geüpload — live synchronisatie actief.', true);
+    const btn = document.getElementById('firebaseUploadEerste');
+    if(btn) btn.style.display = 'none';
+  }).catch(err=> toonFirebaseStatus('Uploaden mislukt: ' + err.message, false));
 }
 function firebaseInit(){
   if(typeof firebase === 'undefined'){
@@ -2215,12 +2280,15 @@ function firebaseInit(){
     firebase.initializeApp(firebaseConfig);
     firebase.auth().signInAnonymously().then(()=>{
       firebaseDbRef = firebase.database().ref('energie-wkk');
+      firebaseHistoryRef = firebase.database().ref('energie-wkk-history');
       firebaseDbRef.on('value', snap=>{
         const data = snap.val();
         if(!data){
-          // Nog niks in Firebase: zet onze huidige data er meteen in.
-          laatsteFirebaseJson = JSON.stringify(state);
-          firebaseDbRef.set(state);
+          // Nog niks in Firebase: NIET automatisch overschrijven (voorkomt dat 2 apparaten die
+          // tegelijk voor het eerst verbinden elkaars data per ongeluk wissen). Vraag het na.
+          toonFirebaseStatus('Firebase is nog leeg voor dit onderdeel.', false);
+          const btn = document.getElementById('firebaseUploadEerste');
+          if(btn) btn.style.display = 'inline-block';
           return;
         }
         firebaseVerwerkOntvangen(data);
@@ -2235,6 +2303,7 @@ function firebaseInit(){
   }
 }
 firebaseInit();
+document.getElementById('firebaseUploadEerste').addEventListener('click', firebaseUploadEersteKeer);
 document.getElementById('backupNu').addEventListener('click', exportBackup);
 document.getElementById('backupLater').addEventListener('click', ()=>{
   document.getElementById('backupBanner').style.display = 'none';
@@ -2249,6 +2318,28 @@ document.getElementById('backupBestand').addEventListener('change', (e)=>{
   e.target.value = '';
 });
 checkBackupHerinnering();
+document.getElementById('downloadAppHtml').addEventListener('click', async ()=>{
+  const statusEl = document.getElementById('downloadAppStatus');
+  statusEl.textContent = 'Bezig...';
+  try{
+    const resp = await fetch(window.location.href, {cache:'no-store'});
+    if(!resp.ok) throw new Error('Ophalen mislukt (' + resp.status + ')');
+    const tekst = await resp.text();
+    const blob = new Blob([tekst], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'energie-wkk-dashboard.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    statusEl.textContent = 'Gedownload.';
+  }catch(err){
+    statusEl.textContent = 'Downloaden lukte niet. Werkt alleen als de app via een internetadres (bv. GitHub Pages) open staat, niet als lokaal bestand.';
+  }
+  setTimeout(()=>{ statusEl.textContent=''; }, 6000);
+});
 document.getElementById('alleGroepenToggle').addEventListener('click', ()=>{
   alleGroepenIngeklapt = !alleGroepenIngeklapt;
   groepenDefinitie207.forEach(g=>{ if(g.naam) groepStatus[207][g.naam] = alleGroepenIngeklapt; });
@@ -2286,7 +2377,7 @@ document.getElementById('ketelFactor').value = state.ketelFactor;
 document.getElementById('wkkFactor').value = state.wkkFactor;
 document.getElementById('wkkGasFactor').value = state.wkkGasFactor;
 // ---------- Investeringsanalyse warmtepomp: invoervelden ----------
-['wp2Gasverbruik','wp2Stroomverbruik','wp2PctVervangen','wp2GasprijsInkoop','wp2StroomprijsInkoop','wp2Cop','wp2MaxCapaciteit','wp2Draaiuren','wp2Investering','wp2Subsidie','wp2Onderhoud','wp2GewensteTerugverdientijd'].forEach(veld=>{
+['wp2Gasverbruik','wp2Stroomverbruik','wp2PctVervangen','wp2Cop','wp2MaxCapaciteit','wp2Draaiuren','wp2Investering','wp2Subsidie','wp2Onderhoud','wp2GewensteTerugverdientijd'].forEach(veld=>{
   const el = document.getElementById(veld);
   if(!el) return;
   el.value = state[veld];
