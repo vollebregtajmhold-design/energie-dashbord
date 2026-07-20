@@ -568,7 +568,7 @@
             <input type="number" step="1" id="wp2Stroomverbruik">
           </div>
           <div class="veld">
-            <label>% gas te vervangen door warmtepomp</label>
+            <label id="wp2PctVervangenLabel">% gas te vervangen door warmtepomp</label>
             <input type="number" step="1" min="0" max="100" id="wp2PctVervangen">
           </div>
           <div class="veld">
@@ -614,6 +614,17 @@
     </div>
     <div class="tussenregel-blauw"></div>
     <div class="panel">
+      <h2>Resultaat per jaar (2026&ndash;2030)</h2>
+      <div class="sub" style="margin-bottom:14px;">Gebruikt de offici&euml;le EB/ODE-schijven per jaar. De 2 gele rijen (marktprijs gas/stroom) zijn vooraf ingevuld met de forward-curve en zelf aan te passen &mdash; de rest is automatisch. Beweeg over een regelnaam voor de rekenwijze.</div>
+      <div class="tafel-scroll tafel-transposed">
+        <table>
+          <thead id="theadWp2"></thead>
+          <tbody id="tbodyWp2"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tussenregel-blauw"></div>
+    <div class="panel">
       <h2>Droger &mdash; investering &amp; besparing (Locatie 250)</h2>
       <div class="sub" style="margin-bottom:14px;">Losse rekentool voor een elektrische (warmtepomp-aangedreven) droger i.p.v. gas. De besparing hieronder in de resultatentabel gebruikt dezelfde marktprijzen en belastingschijven per jaar als hierboven.</div>
       <div class="invoerform invoervelden">
@@ -638,15 +649,10 @@
           <input type="number" step="1" id="wp2DrogerInvesteringPerKw">
         </div>
       </div>
-    </div>
-    <div class="tussenregel-blauw"></div>
-    <div class="panel">
-      <h2>Resultaat per jaar (2026&ndash;2030)</h2>
-      <div class="sub" style="margin-bottom:14px;">Gebruikt de offici&euml;le EB/ODE-schijven per jaar. De 2 gele rijen (marktprijs gas/stroom) zijn vooraf ingevuld met de forward-curve en zelf aan te passen &mdash; de rest is automatisch. Beweeg over een regelnaam voor de rekenwijze.</div>
-      <div class="tafel-scroll tafel-transposed">
+      <div class="tafel-scroll tafel-transposed" style="margin-top:14px;">
         <table>
-          <thead id="theadWp2"></thead>
-          <tbody id="tbodyWp2"></tbody>
+          <thead id="theadWp2Droger"></thead>
+          <tbody id="tbodyWp2Droger"></tbody>
         </table>
       </div>
     </div>
@@ -785,7 +791,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 12:50</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 13:45</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -1985,6 +1991,11 @@ function renderWpScenario(){
   const draaiurenPerJaar = state.wp2Draaiuren || 0;
   const maxJaarcapaciteitKwh = maxCapaciteit * draaiurenPerJaar;
   const wpOndergedimensioneerd = maxCapaciteit>0 && draaiurenPerJaar>0 && maxJaarcapaciteitKwh < warmteVervangenKwh;
+  const pctBreakEven = (gasHuidig && state.ketelFactor) ? Math.min(100, maxJaarcapaciteitKwh / (gasHuidig * state.ketelFactor) * 100) : null;
+  const pctLabelEl = document.getElementById('wp2PctVervangenLabel');
+  if(pctLabelEl){
+    pctLabelEl.innerHTML = '% gas te vervangen door warmtepomp' + (pctBreakEven!==null ? ` <span class="tt tt-formule" data-tt="Maximale jaarcapaciteit WP ÷ (huidig gasverbruik × ketelfactor) × 100%. Boven dit percentage is de WP ondergedimensioneerd.">(break-even: ${fmt(pctBreakEven,0)}%)</span>` : '');
+  }
   const drogerInputKw = state.wp2DrogerInputKw || 0;
   const drogerCop = state.wp2DrogerCop || 0;
   const drogerDraaiuren = state.wp2DrogerDraaiuren || 0;
@@ -2041,6 +2052,9 @@ function renderWpScenario(){
     'Investering min subsidie (bv. ISDE).');
   kernHtml += kaart('Gemiddelde besparing (5 jaar)', fmtEuro(gemiddeldeBesparing,0), gemiddeldeBesparing<0?'neg':'',
     'Gemiddelde van de besparing per jaar (2026 t/m 2030), uit de tabel hieronder.');
+  const gemiddeldeTerugverdientijd = gemiddeldeBesparing > 0 ? nettoInvestering / gemiddeldeBesparing : null;
+  kernHtml += kaart('Terugverdientijd gemiddeld', gemiddeldeTerugverdientijd!==null ? fmt(gemiddeldeTerugverdientijd,1)+' jaar' : 'n.v.t.', '',
+    'Netto investering ÷ gemiddelde besparing (5 jaar).');
   kernEl.innerHTML = kernHtml;
   let headHtml = '<tr><th class="th-sticky th-hoek"></th>';
   jaren.forEach(j=> headHtml += `<th style="text-align:right;padding:6px 8px;">${j}</th>`);
@@ -2103,19 +2117,6 @@ function renderWpScenario(){
   bodyHtml += `<tr class="rubriek-rij"><td class="naam"><span class="tt tt-formule" data-tt="Besparing per jaar × gewenste terugverdientijd.">Max investering − subsidie</span></td>`;
   perJaar.forEach(r=> bodyHtml += `<td>${euroCelLokaal(r.maxNettoInvestering,0)}</td>`);
   bodyHtml += '</tr>';
-  const wpPijlDroger = wp2TabelDrogerIngeklapt ? '&#9656;' : '&#9662;';
-  bodyHtml += `<tr class="groep-scheiding" data-wpgroep="droger"><td class="groep-label">Droger<span class="groep-pijl">${wpPijlDroger}</span></td>${'<td></td>'.repeat(wpKolomAantal-1)}</tr>`;
-  if(!wp2TabelDrogerIngeklapt){
-    bodyHtml += `<tr class="rubriek-rij"><td class="naam"><span class="tt tt-formule" data-tt="${fmt(pctDroger,0)}% van ${fmt(gasHuidig,0)} m³ huidig gasverbruik. Verandert niet per jaar.">Gas voor droger</span></td>`;
-    perJaar.forEach(()=> bodyHtml += `<td>${fmt(gasDrogerM3,0)} m³</td>`);
-    bodyHtml += '</tr>';
-    bodyHtml += `<tr class="rubriek-rij"><td class="naam"><span class="tt tt-formule" data-tt="Elektrische droger (${fmt(drogerInputKw,0)} kW input × COP ${fmt(drogerCop,1)} = ${fmt(drogerOutputKw,0)} kW warmte, × ${fmt(drogerDraaiuren,0)} draaiuren = ${fmt(drogerWarmteKwh,0)} kWh warmte ÷ ${fmt(drogerGasFactor,2)} = ${fmt(drogerGasBespaardM3,0)} m³ gas bespaard. Investering: ${fmtEuro(drogerInvestering,0)} (${fmt(drogerInputKw,0)} kW × €/kW). Besparing = bespaard gas (incl. EB/ODE) min extra stroom (incl. EB/ODE).">Besparing droger per jaar</span></td>`;
-    perJaar.forEach(r=> bodyHtml += `<td>${euroCelLokaal(r.drogerBesparing,0)}</td>`);
-    bodyHtml += '</tr>';
-    bodyHtml += `<tr class="rubriek-rij"><td class="naam"><span class="tt tt-formule" data-tt="Investering droger (${fmtEuro(drogerInvestering,0)}) ÷ besparing droger per jaar.">Terugverdientijd droger</span></td>`;
-    perJaar.forEach(r=> bodyHtml += `<td>${r.drogerTerugverdientijd!==null ? fmt(r.drogerTerugverdientijd,1)+' jaar' : 'n.v.t.'}</td>`);
-    bodyHtml += '</tr>';
-  }
   tbodyEl.innerHTML = bodyHtml;
   tbodyEl.querySelectorAll('input[data-wpprijs]').forEach(inp=>{
     inp.addEventListener('focus', ()=> inp.select());
@@ -2135,10 +2136,37 @@ function renderWpScenario(){
       const groep = tr.getAttribute('data-wpgroep');
       if(groep==='huidig') wp2TabelHuidigIngeklapt = !wp2TabelHuidigIngeklapt;
       if(groep==='besparingen') wp2TabelBesparingenIngeklapt = !wp2TabelBesparingenIngeklapt;
-      if(groep==='droger') wp2TabelDrogerIngeklapt = !wp2TabelDrogerIngeklapt;
       renderWpScenario();
     });
   });
+  const theadDrogerEl = document.getElementById('theadWp2Droger');
+  const tbodyDrogerEl = document.getElementById('tbodyWp2Droger');
+  if(theadDrogerEl && tbodyDrogerEl){
+    let drogerHeadHtml = '<tr><th class="th-sticky th-hoek"></th>';
+    jaren.forEach(j=> drogerHeadHtml += `<th style="text-align:right;padding:6px 8px;">${j}</th>`);
+    drogerHeadHtml += '</tr>';
+    theadDrogerEl.innerHTML = drogerHeadHtml;
+    const wpPijlDroger = wp2TabelDrogerIngeklapt ? '&#9656;' : '&#9662;';
+    let drogerBodyHtml = `<tr class="groep-scheiding" data-wpgroep="droger"><td class="groep-label">Droger<span class="groep-pijl">${wpPijlDroger}</span></td>${'<td></td>'.repeat(wpKolomAantal-1)}</tr>`;
+    if(!wp2TabelDrogerIngeklapt){
+      drogerBodyHtml += `<tr class="rubriek-rij"><td class="naam"><span class="tt tt-formule" data-tt="${fmt(pctDroger,0)}% van ${fmt(gasHuidig,0)} m³ huidig gasverbruik. Verandert niet per jaar.">Gas voor droger</span></td>`;
+      perJaar.forEach(()=> drogerBodyHtml += `<td>${fmt(gasDrogerM3,0)} m³</td>`);
+      drogerBodyHtml += '</tr>';
+      drogerBodyHtml += `<tr class="rubriek-rij"><td class="naam"><span class="tt tt-formule" data-tt="Elektrische droger (${fmt(drogerInputKw,0)} kW input × COP ${fmt(drogerCop,1)} = ${fmt(drogerOutputKw,0)} kW warmte, × ${fmt(drogerDraaiuren,0)} draaiuren = ${fmt(drogerWarmteKwh,0)} kWh warmte ÷ ${fmt(drogerGasFactor,2)} = ${fmt(drogerGasBespaardM3,0)} m³ gas bespaard. Investering: ${fmtEuro(drogerInvestering,0)} (${fmt(drogerInputKw,0)} kW × €/kW). Besparing = bespaard gas (incl. EB/ODE) min extra stroom (incl. EB/ODE).">Besparing droger per jaar</span></td>`;
+      perJaar.forEach(r=> drogerBodyHtml += `<td>${euroCelLokaal(r.drogerBesparing,0)}</td>`);
+      drogerBodyHtml += '</tr>';
+      drogerBodyHtml += `<tr class="rubriek-rij"><td class="naam"><span class="tt tt-formule" data-tt="Investering droger (${fmtEuro(drogerInvestering,0)}) ÷ besparing droger per jaar.">Terugverdientijd droger</span></td>`;
+      perJaar.forEach(r=> drogerBodyHtml += `<td>${r.drogerTerugverdientijd!==null ? fmt(r.drogerTerugverdientijd,1)+' jaar' : 'n.v.t.'}</td>`);
+      drogerBodyHtml += '</tr>';
+    }
+    tbodyDrogerEl.innerHTML = drogerBodyHtml;
+    tbodyDrogerEl.querySelectorAll('tr.groep-scheiding[data-wpgroep]').forEach(tr=>{
+      tr.addEventListener('click', ()=>{
+        wp2TabelDrogerIngeklapt = !wp2TabelDrogerIngeklapt;
+        renderWpScenario();
+      });
+    });
+  }
 }
 function exportCsvFact(){
   const velden = alleVeldenFact();
