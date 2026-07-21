@@ -380,6 +380,24 @@
 </style>
 </head>
 <body>
+<div id="loginOverlay" style="position:fixed;inset:0;background:#e2edf9;z-index:1000;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid #dbe6f2;border-radius:12px;padding:32px;max-width:340px;width:90%;box-shadow:0 4px 16px rgba(31,58,95,0.10);">
+    <h2 style="margin:0 0 6px;font-size:20px;color:#1f3a5f;">Inloggen</h2>
+    <div class="sub" style="margin-bottom:18px;">Log in om de app te gebruiken en je gegevens te synchroniseren.</div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="font-size:11.5px;color:#7189a3;display:block;margin-bottom:4px;">E-mailadres</label>
+        <input type="email" id="loginEmail" autocomplete="username" style="width:100%;padding:9px 10px;border:1px solid #dbe6f2;border-radius:6px;font-size:14px;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:11.5px;color:#7189a3;display:block;margin-bottom:4px;">Wachtwoord</label>
+        <input type="password" id="loginWachtwoord" autocomplete="current-password" style="width:100%;padding:9px 10px;border:1px solid #dbe6f2;border-radius:6px;font-size:14px;box-sizing:border-box;">
+      </div>
+      <button class="actie" id="loginKnop" type="button" style="margin-top:6px;">Inloggen</button>
+      <div id="loginFout" style="color:#c06868;font-size:12.5px;min-height:16px;"></div>
+    </div>
+  </div>
+</div>
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar-kop">
@@ -722,6 +740,7 @@
         <div class="toolbar">
           <span id="firebaseStatus" class="sub" style="margin:0;">Verbinden...</span>
           <button class="actie secundair" id="firebaseUploadEerste" type="button" style="display:none;">Mijn huidige data naar Firebase uploaden</button>
+          <button class="actie secundair" id="firebaseUitloggen" type="button">Uitloggen</button>
         </div>
         <div class="sub" style="margin-top:8px;">Let op: als 2 pc's tegelijk op hetzelfde moment dezelfde regel wijzigen, wint de laatste wijziging. Voor de rest synchroniseert alles automatisch.</div>
       </div>
@@ -791,7 +810,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 13:45</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 14:15</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -2388,39 +2407,70 @@ function firebaseUploadEersteKeer(){
     if(btn) btn.style.display = 'none';
   }).catch(err=> toonFirebaseStatus('Uploaden mislukt: ' + err.message, false));
 }
+function toonLoginOverlay(tonen){
+  const el = document.getElementById('loginOverlay');
+  if(el) el.style.display = tonen ? 'flex' : 'none';
+}
+function firebaseVerderMetSync(){
+  try{
+    firebaseDbRef = firebase.database().ref('energie-wkk');
+    firebaseHistoryRef = firebase.database().ref('energie-wkk-history');
+    firebaseDbRef.on('value', snap=>{
+      const data = snap.val();
+      if(!data){
+        // Nog niks in Firebase: NIET automatisch overschrijven (voorkomt dat 2 apparaten die
+        // tegelijk voor het eerst verbinden elkaars data per ongeluk wissen). Vraag het na.
+        toonFirebaseStatus('Firebase is nog leeg voor dit onderdeel.', false);
+        const btn = document.getElementById('firebaseUploadEerste');
+        if(btn) btn.style.display = 'inline-block';
+        return;
+      }
+      firebaseVerwerkOntvangen(data);
+    });
+    firebaseActief = true;
+    toonFirebaseStatus('Verbonden — live synchronisatie actief.', true);
+  }catch(err){
+    toonFirebaseStatus('Firebase-configuratie fout: ' + err.message, false);
+  }
+}
 function firebaseInit(){
   if(typeof firebase === 'undefined'){
     toonFirebaseStatus('Firebase kon niet laden (geen internetverbinding?).', false);
     return;
   }
-  try{
-    firebase.initializeApp(firebaseConfig);
-    firebase.auth().signInAnonymously().then(()=>{
-      firebaseDbRef = firebase.database().ref('energie-wkk');
-      firebaseHistoryRef = firebase.database().ref('energie-wkk-history');
-      firebaseDbRef.on('value', snap=>{
-        const data = snap.val();
-        if(!data){
-          // Nog niks in Firebase: NIET automatisch overschrijven (voorkomt dat 2 apparaten die
-          // tegelijk voor het eerst verbinden elkaars data per ongeluk wissen). Vraag het na.
-          toonFirebaseStatus('Firebase is nog leeg voor dit onderdeel.', false);
-          const btn = document.getElementById('firebaseUploadEerste');
-          if(btn) btn.style.display = 'inline-block';
-          return;
-        }
-        firebaseVerwerkOntvangen(data);
-      });
-      firebaseActief = true;
-      toonFirebaseStatus('Verbonden — live synchronisatie actief.', true);
-    }).catch(err=>{
-      toonFirebaseStatus('Kon niet verbinden met Firebase: ' + err.message, false);
-    });
-  }catch(err){
-    toonFirebaseStatus('Firebase-configuratie fout: ' + err.message, false);
+  firebase.initializeApp(firebaseConfig);
+  firebase.auth().onAuthStateChanged(gebruiker=>{
+    if(gebruiker){
+      toonLoginOverlay(false);
+      firebaseVerderMetSync();
+    } else {
+      toonLoginOverlay(true);
+      toonFirebaseStatus('Niet ingelogd.', false);
+    }
+  });
+}
+function firebaseInloggen(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const wachtwoord = document.getElementById('loginWachtwoord').value;
+  const foutEl = document.getElementById('loginFout');
+  foutEl.textContent = '';
+  if(!email || !wachtwoord){
+    foutEl.textContent = 'Vul e-mailadres en wachtwoord in.';
+    return;
   }
+  firebase.auth().signInWithEmailAndPassword(email, wachtwoord).catch(err=>{
+    foutEl.textContent = 'Inloggen mislukt: onjuist e-mailadres of wachtwoord.';
+  });
 }
 firebaseInit();
+document.getElementById('loginKnop').addEventListener('click', firebaseInloggen);
+document.getElementById('loginWachtwoord').addEventListener('keydown', e=>{
+  if(e.key==='Enter') firebaseInloggen();
+});
 document.getElementById('firebaseUploadEerste').addEventListener('click', firebaseUploadEersteKeer);
+document.getElementById('firebaseUitloggen').addEventListener('click', ()=>{
+  firebase.auth().signOut();
+});
 document.getElementById('backupNu').addEventListener('click', exportBackup);
 document.getElementById('backupLater').addEventListener('click', ()=>{
   document.getElementById('backupBanner').style.display = 'none';
