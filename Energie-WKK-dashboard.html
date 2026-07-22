@@ -816,7 +816,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 15:40</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 16:05</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -2993,7 +2993,6 @@ function renderMarktprijzen(){
   if(datumEl) datumEl.textContent = mp.datum;
   thead.innerHTML = '<tr><th class="th-sticky th-hoek">Kwartaal</th>'
     + '<th style="text-align:right;padding:6px 8px;">Gas (ct/m³)</th>'
-    + '<th style="text-align:right;padding:6px 8px;">Elektra (€/MWh)</th>'
     + '<th style="text-align:right;padding:6px 8px;">Peakload (€/MWh)</th>'
     + '<th style="text-align:right;padding:6px 8px;">Baseload (€/MWh)</th>'
     + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Off-peak = (Baseload × totaal uren − Peakload × piekuren) ÷ off-peak-uren. Piekuren = werkdagen 08:00-20:00 (12u/werkdag) in dat kwartaal.">Off-peak (€/MWh)</span></th>'
@@ -3004,7 +3003,6 @@ function renderMarktprijzen(){
   regels.forEach(r=>{
     bodyHtml += `<tr><td class="naam">${r.kwartaal}</td>`
       + `<td style="text-align:right;padding:6px 8px;">${dash(r.gas)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dash(r.elektra)}</td>`
       + `<td style="text-align:right;padding:6px 8px;">${dash(r.peakload)}</td>`
       + `<td style="text-align:right;padding:6px 8px;">${dash(r.baseload)}</td>`
       + `<td style="text-align:right;padding:6px 8px;">${dash(r.offpeak)}</td></tr>`;
@@ -3015,7 +3013,6 @@ function renderMarktprijzen(){
   }
   bodyHtml += `<tr class="totaal"><td class="naam">Gemiddelde</td>`
     + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('gas'))}</td>`
-    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('elektra'))}</td>`
     + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('peakload'))}</td>`
     + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('baseload'))}</td>`
     + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('offpeak'))}</td></tr>`;
