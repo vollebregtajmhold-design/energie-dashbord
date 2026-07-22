@@ -382,19 +382,22 @@
 <body>
 <div id="loginOverlay" style="position:fixed;inset:0;background:#e2edf9;z-index:1000;display:flex;align-items:center;justify-content:center;">
   <div style="background:#fff;border:1px solid #dbe6f2;border-radius:12px;padding:32px;max-width:340px;width:90%;box-shadow:0 4px 16px rgba(31,58,95,0.10);">
-    <h2 style="margin:0 0 6px;font-size:20px;color:#1f3a5f;">Inloggen</h2>
-    <div class="sub" style="margin-bottom:18px;">Log in om de app te gebruiken en je gegevens te synchroniseren.</div>
-    <div style="display:flex;flex-direction:column;gap:12px;">
-      <div>
-        <label style="font-size:11.5px;color:#7189a3;display:block;margin-bottom:4px;">E-mailadres</label>
-        <input type="email" id="loginEmail" autocomplete="username" style="width:100%;padding:9px 10px;border:1px solid #dbe6f2;border-radius:6px;font-size:14px;box-sizing:border-box;">
+    <div id="loginLaden" style="color:#7189a3;font-size:14px;text-align:center;">Laden...</div>
+    <div id="loginFormulier" style="display:none;">
+      <h2 style="margin:0 0 6px;font-size:20px;color:#1f3a5f;">Inloggen</h2>
+      <div class="sub" style="margin-bottom:18px;">Log in om de app te gebruiken en je gegevens te synchroniseren.</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <label style="font-size:11.5px;color:#7189a3;display:block;margin-bottom:4px;">E-mailadres</label>
+          <input type="email" id="loginEmail" autocomplete="username" style="width:100%;padding:9px 10px;border:1px solid #dbe6f2;border-radius:6px;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:11.5px;color:#7189a3;display:block;margin-bottom:4px;">Wachtwoord</label>
+          <input type="password" id="loginWachtwoord" autocomplete="current-password" style="width:100%;padding:9px 10px;border:1px solid #dbe6f2;border-radius:6px;font-size:14px;box-sizing:border-box;">
+        </div>
+        <button class="actie" id="loginKnop" type="button" style="margin-top:6px;">Inloggen</button>
+        <div id="loginFout" style="color:#c06868;font-size:12.5px;min-height:16px;"></div>
       </div>
-      <div>
-        <label style="font-size:11.5px;color:#7189a3;display:block;margin-bottom:4px;">Wachtwoord</label>
-        <input type="password" id="loginWachtwoord" autocomplete="current-password" style="width:100%;padding:9px 10px;border:1px solid #dbe6f2;border-radius:6px;font-size:14px;box-sizing:border-box;">
-      </div>
-      <button class="actie" id="loginKnop" type="button" style="margin-top:6px;">Inloggen</button>
-      <div id="loginFout" style="color:#c06868;font-size:12.5px;min-height:16px;"></div>
     </div>
   </div>
 </div>
@@ -408,6 +411,7 @@
       <a href="javascript:void(0)" data-tab="facturen"><span class="dot"></span>Facturen Petra</a>
       <a href="javascript:void(0)" data-tab="overzicht"><span class="dot"></span>DNO, MPS, AGRO</a>
       <a href="javascript:void(0)" data-tab="wpberekening"><span class="dot"></span>WP berekening</a>
+      <a href="javascript:void(0)" data-tab="energiehandel"><span class="dot"></span>Energie-handel</a>
       <a href="javascript:void(0)" data-tab="instellingen"><span class="dot"></span>Instellingen</a>
     </nav>
     <div class="sidebar-links">
@@ -572,8 +576,26 @@
     </div>
   </div>
   <div class="tab-paneel" id="wpberekening">
-    <div class="panel">
-      <h2>WP berekening &mdash; Investering warmtepomp (Locatie 250)</h2>
+    <div class="toolbar" style="margin-bottom:14px;">
+      <button class="actie secundair" id="wpAllesToggle" type="button">Alles inklappen</button>
+    </div>
+    <div class="accordion-item open">
+      <button class="accordion-titel" type="button">Vergelijking gas vs. warmtepomp <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="sub" style="margin-bottom:14px;">Appels-met-appels: kosten per kWh geleverde wármte, niet de kale grondstofprijs. Gas: (Gas incl. belasting) &divide; ketelfactor. Warmtepomp: (gewogen stroomprijs incl. belasting) &divide; COP. Ketelfactor en COP komen uit Instellingen / hieronder.</div>
+        <div class="tafel-scroll tafel-transposed">
+          <table><thead id="theadVglWp"></thead><tbody id="tbodyVglWp"></tbody></table>
+        </div>
+        <div class="sub" style="margin-top:14px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Trend per kwartaal</div>
+        <div style="max-width:720px;height:280px;">
+          <canvas id="chartVglWp"></canvas>
+        </div>
+        <div id="chartVglWpFallback" class="sub" style="display:none;">Grafiek kon niet geladen worden (geen internetverbinding voor Chart.js).</div>
+      </div>
+    </div>
+    <div class="accordion-item open">
+      <button class="accordion-titel" type="button">WP berekening &mdash; Investering warmtepomp (Locatie 250) <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
       <div class="sub" style="margin-bottom:14px;">Losse rekentool, onafhankelijk van je factuurgegevens. Je vult zelf de uitgangspunten in; de rekentool gebruikt daarnaast de offici&euml;le energiebelasting/ODE-schijven &oacute;n de marktprijzen (forward-curve) voor gas en elektriciteit (2026&ndash;2030) &mdash; beide per jaar, zodat je ziet hoe belasting &eacute;n markt samen de business case be&iuml;nvloeden.</div>
       <div class="wp2-layout">
         <div class="wp2-kolom">
@@ -629,21 +651,27 @@
         </div>
         <div class="cards" id="wp2Kern"></div>
       </div>
+      </div>
     </div>
-    <div class="tussenregel-blauw"></div>
-    <div class="panel">
-      <h2>Resultaat per jaar (2026&ndash;2030)</h2>
+    <div class="accordion-item open">
+      <button class="accordion-titel" type="button">Resultaat per jaar (2026&ndash;2030) <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
       <div class="sub" style="margin-bottom:14px;">Gebruikt de offici&euml;le EB/ODE-schijven per jaar. De 2 gele rijen (marktprijs gas/stroom) zijn vooraf ingevuld met de forward-curve en zelf aan te passen &mdash; de rest is automatisch. Beweeg over een regelnaam voor de rekenwijze.</div>
+      <div class="toolbar" style="margin-bottom:14px;">
+        <button class="actie secundair" id="wpVulUitMarktprijzen" type="button">Vul in vanuit marktprijzen (Energie-handel)</button>
+        <span id="wpVulStatus" class="sub" style="margin:0;"></span>
+      </div>
       <div class="tafel-scroll tafel-transposed">
         <table>
           <thead id="theadWp2"></thead>
           <tbody id="tbodyWp2"></tbody>
         </table>
       </div>
+      </div>
     </div>
-    <div class="tussenregel-blauw"></div>
-    <div class="panel">
-      <h2>Droger &mdash; investering &amp; besparing (Locatie 250)</h2>
+    <div class="accordion-item open">
+      <button class="accordion-titel" type="button">Droger &mdash; investering &amp; besparing (Locatie 250) <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
       <div class="sub" style="margin-bottom:14px;">Losse rekentool voor een elektrische (warmtepomp-aangedreven) droger i.p.v. gas. De besparing hieronder in de resultatentabel gebruikt dezelfde marktprijzen en belastingschijven per jaar als hierboven.</div>
       <div class="invoerform invoervelden">
         <div class="veld">
@@ -672,6 +700,70 @@
           <thead id="theadWp2Droger"></thead>
           <tbody id="tbodyWp2Droger"></tbody>
         </table>
+      </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-paneel" id="energiehandel">
+    <h2 style="margin:0 0 16px;">Energie-handel</h2>
+    <div class="toolbar" style="margin-bottom:14px;">
+      <button class="actie secundair" id="ehAllesToggle" type="button">Alles uitklappen</button>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-titel" type="button">Marktprijzen (forward-curve) <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="sub" style="margin-bottom:14px;">Momentopname van de forward-curve gas- en stroomprijzen, gebruikt in de WP berekening. Marktprijzen (forward-curve), momentopname <span id="marktprijzenDatum"></span></div>
+        <div class="invoerform invoervelden" style="max-width:320px;">
+          <div class="veld">
+            <label for="marktprijzenJaarverbruikGas">Geschat jaarverbruik gas (m³/jaar) &mdash; voor de marginale EB/ODE-schijf bij "WKK-splitsing"</label>
+            <input type="number" step="1" id="marktprijzenJaarverbruikGas">
+          </div>
+        </div>
+        <div class="tafel-scroll tafel-transposed">
+          <table><thead id="theadMarktprijzen"></thead><tbody id="tbodyMarktprijzen"></tbody></table>
+        </div>
+        <div class="sub" style="margin-top:10px;color:#c06868;">Plak hier een kwartaaltabel (kwartaal, gas, peakload, baseload). Alleen Q1- en Q4-regels worden gebruikt — Q2/Q3 en alles tussen haakjes (de +/- wijzigingen) worden genegeerd. Bij verwerken wordt de hele tabel hierboven vervangen door de nieuwe cijfers.</div>
+        <textarea class="plak-invoer" id="marktprijzenPlak" style="border:1.5px solid #c06868;"></textarea>
+        <div class="toolbar" style="margin-top:8px;">
+          <button class="actie secundair" id="marktprijzenVerwerken" type="button">Verwerken</button>
+          <span id="marktprijzenStatus" class="sub" style="margin:0;"></span>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-titel" type="button">Gas inkooppositie <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="jaar-kiezer-inline klein">
+          <label for="gasInkoopJaar">Jaar</label>
+          <select id="gasInkoopJaar"></select>
+        </div>
+        <div class="tafel-scroll tafel-transposed">
+          <table><thead id="theadGasInkoop"></thead><tbody id="tbodyGasInkoop"></tbody></table>
+        </div>
+        <div class="sub" style="margin-top:10px;color:#c06868;">Plak hier de gekopieerde tabel van de Agro-site (incl. jaartal-regel indien mogelijk):</div>
+        <textarea class="plak-invoer" id="gasInkoopPlak" style="border:1.5px solid #c06868;"></textarea>
+        <div class="toolbar" style="margin-top:8px;">
+          <button class="actie secundair" id="gasInkoopVerwerken" type="button">Verwerken</button>
+          <span id="gasInkoopStatus" class="sub" style="margin:0;"></span>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-titel" type="button">Elektra verkooppositie <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="jaar-kiezer-inline klein">
+          <label for="elektraVerkoopJaar">Jaar</label>
+          <select id="elektraVerkoopJaar"></select>
+        </div>
+        <div class="tafel-scroll tafel-transposed">
+          <table><thead id="theadElektraVerkoop"></thead><tbody id="tbodyElektraVerkoop"></tbody></table>
+        </div>
+        <div class="sub" style="margin-top:10px;color:#c06868;">Plak hier de gekopieerde tabel (incl. jaartal-regel indien mogelijk):</div>
+        <textarea class="plak-invoer" id="elektraVerkoopPlak" style="border:1.5px solid #c06868;"></textarea>
+        <div class="toolbar" style="margin-top:8px;">
+          <button class="actie secundair" id="elektraVerkoopVerwerken" type="button">Verwerken</button>
+          <span id="elektraVerkoopStatus" class="sub" style="margin:0;"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -761,44 +853,6 @@
         <div class="tafel-scroll tafel-transposed">
           <table><thead id="theadTariefWkk"></thead><tbody id="tbodyTariefWkk"></tbody></table>
         </div>
-        <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Marktprijzen (forward-curve), momentopname <span id="marktprijzenDatum"></span></div>
-        <div class="tafel-scroll tafel-transposed">
-          <table><thead id="theadMarktprijzen"></thead><tbody id="tbodyMarktprijzen"></tbody></table>
-        </div>
-        <div class="sub" style="margin-top:10px;color:#c06868;">Plak hier een kwartaaltabel (kwartaal, gas, peakload, baseload). Alleen Q1- en Q4-regels worden gebruikt (incl. de haakjes) — Q2/Q3 worden genegeerd. Bij verwerken wordt de hele tabel hierboven vervangen door de nieuwe cijfers.</div>
-        <textarea class="plak-invoer" id="marktprijzenPlak" style="border:1.5px solid #c06868;"></textarea>
-        <div class="toolbar" style="margin-top:8px;">
-          <button class="actie secundair" id="marktprijzenVerwerken" type="button">Verwerken</button>
-          <span id="marktprijzenStatus" class="sub" style="margin:0;"></span>
-        </div>
-        <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Gas inkooppositie</div>
-        <div class="jaar-kiezer-inline klein">
-          <label for="gasInkoopJaar">Jaar</label>
-          <select id="gasInkoopJaar"></select>
-        </div>
-        <div class="tafel-scroll tafel-transposed">
-          <table><thead id="theadGasInkoop"></thead><tbody id="tbodyGasInkoop"></tbody></table>
-        </div>
-        <div class="sub" style="margin-top:10px;">Plak hier de gekopieerde tabel van de Agro-site (incl. jaartal-regel indien mogelijk):</div>
-        <textarea class="plak-invoer" id="gasInkoopPlak"></textarea>
-        <div class="toolbar" style="margin-top:8px;">
-          <button class="actie secundair" id="gasInkoopVerwerken" type="button">Verwerken</button>
-          <span id="gasInkoopStatus" class="sub" style="margin:0;"></span>
-        </div>
-        <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Elektra verkooppositie</div>
-        <div class="jaar-kiezer-inline klein">
-          <label for="elektraVerkoopJaar">Jaar</label>
-          <select id="elektraVerkoopJaar"></select>
-        </div>
-        <div class="tafel-scroll tafel-transposed">
-          <table><thead id="theadElektraVerkoop"></thead><tbody id="tbodyElektraVerkoop"></tbody></table>
-        </div>
-        <div class="sub" style="margin-top:10px;">Plak hier de gekopieerde tabel (incl. jaartal-regel indien mogelijk):</div>
-        <textarea class="plak-invoer" id="elektraVerkoopPlak"></textarea>
-        <div class="toolbar" style="margin-top:8px;">
-          <button class="actie secundair" id="elektraVerkoopVerwerken" type="button">Verwerken</button>
-          <span id="elektraVerkoopStatus" class="sub" style="margin:0;"></span>
-        </div>
       </div>
     </div>
     <div class="accordion-item">
@@ -816,12 +870,13 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 16:05</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 22 juli 2026, 12:45</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
 const STORAGE_KEY = 'energie-wkk-app-v1';
 const maandNamenLijst = ['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
@@ -1011,6 +1066,7 @@ const seedData = {
   wp2Subsidie: 0,
   wp2Onderhoud: 0,
   wp2GewensteTerugverdientijd: 5,
+  marktprijzenJaarverbruikGas: 0,
   maandNamen: maandNamenLijst,
   factCategorie: {...factCategorieDefaults},
   factVeldenExtra: [],
@@ -1121,7 +1177,7 @@ function normaliseerState(s){
   if(!s.ketelFactor) s.ketelFactor = seedData.ketelFactor;
   if(!s.wkkFactor) s.wkkFactor = seedData.wkkFactor;
   if(!s.wkkGasFactor) s.wkkGasFactor = seedData.wkkGasFactor;
-  ['wp2Gasverbruik','wp2Stroomverbruik','wp2PctVervangen','wp2PctDroger','wp2GasprijsInkoop','wp2StroomprijsInkoop','wp2Cop','wp2MaxCapaciteit','wp2Draaiuren','wp2Investering','wp2Subsidie','wp2Onderhoud','wp2GewensteTerugverdientijd','wp2DrogerInputKw','wp2DrogerCop','wp2DrogerDraaiuren','wp2DrogerGasFactor','wp2DrogerInvesteringPerKw'].forEach(veld=>{
+  ['wp2Gasverbruik','wp2Stroomverbruik','wp2PctVervangen','wp2PctDroger','wp2GasprijsInkoop','wp2StroomprijsInkoop','wp2Cop','wp2MaxCapaciteit','wp2Draaiuren','wp2Investering','wp2Subsidie','wp2Onderhoud','wp2GewensteTerugverdientijd','wp2DrogerInputKw','wp2DrogerCop','wp2DrogerDraaiuren','wp2DrogerGasFactor','wp2DrogerInvesteringPerKw','marktprijzenJaarverbruikGas'].forEach(veld=>{
     if(s[veld]===undefined) s[veld] = seedData[veld];
   });
   ['wp2GasprijsPerJaar','wp2StroomprijsPerJaar'].forEach(sleutel=>{
@@ -2468,11 +2524,19 @@ function firebaseInit(){
     return;
   }
   firebase.initializeApp(firebaseConfig);
+  // Zolang firebase nog niet weet of er een (eerder opgeslagen) sessie is, tonen we alleen
+  // "Laden...", niet het inlogformulier zelf. Zo lijkt het niet alsof er per ongeluk "doorheen"
+  // geklikt wordt: je ziet gewoon een korte laadstatus, gevolgd door óf de app (al ingelogd,
+  // net als bijvoorbeeld Gmail dat ingelogd blijft) óf het echte inlogformulier (niet ingelogd).
   firebase.auth().onAuthStateChanged(gebruiker=>{
     if(gebruiker){
       toonLoginOverlay(false);
       firebaseVerderMetSync();
     } else {
+      const ladenEl = document.getElementById('loginLaden');
+      const formEl = document.getElementById('loginFormulier');
+      if(ladenEl) ladenEl.style.display = 'none';
+      if(formEl) formEl.style.display = 'block';
       toonLoginOverlay(true);
       toonFirebaseStatus('Niet ingelogd.', false);
     }
@@ -2573,7 +2637,7 @@ document.getElementById('ketelFactor').value = state.ketelFactor;
 document.getElementById('wkkFactor').value = state.wkkFactor;
 document.getElementById('wkkGasFactor').value = state.wkkGasFactor;
 // ---------- Investeringsanalyse warmtepomp: invoervelden ----------
-['wp2Gasverbruik','wp2Stroomverbruik','wp2PctVervangen','wp2PctDroger','wp2Cop','wp2MaxCapaciteit','wp2Draaiuren','wp2Investering','wp2Subsidie','wp2Onderhoud','wp2GewensteTerugverdientijd','wp2DrogerInputKw','wp2DrogerCop','wp2DrogerDraaiuren','wp2DrogerGasFactor','wp2DrogerInvesteringPerKw'].forEach(veld=>{
+['wp2Gasverbruik','wp2Stroomverbruik','wp2PctVervangen','wp2PctDroger','wp2Cop','wp2MaxCapaciteit','wp2Draaiuren','wp2Investering','wp2Subsidie','wp2Onderhoud','wp2GewensteTerugverdientijd','wp2DrogerInputKw','wp2DrogerCop','wp2DrogerDraaiuren','wp2DrogerGasFactor','wp2DrogerInvesteringPerKw','marktprijzenJaarverbruikGas'].forEach(veld=>{
   const el = document.getElementById(veld);
   if(!el) return;
   el.value = state[veld];
@@ -2700,6 +2764,21 @@ document.querySelectorAll('.accordion-titel').forEach(btn=>{
     btn.closest('.accordion-item').classList.toggle('open');
   });
 });
+// ---------- "Alles in-/uitklappen"-knop per tab (werkt op alle accordion-items direct in die tab) ----------
+function wireAllesToggleAccordion(knopId, tabPaneelId){
+  const knop = document.getElementById(knopId);
+  const paneel = document.getElementById(tabPaneelId);
+  if(!knop || !paneel) return;
+  knop.addEventListener('click', ()=>{
+    const items = paneel.querySelectorAll(':scope > .accordion-item');
+    if(!items.length) return;
+    const alleOpen = Array.from(items).every(it=> it.classList.contains('open'));
+    items.forEach(it=> it.classList.toggle('open', !alleOpen));
+    knop.textContent = alleOpen ? 'Alles uitklappen' : 'Alles inklappen';
+  });
+}
+wireAllesToggleAccordion('wpAllesToggle', 'wpberekening');
+wireAllesToggleAccordion('ehAllesToggle', 'energiehandel');
 // ---------- Duizendtal-opmaak in Snel invoeren ----------
 function parseDuizendtal(v){
   return parseInt(String(v).replace(/\./g,'').replace(/[^\d-]/g,''),10) || 0;
@@ -2905,6 +2984,7 @@ document.getElementById('gasInkoopPlak').addEventListener('paste', ()=>{ setTime
 document.getElementById('elektraVerkoopVerwerken').addEventListener('click', ()=> verwerkPositiePlak('elektra'));
 document.getElementById('elektraVerkoopPlak').addEventListener('paste', ()=>{ setTimeout(()=> verwerkPositiePlak('elektra'), 0); });
 document.getElementById('marktprijzenVerwerken').addEventListener('click', verwerkMarktprijzenPlak);
+document.getElementById('wpVulUitMarktprijzen').addEventListener('click', vulWpPrijzenVanuitMarktprijzen);
 document.getElementById('marktprijzenPlak').addEventListener('paste', ()=>{ setTimeout(verwerkMarktprijzenPlak, 0); });
 document.getElementById('gasInkoopJaar').addEventListener('change', e=>{ state.gasInkoopGas.huidigJaar = e.target.value; renderPositieTabel('gas'); });
 document.getElementById('elektraVerkoopJaar').addEventListener('change', e=>{ state.elektraVerkoop.huidigJaar = e.target.value; renderPositieTabel('elektra'); });
@@ -2984,6 +3064,30 @@ function berekenOffPeak(peakload, baseload, kwartaalStr){
   if(!u || !u.offPeakUren || peakload===null || baseload===null || peakload===undefined || baseload===undefined) return null;
   return (baseload*u.totaalUren - peakload*u.piekUren) / u.offPeakUren;
 }
+// Eerste-schijf EB/ODE-tarief (WKK-splitsing speelt hier geen rol, dit is het gewone kleinverbruikstarief).
+function gasEersteSchijfTarief(jaar){
+  const s = ebGasSchijvenVoorJaar(jaar);
+  return s[0].tarief; // ct/m³
+}
+// Elektra: schijf 50.000-10.000.000 kWh (grootverbruik), niet de laagste-volume schijf.
+function elektraEersteSchijfTarief(jaar){
+  const s = ebSchijvenVoorJaar(jaar);
+  const schijf = s.find(x=> x.totKwh === 10000000) || s[s.length-1];
+  return schijf.tarief; // €/MWh
+}
+// WKK-splitsing: het marginale EB/ODE-tarief dat hoort bij de schijf waar het geschatte
+// jaarverbruik in valt (i.o.m. de gebruiker: zelfde aanpak als de "WKK kostprijs"-tool, maar
+// hier vereenvoudigd tot "in welke schijf valt dit jaarverbruik" i.p.v. een integraal over het
+// hele jaar, omdat deze marktprijzentabel geen maandverdeling van het verbruik kent).
+function gasMarginaalTariefOpVolume(jaar, jaarverbruikM3){
+  const schijven = ebGasSchijvenVoorJaar(jaar);
+  let ondergrens = 0;
+  for(let i=0; i<schijven.length; i++){
+    if(jaarverbruikM3 <= schijven[i].totM3 || i===schijven.length-1) return schijven[i].tarief;
+    ondergrens = schijven[i].totM3;
+  }
+  return schijven[schijven.length-1].tarief;
+}
 function renderMarktprijzen(){
   const thead = document.getElementById('theadMarktprijzen');
   const tbody = document.getElementById('tbodyMarktprijzen');
@@ -2993,30 +3097,184 @@ function renderMarktprijzen(){
   if(datumEl) datumEl.textContent = mp.datum;
   thead.innerHTML = '<tr><th class="th-sticky th-hoek">Kwartaal</th>'
     + '<th style="text-align:right;padding:6px 8px;">Gas (ct/m³)</th>'
+    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Gas + eerste-schijf EB/ODE-tarief van dat jaar (WKK-splitsing speelt hier geen rol).">Gas incl. belasting (ct/m³)</span></th>'
+    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Gas + het EB/ODE-tarief van de schijf waarin het ingevulde geschatte jaarverbruik valt (zelfde aanpak als de WKK kostprijs-tool).">Gas incl. belasting (WKK-splitsing, ct/m³)</span></th>'
     + '<th style="text-align:right;padding:6px 8px;">Peakload (€/MWh)</th>'
     + '<th style="text-align:right;padding:6px 8px;">Baseload (€/MWh)</th>'
     + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Off-peak = (Baseload × totaal uren − Peakload × piekuren) ÷ off-peak-uren. Piekuren = werkdagen 08:00-20:00 (12u/werkdag) in dat kwartaal.">Off-peak (€/MWh)</span></th>'
     + '</tr>';
   const dash = v=> (v===null||v===undefined||isNaN(v)) ? '&ndash;' : fmt(v,3);
   let bodyHtml = '';
+  const jaarverbruikGas = state.marktprijzenJaarverbruikGas || 0;
   const regels = (mp.regels||[]).slice().sort((a,b)=> kwartaalSorteerSleutel(a.kwartaal) - kwartaalSorteerSleutel(b.kwartaal));
-  regels.forEach(r=>{
+  const uitgebreid = regels.map(r=>{
+    const k = kwartaalNummerJaar(r.kwartaal);
+    const jaar = k ? k.jaar : null;
+    const gasInclBelasting = (jaar!==null && r.gas!==null && r.gas!==undefined && !isNaN(r.gas))
+      ? r.gas + gasEersteSchijfTarief(jaar) : null;
+    const gasInclBelastingWkk = (jaar!==null && r.gas!==null && r.gas!==undefined && !isNaN(r.gas) && jaarverbruikGas>0)
+      ? r.gas + gasMarginaalTariefOpVolume(jaar, jaarverbruikGas) : null;
+    return Object.assign({}, r, { gasInclBelasting, gasInclBelastingWkk });
+  });
+  uitgebreid.forEach(r=>{
     bodyHtml += `<tr><td class="naam">${r.kwartaal}</td>`
       + `<td style="text-align:right;padding:6px 8px;">${dash(r.gas)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dash(r.gasInclBelasting)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dash(r.gasInclBelastingWkk)}</td>`
       + `<td style="text-align:right;padding:6px 8px;">${dash(r.peakload)}</td>`
       + `<td style="text-align:right;padding:6px 8px;">${dash(r.baseload)}</td>`
       + `<td style="text-align:right;padding:6px 8px;">${dash(r.offpeak)}</td></tr>`;
   });
   function gemiddelde(key){
-    const w = regels.map(r=>r[key]).filter(v=> v!==null && v!==undefined && !isNaN(v));
+    const w = uitgebreid.map(r=>r[key]).filter(v=> v!==null && v!==undefined && !isNaN(v));
     return w.length ? w.reduce((a,b)=>a+b,0)/w.length : null;
   }
   bodyHtml += `<tr class="totaal"><td class="naam">Gemiddelde</td>`
     + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('gas'))}</td>`
+    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('gasInclBelasting'))}</td>`
+    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('gasInclBelastingWkk'))}</td>`
     + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('peakload'))}</td>`
     + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('baseload'))}</td>`
     + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('offpeak'))}</td></tr>`;
   tbody.innerHTML = bodyHtml;
+  renderVergelijkingWp();
+}
+let chartVglWp = null;
+// Appels-met-appels vergelijking: kosten per kWh geleverde wármte (niet de kale grondstofprijs).
+// Gas: (Gas incl. belasting, ct/m³) ÷ ketelfactor (kWh warmte/m³) = ct/kWh warmte.
+// Warmtepomp: (gewogen stroomprijs incl. belasting, €/MWh) ÷ 10 (→ ct/kWh elektra) ÷ COP = ct/kWh warmte.
+function renderVergelijkingWp(){
+  const thead = document.getElementById('theadVglWp');
+  const tbody = document.getElementById('tbodyVglWp');
+  if(!thead || !tbody) return;
+  const mp = state.marktprijzen || MARKT_PRIJZEN;
+  const ketelFactor = state.ketelFactor || 0;
+  const cop = state.wp2Cop || 0;
+  const regels = (mp.regels||[]).slice().sort((a,b)=> kwartaalSorteerSleutel(a.kwartaal) - kwartaalSorteerSleutel(b.kwartaal));
+  const rijen = regels.map(r=>{
+    const k = kwartaalNummerJaar(r.kwartaal);
+    const jaar = k ? k.jaar : null;
+    const kwartaalNr = k ? k.q : null;
+    const gasInclBelasting = (jaar!==null && r.gas!==null && r.gas!==undefined && !isNaN(r.gas))
+      ? r.gas + gasEersteSchijfTarief(jaar) : null;
+    const gewogenInclBelasting = (jaar!==null && r.offpeak!==null && r.offpeak!==undefined && !isNaN(r.offpeak)
+        && r.baseload!==null && r.baseload!==undefined && !isNaN(r.baseload))
+      ? (2*r.offpeak + r.baseload)/3 + elektraEersteSchijfTarief(jaar) : null;
+    const kostprijsGas = (gasInclBelasting!==null && ketelFactor>0) ? gasInclBelasting/ketelFactor : null;
+    const kostprijsWp = (gewogenInclBelasting!==null && cop>0) ? (gewogenInclBelasting/10)/cop : null;
+    const breakEvenCop = (kostprijsGas!==null && kostprijsGas>0 && gewogenInclBelasting!==null)
+      ? (gewogenInclBelasting/10)/kostprijsGas : null;
+    return { kwartaal:r.kwartaal, jaar, kwartaalNr, kostprijsGas, kostprijsWp, breakEvenCop };
+  });
+  function vindVorigJaar(rij){
+    if(rij.jaar===null || rij.kwartaalNr===null) return null;
+    return rijen.find(x=> x.jaar===rij.jaar-1 && x.kwartaalNr===rij.kwartaalNr) || null;
+  }
+  function pctVeranderingt(huidig, vorig){
+    if(huidig===null || vorig===null || !vorig) return null;
+    return (huidig-vorig)/vorig*100;
+  }
+  const dash = v=> (v===null||v===undefined||isNaN(v)) ? '&ndash;' : fmt(v,3);
+  const dashPct = v=> (v===null||v===undefined||isNaN(v)) ? '&ndash;' : (v>=0?'+':'') + fmt(v,1) + '%';
+  thead.innerHTML = '<tr><th class="th-sticky th-hoek">Kwartaal</th>'
+    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Gas incl. belasting (ct/m³) ÷ ketelfactor (kWh warmte per m³, uit Instellingen).">Kostprijs warmte gas (ct/kWh)</span></th>'
+    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Gewogen stroomprijs incl. belasting (€/MWh) ÷ 10 ÷ COP (uit WP berekening).">Kostprijs warmte WP (ct/kWh)</span></th>'
+    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Bij welke COP de warmtepomp precies even duur is als gas, gegeven de stroomprijs dat kwartaal. Hoger dan je werkelijke COP = WP voordeliger; lager = gas voordeliger.">Break-even COP</span></th>'
+    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Verandering t.o.v. hetzelfde kwartaal vorig jaar (Q1 met Q1, Q4 met Q4) — voorkomt seizoensvertekening.">Gas t.o.v. vorig jaar</span></th>'
+    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Verandering t.o.v. hetzelfde kwartaal vorig jaar (Q1 met Q1, Q4 met Q4) — voorkomt seizoensvertekening.">WP t.o.v. vorig jaar</span></th>'
+    + '</tr>';
+  let bodyHtml = '';
+  rijen.forEach(r=>{
+    const vorig = vindVorigJaar(r);
+    const yoyGas = vorig ? pctVeranderingt(r.kostprijsGas, vorig.kostprijsGas) : null;
+    const yoyWp = vorig ? pctVeranderingt(r.kostprijsWp, vorig.kostprijsWp) : null;
+    let kleurGas = '', kleurWp = '';
+    if(r.kostprijsGas!==null && r.kostprijsWp!==null){
+      if(r.kostprijsWp < r.kostprijsGas){ kleurWp = 'background:#e3f5e6;'; kleurGas = 'background:#fbe9e9;'; }
+      else if(r.kostprijsGas < r.kostprijsWp){ kleurGas = 'background:#e3f5e6;'; kleurWp = 'background:#fbe9e9;'; }
+    }
+    bodyHtml += `<tr><td class="naam">${r.kwartaal}</td>`
+      + `<td style="text-align:right;padding:6px 8px;${kleurGas}">${dash(r.kostprijsGas)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;${kleurWp}">${dash(r.kostprijsWp)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dash(r.breakEvenCop)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dashPct(yoyGas)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dashPct(yoyWp)}</td></tr>`;
+  });
+  tbody.innerHTML = bodyHtml;
+  // Grafiek
+  const canvas = document.getElementById('chartVglWp');
+  const fallbackEl = document.getElementById('chartVglWpFallback');
+  if(canvas && typeof Chart !== 'undefined'){
+    if(fallbackEl) fallbackEl.style.display = 'none';
+    canvas.style.display = 'block';
+    const labels = rijen.map(r=>r.kwartaal);
+    const dataGas = rijen.map(r=>r.kostprijsGas);
+    const dataWp = rijen.map(r=>r.kostprijsWp);
+    try{
+      if(chartVglWp){ chartVglWp.destroy(); }
+      chartVglWp = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label:'Kostprijs warmte gas (ct/kWh)', data:dataGas, borderColor:'#c06868', backgroundColor:'#c06868', tension:0.15 },
+            { label:'Kostprijs warmte WP (ct/kWh)', data:dataWp, borderColor:'#3b7a4f', backgroundColor:'#3b7a4f', tension:0.15 }
+          ]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false,
+          scales:{ y:{ title:{ display:true, text:'ct/kWh warmte' } } }
+        }
+      });
+    }catch(err){
+      canvas.style.display = 'none';
+      if(fallbackEl) fallbackEl.style.display = 'block';
+    }
+  } else if(canvas){
+    canvas.style.display = 'none';
+    if(fallbackEl) fallbackEl.style.display = 'block';
+  }
+}
+// Vult de "kale" (excl. EB/ODE) jaarprijzen in de WP berekening met het gemiddelde van de
+// Q1- en Q4-regels van dat jaar uit de Marktprijzen-tabel. De WP berekening rekent zelf al de
+// EB/ODE uit over het werkelijke verbruik, dus hier gebruiken we bewust de prijzen zónder
+// belasting (dezelfde "kale marktprijs" die de WP berekening altijd al verwachtte).
+function vulWpPrijzenVanuitMarktprijzen(){
+  const mp = state.marktprijzen || MARKT_PRIJZEN;
+  const regels = mp.regels || [];
+  const jaren = ['2026','2027','2028','2029','2030'];
+  if(!state.wp2GasprijsPerJaar) state.wp2GasprijsPerJaar = {};
+  if(!state.wp2StroomprijsPerJaar) state.wp2StroomprijsPerJaar = {};
+  let aantalGevuld = 0;
+  jaren.forEach(jaarStr=>{
+    const jaar = parseInt(jaarStr, 10);
+    const jaarRegels = regels.filter(r=>{
+      const k = kwartaalNummerJaar(r.kwartaal);
+      return k && k.jaar === jaar;
+    });
+    const gasWaarden = jaarRegels.map(r=>r.gas).filter(v=> v!==null && v!==undefined && !isNaN(v));
+    const gewogenWaarden = jaarRegels
+      .filter(r=> r.offpeak!==null && r.offpeak!==undefined && !isNaN(r.offpeak) && r.baseload!==null && r.baseload!==undefined && !isNaN(r.baseload))
+      .map(r=> (2*r.offpeak + r.baseload)/3);
+    if(gasWaarden.length){
+      const gasGemiddeld = gasWaarden.reduce((a,b)=>a+b,0) / gasWaarden.length; // ct/m³
+      state.wp2GasprijsPerJaar[jaarStr] = Math.round((gasGemiddeld / 100) * 1000) / 1000; // -> €/m³, max 3 decimalen
+      aantalGevuld++;
+    }
+    if(gewogenWaarden.length){
+      const stroomGemiddeld = gewogenWaarden.reduce((a,b)=>a+b,0) / gewogenWaarden.length; // €/MWh
+      state.wp2StroomprijsPerJaar[jaarStr] = Math.round((stroomGemiddeld / 1000) * 1000) / 1000; // -> €/kWh, max 3 decimalen
+    }
+  });
+  saveState();
+  renderWpScenario();
+  const statusEl = document.getElementById('wpVulStatus');
+  if(statusEl){
+    statusEl.textContent = aantalGevuld
+      ? `Prijzen bijgewerkt vanuit Marktprijzen (${aantalGevuld} jaar/jaren gevonden).`
+      : 'Geen bruikbare marktprijzen gevonden (vul eerst de Marktprijzen-tabel bij Energie-handel).';
+    statusEl.className = 'sub' + (aantalGevuld ? ' opgeslagen' : '');
+  }
 }
 function verwerkMarktprijzenPlak(){
   const el = document.getElementById('marktprijzenPlak');
@@ -3040,7 +3298,11 @@ function verwerkMarktprijzenPlak(){
     if(marker.q===2 || marker.q===3){ overgeslagen++; return; } // Q2/Q3 negeren, alleen Q1/Q4 gebruiken
     const volgendeStart = (i+1 < markers.length) ? markers[i+1].start : schoon.length;
     const stuk = schoon.slice(marker.eind, volgendeStart);
-    const getallen = stuk.match(/-?\d+(?:,\d+)?/g);
+    // Elk bedrag in deze tabel heeft altijd exact 3 decimalen (Dutch-notatie). Door dat vast te
+    // houden (i.p.v. een variabel aantal decimalen) blijven ook aaneengeplakte getallen zonder
+    // scheidingsteken (bv. "38,389141,422111,498" — kopieerprobleem vanaf de bron-website) correct
+    // uit elkaar te trekken.
+    const getallen = stuk.match(/-?\d{1,3},\d{3}/g);
     if(!getallen || getallen.length < 3) return;
     const gas = parseGetalDec(getallen[0]);
     const peakload = parseGetalDec(getallen[1]);
@@ -3061,6 +3323,7 @@ function verwerkMarktprijzenPlak(){
       : 'Geen Q1/Q4-kwartalen gevonden in de plaktekst.';
     statusEl.className = 'sub' + (nieuweRegels.length ? ' opgeslagen' : '');
   }
+  if(nieuweRegels.length) el.value = ''; // kader leegmaken na succesvol verwerken
 }
 function renderTarieven(){
   renderTariefTabel('theadTariefGas', 'tbodyTariefGas', EB_GAS_SCHIJVEN, schijfLabelsGas(), 3);
