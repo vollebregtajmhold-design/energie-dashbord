@@ -765,6 +765,12 @@
         <div class="tafel-scroll tafel-transposed">
           <table><thead id="theadMarktprijzen"></thead><tbody id="tbodyMarktprijzen"></tbody></table>
         </div>
+        <div class="sub" style="margin-top:10px;color:#c06868;">Plak hier een kwartaaltabel (kwartaal, gas, peakload, baseload). Alleen Q1- en Q4-regels worden gebruikt (incl. de haakjes) — Q2/Q3 worden genegeerd. Bij verwerken wordt de hele tabel hierboven vervangen door de nieuwe cijfers.</div>
+        <textarea class="plak-invoer" id="marktprijzenPlak" style="border:1.5px solid #c06868;"></textarea>
+        <div class="toolbar" style="margin-top:8px;">
+          <button class="actie secundair" id="marktprijzenVerwerken" type="button">Verwerken</button>
+          <span id="marktprijzenStatus" class="sub" style="margin:0;"></span>
+        </div>
         <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Gas inkooppositie</div>
         <div class="jaar-kiezer-inline klein">
           <label for="gasInkoopJaar">Jaar</label>
@@ -810,7 +816,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 14:15</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 19 juli 2026, 15:40</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -962,6 +968,21 @@ const factCategorieDefaults = {
   anexo_meterhuur_250:'Diensten',
   anexo_dno_kosten:'Diensten'
 };
+const MARKT_PRIJZEN = {
+  datum: '17 juli 2026',
+  regels: [
+    { kwartaal:'Q4 2026', gas:54.688, elektra:157.750, peakload:null, baseload:null, offpeak:null },
+    { kwartaal:'Q1 2027', gas:52.421, elektra:153.640, peakload:null, baseload:null, offpeak:null },
+    { kwartaal:'Q4 2027', gas:36.862, elektra:135.796, peakload:null, baseload:null, offpeak:null },
+    { kwartaal:'Q1 2028', gas:35.317, elektra:132.727, peakload:null, baseload:null, offpeak:null },
+    { kwartaal:'Q4 2028', gas:27.427, elektra:128.174, peakload:null, baseload:null, offpeak:null },
+    { kwartaal:'Q1 2029', gas:27.833, elektra:120.799, peakload:null, baseload:null, offpeak:null },
+    { kwartaal:'Q4 2029', gas:23.938, elektra:123.137, peakload:null, baseload:null, offpeak:null },
+    { kwartaal:'Q1 2030', gas:24.512, elektra:114.653, peakload:null, baseload:null, offpeak:null },
+    { kwartaal:'Q4 2030', gas:23.547, elektra:118.067, peakload:null, baseload:null, offpeak:null },
+    { kwartaal:'Q1 2031', gas:24.210, elektra:null, peakload:null, baseload:null, offpeak:null }
+  ]
+};
 const seedData = {
   ketelFactor: 9.28,
   wkkFactor: 5.94,
@@ -1108,6 +1129,14 @@ function normaliseerState(s){
     ['2026','2027','2028','2029','2030'].forEach(jaar=>{
       if(s[sleutel][jaar]===undefined) s[sleutel][jaar] = seedData[sleutel][jaar];
     });
+  });
+  if(!s.marktprijzen || typeof s.marktprijzen!=='object' || !Array.isArray(s.marktprijzen.regels)){
+    s.marktprijzen = JSON.parse(JSON.stringify(MARKT_PRIJZEN));
+  }
+  s.marktprijzen.regels.forEach(r=>{
+    if(r.peakload===undefined) r.peakload = null;
+    if(r.baseload===undefined) r.baseload = null;
+    if(r.offpeak===undefined) r.offpeak = null;
   });
   ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop'].forEach(veld=>{
     if(s[veld]===undefined) s[veld] = seedData[veld];
@@ -2875,6 +2904,8 @@ document.getElementById('gasInkoopVerwerken').addEventListener('click', ()=> ver
 document.getElementById('gasInkoopPlak').addEventListener('paste', ()=>{ setTimeout(()=> verwerkPositiePlak('gas'), 0); });
 document.getElementById('elektraVerkoopVerwerken').addEventListener('click', ()=> verwerkPositiePlak('elektra'));
 document.getElementById('elektraVerkoopPlak').addEventListener('paste', ()=>{ setTimeout(()=> verwerkPositiePlak('elektra'), 0); });
+document.getElementById('marktprijzenVerwerken').addEventListener('click', verwerkMarktprijzenPlak);
+document.getElementById('marktprijzenPlak').addEventListener('paste', ()=>{ setTimeout(verwerkMarktprijzenPlak, 0); });
 document.getElementById('gasInkoopJaar').addEventListener('change', e=>{ state.gasInkoopGas.huidigJaar = e.target.value; renderPositieTabel('gas'); });
 document.getElementById('elektraVerkoopJaar').addEventListener('change', e=>{ state.elektraVerkoop.huidigJaar = e.target.value; renderPositieTabel('elektra'); });
 laadPositieJaarOpties('gas');
@@ -2917,39 +2948,122 @@ function renderTariefWkkTabel(){
   tbody.innerHTML = bodyHtml;
 }
 // Momentopname marktprijzen (forward-curve), handmatig ingevoerd op 17 juli 2026.
-const MARKT_PRIJZEN = {
-  datum: '17 juli 2026',
-  regels: [
-    { kwartaal:'Q4 2026', gas:54.688, elektra:157.750 },
-    { kwartaal:'Q1 2027', gas:52.421, elektra:153.640 },
-    { kwartaal:'Q4 2027', gas:36.862, elektra:135.796 },
-    { kwartaal:'Q1 2028', gas:35.317, elektra:132.727 },
-    { kwartaal:'Q4 2028', gas:27.427, elektra:128.174 },
-    { kwartaal:'Q1 2029', gas:27.833, elektra:120.799 },
-    { kwartaal:'Q4 2029', gas:23.938, elektra:123.137 },
-    { kwartaal:'Q1 2030', gas:24.512, elektra:114.653 },
-    { kwartaal:'Q4 2030', gas:23.547, elektra:118.067 },
-    { kwartaal:'Q1 2031', gas:24.210, elektra:null }
-  ]
-};
+// ---------- Kwartaal-datums & piekuren (voor off-peak berekening) ----------
+// Standaardconventie: piekuren = werkdagen (ma-vr) 08:00-20:00 (12 uur/werkdag), rest is off-peak.
+function kwartaalNummerJaar(kwartaalStr){
+  const m = String(kwartaalStr||'').match(/Q([1-4])\s*(\d{4})/i);
+  if(!m) return null;
+  return { q: parseInt(m[1],10), jaar: parseInt(m[2],10) };
+}
+function kwartaalSorteerSleutel(kwartaalStr){
+  const k = kwartaalNummerJaar(kwartaalStr);
+  return k ? (k.jaar*10 + k.q) : 0;
+}
+function kwartaalDatums(kwartaalStr){
+  const k = kwartaalNummerJaar(kwartaalStr);
+  if(!k) return null;
+  const startMaand = (k.q-1)*3;
+  const start = new Date(Date.UTC(k.jaar, startMaand, 1));
+  const eind = new Date(Date.UTC(k.jaar, startMaand+3, 1));
+  return { start, eind };
+}
+function piekUrenKwartaal(kwartaalStr){
+  const d = kwartaalDatums(kwartaalStr);
+  if(!d) return null;
+  const totaalUren = Math.round((d.eind - d.start) / 3600000);
+  let werkdagen = 0;
+  for(let t = new Date(d.start); t < d.eind; t.setUTCDate(t.getUTCDate()+1)){
+    const dag = t.getUTCDay();
+    if(dag!==0 && dag!==6) werkdagen++;
+  }
+  const piekUren = werkdagen * 12;
+  return { totaalUren, piekUren, offPeakUren: totaalUren - piekUren };
+}
+function berekenOffPeak(peakload, baseload, kwartaalStr){
+  const u = piekUrenKwartaal(kwartaalStr);
+  if(!u || !u.offPeakUren || peakload===null || baseload===null || peakload===undefined || baseload===undefined) return null;
+  return (baseload*u.totaalUren - peakload*u.piekUren) / u.offPeakUren;
+}
 function renderMarktprijzen(){
   const thead = document.getElementById('theadMarktprijzen');
   const tbody = document.getElementById('tbodyMarktprijzen');
   const datumEl = document.getElementById('marktprijzenDatum');
   if(!thead || !tbody) return;
-  if(datumEl) datumEl.textContent = MARKT_PRIJZEN.datum;
-  thead.innerHTML = '<tr><th class="th-sticky th-hoek">Kwartaal</th><th style="text-align:right;padding:6px 8px;">Gas (ct/m³)</th><th style="text-align:right;padding:6px 8px;">Elektra (€/MWh)</th></tr>';
+  const mp = state.marktprijzen || MARKT_PRIJZEN;
+  if(datumEl) datumEl.textContent = mp.datum;
+  thead.innerHTML = '<tr><th class="th-sticky th-hoek">Kwartaal</th>'
+    + '<th style="text-align:right;padding:6px 8px;">Gas (ct/m³)</th>'
+    + '<th style="text-align:right;padding:6px 8px;">Elektra (€/MWh)</th>'
+    + '<th style="text-align:right;padding:6px 8px;">Peakload (€/MWh)</th>'
+    + '<th style="text-align:right;padding:6px 8px;">Baseload (€/MWh)</th>'
+    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Off-peak = (Baseload × totaal uren − Peakload × piekuren) ÷ off-peak-uren. Piekuren = werkdagen 08:00-20:00 (12u/werkdag) in dat kwartaal.">Off-peak (€/MWh)</span></th>'
+    + '</tr>';
+  const dash = v=> (v===null||v===undefined||isNaN(v)) ? '&ndash;' : fmt(v,3);
   let bodyHtml = '';
-  MARKT_PRIJZEN.regels.forEach(r=>{
-    const elektraCel = (r.elektra===null||r.elektra===undefined) ? '&ndash;' : fmt(r.elektra,3);
-    bodyHtml += `<tr><td class="naam">${r.kwartaal}</td><td style="text-align:right;padding:6px 8px;">${fmt(r.gas,3)}</td><td style="text-align:right;padding:6px 8px;">${elektraCel}</td></tr>`;
+  const regels = (mp.regels||[]).slice().sort((a,b)=> kwartaalSorteerSleutel(a.kwartaal) - kwartaalSorteerSleutel(b.kwartaal));
+  regels.forEach(r=>{
+    bodyHtml += `<tr><td class="naam">${r.kwartaal}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dash(r.gas)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dash(r.elektra)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dash(r.peakload)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dash(r.baseload)}</td>`
+      + `<td style="text-align:right;padding:6px 8px;">${dash(r.offpeak)}</td></tr>`;
   });
-  const gasWaarden = MARKT_PRIJZEN.regels.map(r=>r.gas).filter(v=> v!==null && v!==undefined);
-  const elektraWaarden = MARKT_PRIJZEN.regels.map(r=>r.elektra).filter(v=> v!==null && v!==undefined);
-  const gemGas = gasWaarden.reduce((a,b)=>a+b,0) / gasWaarden.length;
-  const gemElektra = elektraWaarden.reduce((a,b)=>a+b,0) / elektraWaarden.length;
-  bodyHtml += `<tr class="totaal"><td class="naam">Gemiddelde</td><td style="text-align:right;padding:6px 8px;">${fmt(gemGas,3)}</td><td style="text-align:right;padding:6px 8px;">${fmt(gemElektra,3)}</td></tr>`;
+  function gemiddelde(key){
+    const w = regels.map(r=>r[key]).filter(v=> v!==null && v!==undefined && !isNaN(v));
+    return w.length ? w.reduce((a,b)=>a+b,0)/w.length : null;
+  }
+  bodyHtml += `<tr class="totaal"><td class="naam">Gemiddelde</td>`
+    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('gas'))}</td>`
+    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('elektra'))}</td>`
+    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('peakload'))}</td>`
+    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('baseload'))}</td>`
+    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('offpeak'))}</td></tr>`;
   tbody.innerHTML = bodyHtml;
+}
+function verwerkMarktprijzenPlak(){
+  const el = document.getElementById('marktprijzenPlak');
+  const statusEl = document.getElementById('marktprijzenStatus');
+  if(!el) return;
+  // Hele tekst in één keer verwerken (niet regel-voor-regel): kopiëren vanaf een website plakt
+  // kwartaal en jaartal soms los van elkaar (met een regeleinde ertussen), dus we zoeken alle
+  // "Q1".."Q4"-markers in de volledige tekst en pakken per marker de tekst tot de volgende marker.
+  const schoon = el.value.replace(/\([^)]*\)/g, ''); // haakjes (de +/- deltas) eruit
+  const kwRegex = /Q\s*([1-4])[\s\r\n]*(\d{4})/gi;
+  const markers = [];
+  let m;
+  while((m = kwRegex.exec(schoon)) !== null){
+    markers.push({ q: parseInt(m[1],10), jaar: m[2], start: m.index, eind: m.index + m[0].length });
+  }
+  if(!state.marktprijzen) state.marktprijzen = JSON.parse(JSON.stringify(MARKT_PRIJZEN));
+  const nieuweRegels = [];
+  let overgeslagen = 0;
+  markers.forEach((marker, i)=>{
+    const kwartaal = `Q${marker.q} ${marker.jaar}`;
+    if(marker.q===2 || marker.q===3){ overgeslagen++; return; } // Q2/Q3 negeren, alleen Q1/Q4 gebruiken
+    const volgendeStart = (i+1 < markers.length) ? markers[i+1].start : schoon.length;
+    const stuk = schoon.slice(marker.eind, volgendeStart);
+    const getallen = stuk.match(/-?\d+(?:,\d+)?/g);
+    if(!getallen || getallen.length < 3) return;
+    const gas = parseGetalDec(getallen[0]);
+    const peakload = parseGetalDec(getallen[1]);
+    const baseload = parseGetalDec(getallen[2]);
+    const offpeak = berekenOffPeak(peakload, baseload, kwartaal);
+    nieuweRegels.push({ kwartaal, gas, elektra: null, peakload, baseload, offpeak });
+  });
+  if(nieuweRegels.length){
+    // Volledige vervanging: de oude tabel wordt overschreven door deze nieuwe momentopname.
+    state.marktprijzen.regels = nieuweRegels;
+    state.marktprijzen.datum = new Date().toLocaleDateString('nl-NL', {day:'numeric', month:'long', year:'numeric'});
+  }
+  saveState();
+  renderMarktprijzen();
+  if(statusEl){
+    statusEl.textContent = nieuweRegels.length
+      ? `${nieuweRegels.length} kwartalen (Q1/Q4) verwerkt, tabel vervangen${overgeslagen? ' (' + overgeslagen + ' Q2/Q3-regels genegeerd)' : ''}.`
+      : 'Geen Q1/Q4-kwartalen gevonden in de plaktekst.';
+    statusEl.className = 'sub' + (nieuweRegels.length ? ' opgeslagen' : '');
+  }
 }
 function renderTarieven(){
   renderTariefTabel('theadTariefGas', 'tbodyTariefGas', EB_GAS_SCHIJVEN, schijfLabelsGas(), 3);
