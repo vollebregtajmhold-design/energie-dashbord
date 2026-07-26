@@ -165,11 +165,11 @@
     display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:inherit;
   }
   .accordion-titel:hover{background:#eef1f5;}
-  .accordion-item.open .accordion-titel{border-bottom:1px solid var(--rand);}
+  .accordion-item.open > .accordion-titel{border-bottom:1px solid var(--rand);}
   .accordion-pijl{transition:transform .15s;font-size:13px;color:var(--sub);flex-shrink:0;}
-  .accordion-item.open .accordion-pijl{transform:rotate(90deg);}
+  .accordion-item.open > .accordion-titel .accordion-pijl{transform:rotate(90deg);}
   .accordion-inhoud{padding:18px;display:none;}
-  .accordion-item.open .accordion-inhoud{display:block;}
+  .accordion-item.open > .accordion-inhoud{display:block;}
   .legend{display:flex;gap:16px;font-size:12px;color:var(--sub);margin-bottom:10px;flex-wrap:wrap;}
   .legend span{display:inline-flex;align-items:center;gap:6px;}
   .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;}
@@ -420,7 +420,7 @@
     <nav class="sidenav" id="sidenav">
       <a href="javascript:void(0)" data-tab="facturen"><span class="dot"></span>Facturen Petra</a>
       <a href="javascript:void(0)" data-tab="overzicht"><span class="dot"></span>DNO, MPS, AGRO</a>
-      <a href="javascript:void(0)" data-tab="rvoInformatieplicht"><span class="dot"></span>RVO informatieplicht 207</a>
+      <a href="javascript:void(0)" data-tab="rvoInformatieplicht"><span class="dot"></span>RVO informatieplicht</a>
       <a href="javascript:void(0)" data-tab="wpberekening"><span class="dot"></span>WP berekening</a>
       <a href="javascript:void(0)" data-tab="energiehandel"><span class="dot"></span>Energie-handel</a>
       <a href="javascript:void(0)" data-tab="instellingen"><span class="dot"></span>Instellingen</a>
@@ -547,62 +547,21 @@
   </div>
   <div class="tab-paneel" id="rvoInformatieplicht">
     <div class="accordion-item open">
-      <button class="accordion-titel" type="button">Instellingen <span class="accordion-pijl">&#9656;</span></button>
+      <button class="accordion-titel" type="button">Overzichten 207 <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
         <div class="panel">
-          <div class="sub" style="margin-bottom:8px;font-weight:600;color:var(--tekst);">Opsplitsing overige bedrijfslast (RVO Onderzoeksplicht 207)</div>
-          <div class="invoerform invoervelden" style="max-width:640px;">
-            <div class="veld">
-              <label>Belichting (%)</label>
-              <input type="number" step="1" min="0" max="100" id="rvoPctBelichting">
-            </div>
-            <div class="veld">
-              <label>Automatisering (%)</label>
-              <input type="number" step="1" min="0" max="100" id="rvoPctAutomatisering">
-            </div>
-            <div class="veld">
-              <label>Drogers (%)</label>
-              <input type="number" step="1" min="0" max="100" id="rvoPctDrogers">
-            </div>
-            <div class="veld">
-              <label>Overige (%)</label>
-              <input type="number" step="1" min="0" max="100" id="rvoPctOverig">
-            </div>
-          </div>
-          <div class="sub" id="rvoPctSomStatus"></div>
-          <div class="note">Tip: voor de RVO-energiebalans (CO&#8322;) sluit de "Overige bedrijfslast"-regel exact als (Warmte uit 1 m³ gas &mdash; WKK) + (Factor WKK gas) &mdash; in te stellen bij Instellingen &rarr; Omrekenfactoren &mdash; samen precies 31,65 &divide; 3,6 = 8,7917 zijn.</div>
-          <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Energieverbruik verdeling per teelt (% per maand van het aardgasequivalent)</div>
-          <div class="sub" style="margin-bottom:10px;">Per teelt: aantal stuks en per maand het percentage van het totale aardgasequivalent dat aan deze teelt toegerekend wordt. De percentages per maand moeten samen 100% zijn.</div>
-          <div class="tafel-scroll tafel-transposed">
-            <table class="tabel-compact">
-              <thead id="theadTeeltVerdeling"></thead>
-              <tbody id="tbodyTeeltVerdeling"></tbody>
-            </table>
-          </div>
-          <div class="sub" id="teeltPctSomStatus" style="margin-top:8px;"></div>
-        </div>
-      </div>
-    </div>
-    <div class="accordion-item open">
-      <button class="accordion-titel" type="button">Overzichten <span class="accordion-pijl">&#9656;</span></button>
-      <div class="accordion-inhoud">
-        <div class="panel">
-          <div class="jaar-kiezer-inline">
+          <div class="jaar-kiezer-inline" style="flex-wrap:wrap;">
             <label for="jaarSelectRvo">Jaar</label>
             <select id="jaarSelectRvo"></select>
             <button class="jaar-nieuw" id="jaarToevoegenRvo" type="button" title="Nieuw jaar toevoegen">+</button>
-          </div>
-          <div class="jaar-kiezer-inline klein" style="margin-bottom:16px;">
-            <label>Weergave</label>
+            <label style="margin-left:14px;">Weergave</label>
             <div class="weergave-toggle" id="rvoWeergaveToggle">
               <button type="button" class="weergave-optie" data-weergave="maand">Per maand (+ totaal)</button>
               <button type="button" class="weergave-optie" data-weergave="jaar">Jaartotaal</button>
             </div>
+            <button class="actie secundair" id="rvoAllesToggle" type="button" style="margin-left:14px;">Alles inklappen</button>
           </div>
-          <div class="toolbar" style="margin-bottom:14px;">
-            <button class="actie secundair" id="rvoAllesToggle" type="button">Alles inklappen</button>
-          </div>
-          <div class="sub" style="margin-bottom:14px;">Energiebalans in kg CO&#8322; per maand &mdash; aanvoer (inkoop min verkoop) hierboven, verbruik (waar de CO&#8322; naartoe gaat, direct opgesplitst naar categorie) hieronder. Beweeg met de muis over een waarde om het onderliggende aantal m&sup3; gas of kWh stroom te zien. CO&#8322;-factor gas: 31,65 &divide; 1000 &times; m&sup3; &times; 56,2. CO&#8322;-factor elektra: 3,6 &divide; 1000 &times; kWh &times; 56,2. Data komt uit "Locatie 207" (tab DNO, MPS, AGRO), voor het hierboven gekozen jaar. De opsplitsing per categorie en per teelt stel je in bij het blok Instellingen hierboven.</div>
+          <div class="sub" style="margin-bottom:14px;">Energiebalans in kg CO&#8322; per maand &mdash; aanvoer (inkoop min verkoop) hierboven, verbruik (waar de CO&#8322; naartoe gaat, direct opgesplitst naar categorie) hieronder. Beweeg met de muis over een waarde om het onderliggende aantal m&sup3; gas of kWh stroom te zien. CO&#8322;-factor gas: 31,65 &divide; 1000 &times; m&sup3; &times; 56,2. CO&#8322;-factor elektra: 3,6 &divide; 1000 &times; kWh &times; 56,2. Data komt uit "Locatie 207" (tab DNO, MPS, AGRO), voor het hierboven gekozen jaar. De opsplitsing per categorie komt uit de Apparatenlijst en de opsplitsing per teelt stel je in bij het blok Instellingen hieronder.</div>
           <div class="tafel-scroll tafel-transposed">
             <table>
               <thead id="theadRvo207"></thead>
@@ -610,6 +569,41 @@
             </table>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="accordion-item open">
+      <button class="accordion-titel" type="button">Instellingen <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="accordion-item">
+          <button class="accordion-titel" type="button">Energieverbruik verdeling per teelt <span class="accordion-pijl">&#9656;</span></button>
+          <div class="accordion-inhoud">
+            <div class="panel">
+              <div class="sub" style="margin-bottom:10px;">Per teelt: aantal stuks en per maand het percentage van het totale aardgasequivalent dat aan deze teelt toegerekend wordt. De percentages per maand moeten samen 100% zijn.</div>
+              <div class="tafel-scroll tafel-transposed">
+                <table class="tabel-compact">
+                  <thead id="theadTeeltVerdeling"></thead>
+                  <tbody id="tbodyTeeltVerdeling"></tbody>
+                </table>
+              </div>
+              <div class="sub" id="teeltPctSomStatus" style="margin-top:8px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-titel" type="button">Apparatenlijst (energieverbruikers, locatie 207) <span class="accordion-pijl">&#9656;</span></button>
+          <div class="accordion-inhoud">
+            <div class="panel">
+              <div class="sub" style="margin-bottom:14px;">Overzicht van energieverbruikers per proces, voor nu als losse lijst. Alle velden zijn aan te passen. Elektriciteitsverbruik = Aantal &times; Vermogen &times; Bruto bedrijfstijd. "Overige" is een sluitpost: die wordt automatisch zo berekend dat het totaal van deze lijst precies gelijk is aan "Overige bedrijfslast" uit de energiebalans (voor het daar gekozen jaar). Onderaan staat het totaal, en per regel het percentage van dat totaal (samen 100%).</div>
+              <div class="tafel-scroll">
+                <table>
+                  <thead id="theadRvoApparaten"></thead>
+                  <tbody id="tbodyRvoApparaten"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="note" style="margin:18px;">Tip: voor de RVO-energiebalans (CO&#8322;) sluit de "Overige bedrijfslast"-regel exact als (Warmte uit 1 m³ gas &mdash; WKK) + (Factor WKK gas) &mdash; in te stellen bij Instellingen &rarr; Omrekenfactoren &mdash; samen precies 31,65 &divide; 3,6 = 8,7917 zijn. De opsplitsing van "Overige bedrijfslast" gebeurt automatisch via de Apparatenlijst hierboven.</div>
       </div>
     </div>
   </div>
@@ -883,7 +877,7 @@
             <input type="number" step="0.0001" id="wkkGasFactor">
           </div>
         </div>
-        <div class="note">WKK gas (m&sup3;) = KWH productie &divide; factor WKK gas. Ketelgas = Gas totaal &minus; WKK gas. Tip: voor de RVO-energiebalans (CO&#8322;) sluit de "Overige bedrijfslast"-regel exact als (Warmte uit 1 m³ gas &mdash; WKK) + (Factor WKK gas) samen precies 31,65 &divide; 3,6 = 8,7917 zijn. De RVO-instellingen zelf (opsplitsing % en teeltverdeling) staan bij het tabblad "RVO informatieplicht 207".</div>
+        <div class="note">WKK gas (m&sup3;) = KWH productie &divide; factor WKK gas. Ketelgas = Gas totaal &minus; WKK gas. Tip: voor de RVO-energiebalans (CO&#8322;) sluit de "Overige bedrijfslast"-regel exact als (Warmte uit 1 m³ gas &mdash; WKK) + (Factor WKK gas) samen precies 31,65 &divide; 3,6 = 8,7917 zijn. De RVO-instellingen zelf (teeltverdeling en apparatenlijst) staan bij het tabblad "RVO informatieplicht".</div>
       </div>
     </div>
     <div class="accordion-item">
@@ -966,7 +960,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 10:05</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 12:30</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -1150,10 +1144,6 @@ const seedData = {
   wkkKostGasPerUur: 110,
   wkkKostOnderhoud: 6,
   wkkKostGasprijsInkoop: 0,
-  rvoPctBelichting: 70,
-  rvoPctAutomatisering: 11,
-  rvoPctDrogers: 14,
-  rvoPctOverig: 5,
   wp2Gasverbruik: 0,
   wp2Stroomverbruik: 0,
   wp2PctVervangen: 100,
@@ -1178,6 +1168,17 @@ const seedData = {
   maandNamen: maandNamenLijst,
   factCategorie: {...factCategorieDefaults},
   factVeldenExtra: [],
+  rvoApparaten: [
+    { proces:'1. Pootproces', machine:'Oppotmachine', type:'Heto', jaar:2020, aantal:1, rendement:0, aansturing:'Handmatig', afgifte:'.', vermogen:3.00, bedrijfstijd:400, pct:100, verbruik:1200 },
+    { proces:'1. Pootproces', machine:'Inboetmachine', type:'TTA', jaar:2012, aantal:2, rendement:0, aansturing:'Handmatig', afgifte:'.', vermogen:10.00, bedrijfstijd:1000, pct:100, verbruik:20000 },
+    { proces:'2. Opwekken warmte & elektriciteit', machine:'Ketel', type:'Zantingh', jaar:1992, aantal:1, rendement:0, aansturing:'ISII-klimaatcomputer', afgifte:'Warmte buffer', vermogen:20.00, bedrijfstijd:20, pct:100, verbruik:400 },
+    { proces:'2. Opwekken warmte & elektriciteit', machine:'E-Boiler', type:'MVO', jaar:2023, aantal:1, rendement:0, aansturing:'DNO-Box', afgifte:'Warmte buffer', vermogen:500.00, bedrijfstijd:10, pct:100, verbruik:5000 },
+    { proces:'3. Drogen', machine:'Droger groot', type:'Drygair', jaar:2015, aantal:2, rendement:0, aansturing:'ISII-klimaatcomputer', afgifte:'Warmte en droge lucht', vermogen:11.00, bedrijfstijd:1500, pct:100, verbruik:33000 },
+    { proces:'3. Drogen', machine:'Droger klein', type:'Vifra', jaar:2022, aantal:1, rendement:0, aansturing:'ISII-klimaatcomputer', afgifte:'Warmte en droge lucht', vermogen:3.90, bedrijfstijd:2000, pct:100, verbruik:7800 },
+    { proces:'4. Belichten', machine:'AFD 3 Lampen', type:'SON-T lampen', jaar:2000, aantal:64, rendement:0, aansturing:'ISII-klimaatcomputer', afgifte:'Licht', vermogen:0.60, bedrijfstijd:3000, pct:100, verbruik:115200 },
+    { proces:'4. Belichten', machine:'AFD 4: Lampen', type:'Rofianda LED', jaar:2024, aantal:120, rendement:0, aansturing:'ISII-klimaatcomputer', afgifte:'Licht', vermogen:0.30, bedrijfstijd:3000, pct:100, verbruik:108000 },
+    { proces:'Overige', machine:'', type:'', aansturing:'', jaar:0, aantal:0, vermogen:0, bedrijfstijd:0, verbruik:0, overig:true }
+  ],
   cloudSyncUrl: '',
   handleidingNotitie: '',
   gasInkoopGas: {
@@ -1306,7 +1307,7 @@ function normaliseerState(s){
     if(r.baseload===undefined) r.baseload = null;
     if(r.offpeak===undefined) r.offpeak = null;
   });
-  ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop','rvoPctBelichting','rvoPctAutomatisering','rvoPctDrogers','rvoPctOverig','overzichtWeergave'].forEach(veld=>{
+  ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop','overzichtWeergave'].forEach(veld=>{
     if(s[veld]===undefined) s[veld] = seedData[veld];
   });
   TEELTEN.forEach(t=>{
@@ -1323,6 +1324,11 @@ function normaliseerState(s){
     if(!s.factCategorie[key]) s.factCategorie[key] = factCategorieDefaults[key];
   });
   if(!s.factVeldenExtra) s.factVeldenExtra = [];
+  if(!s.rvoApparaten) s.rvoApparaten = JSON.parse(JSON.stringify(seedData.rvoApparaten));
+  s.rvoApparaten = s.rvoApparaten.filter(r=> r.machine !== 'WKK'); // eenmalige opschoning: WKK-regel is verwijderd op verzoek
+  if(!s.rvoApparaten.some(r=>r.overig)){
+    s.rvoApparaten.push({ proces:'Overige', machine:'', type:'', aansturing:'', jaar:0, aantal:0, vermogen:0, bedrijfstijd:0, verbruik:0, overig:true });
+  }
   if(s.cloudSyncUrl===undefined) s.cloudSyncUrl = seedData.cloudSyncUrl;
   if(s.handleidingNotitie===undefined) s.handleidingNotitie = seedData.handleidingNotitie;
   if(s.gasInkoop2027 && !s.gasInkoopGas){
@@ -1479,6 +1485,7 @@ function render(){
   renderWkkKostprijs();
   renderTeeltVerdeling();
   renderRvoOnderzoeksplicht();
+  renderRvoApparaten();
   verversMarkering();
   saveState();
 }
@@ -2769,20 +2776,14 @@ document.getElementById('alleGroepenToggle').addEventListener('click', ()=>{
   document.getElementById('alleGroepenToggle').textContent = overzichtNiveauLabels[overzichtNiveau];
   render();
 });
-let rvoNiveau = 2;
-const rvoNiveauLabels = ['Alles uitklappen', 'Details uitklappen', 'Alles inklappen'];
+let rvoGroepenOpen = true;
 document.getElementById('rvoAllesToggle').addEventListener('click', ()=>{
-  rvoNiveau = (rvoNiveau + 1) % 3;
-  const accordionOpen = rvoNiveau >= 1;
-  const groepenOpen = rvoNiveau >= 2;
-  // Niveau 0: Instellingen + Overzichten helemaal dicht (alleen titels).
-  // Niveau 1: blokken open, maar de groepen (Aanvoer/Verbruik/Teelt) erbinnen nog dicht.
-  // Niveau 2: ook de groepen open, alles volledig uitgeklapt.
-  document.querySelectorAll('#rvoInformatieplicht > .accordion-item').forEach(it=> it.classList.toggle('open', accordionOpen));
-  groepStatus.rvo['Aanvoer'] = !groepenOpen;
-  groepStatus.rvo['Verbruik'] = !groepenOpen;
-  groepStatus.rvo['Teelt'] = !groepenOpen;
-  document.getElementById('rvoAllesToggle').textContent = rvoNiveauLabels[rvoNiveau];
+  rvoGroepenOpen = !rvoGroepenOpen;
+  // Alleen de groepen (Aanvoer/Verbruik/Teelt) binnen het overzicht zelf in-/uitklappen.
+  groepStatus.rvo['Aanvoer'] = !rvoGroepenOpen;
+  groepStatus.rvo['Verbruik'] = !rvoGroepenOpen;
+  groepStatus.rvo['Teelt'] = !rvoGroepenOpen;
+  document.getElementById('rvoAllesToggle').textContent = rvoGroepenOpen ? 'Alles inklappen' : 'Alles uitklappen';
   render();
 });
 document.getElementById('exportCsv').addEventListener('click', exportCsv);
@@ -2827,17 +2828,6 @@ document.getElementById('wkkGasFactor').value = state.wkkGasFactor;
 });
 // ---------- WKK kostprijs & vernietigingsprijs: invoervelden ----------
 ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop'].forEach(veld=>{
-  const el = document.getElementById(veld);
-  if(!el) return;
-  el.value = state[veld];
-  el.addEventListener('focus', ()=> el.select());
-  el.addEventListener('change', e=>{
-    state[veld] = parseFloat(e.target.value.replace(',','.')) || 0;
-    render();
-  });
-});
-// ---------- RVO Onderzoeksplicht 207: opsplitsing overige bedrijfslast (percentages) ----------
-['rvoPctBelichting','rvoPctAutomatisering','rvoPctDrogers','rvoPctOverig'].forEach(veld=>{
   const el = document.getElementById(veld);
   if(!el) return;
   el.value = state[veld];
@@ -3635,7 +3625,7 @@ function renderWkkKostprijs(){
 function co2Gas(m3){ return (31.65/1000) * (m3||0) * 56.2; }
 function co2Elektra(kwh){ return (3.6/1000) * (kwh||0) * 56.2; }
 function co2NaarAardgas(co2kg){ return (co2kg||0) / ((31.65/1000) * 56.2); }
-function berekenRvoJaarTotalen(maanden, pct){
+function berekenRvoJaarTotalen(maanden){
   const som = {gas:0, stroomInkoop:0, teruggeleverd:0, ketelgas:0, gasWarmte:0,
     co2Gas:0, co2StroomInkoop:0, co2Teruggeleverd:0, co2Ketelgas:0, co2GasWarmte:0,
     co2Aanvoer:0, co2OverigeBedrijfslast:0};
@@ -3659,10 +3649,6 @@ function berekenRvoJaarTotalen(maanden, pct){
     som.co2Ketelgas += co2Ketelgas; som.co2GasWarmte += co2GasWarmte;
     som.co2Aanvoer += co2Aanvoer; som.co2OverigeBedrijfslast += co2OverigeBedrijfslast;
   });
-  som.belichtingCo2 = som.co2OverigeBedrijfslast * pct.belichting/100;
-  som.automatiseringCo2 = som.co2OverigeBedrijfslast * pct.automatisering/100;
-  som.drogersCo2 = som.co2OverigeBedrijfslast * pct.drogers/100;
-  som.overigCo2 = som.co2OverigeBedrijfslast * pct.overig/100;
   som.co2VerbruikTotaal = som.co2Ketelgas + som.co2GasWarmte + som.co2OverigeBedrijfslast;
   som.aardgasEquivalent = co2NaarAardgas(som.co2VerbruikTotaal);
   return som;
@@ -3687,6 +3673,39 @@ function aardgasEquivalentPerMaand(maanden){
     return co2NaarAardgas(co2VerbruikTotaal);
   });
 }
+// Overige bedrijfslast (kWh) per maand voor een willekeurig jaar — omgekeerde van de elektra-CO2-formule.
+// Gebruikt om de Apparatenlijst (RVO informatieplicht 207) te laten aansluiten op de energiebalans.
+function overigeBedrijfslastKwhPerMaand(maanden){
+  return maanden.map(m=>{
+    const gas = m.gastot||0;
+    const stroomInkoop = m.inkoop||0;
+    const teruggeleverd = -(m.geleverd||0);
+    const b = bereken(m);
+    const ketelgas = b.ketelgas||0;
+    const gasWarmte = b.gasWarmte||0;
+    const co2Gastot = co2Gas(gas);
+    const co2StroomInkoopM = co2Elektra(stroomInkoop);
+    const co2TeruggeleverdM = co2Elektra(teruggeleverd);
+    const co2Ketelgas = co2Gas(ketelgas);
+    const co2GasWarmte = co2Gas(gasWarmte);
+    const co2Aanvoer = co2Gastot + co2StroomInkoopM + co2TeruggeleverdM;
+    const co2OverigeBedrijfslast = co2Aanvoer - co2Ketelgas - co2GasWarmte;
+    return co2OverigeBedrijfslast / ((3.6/1000) * 56.2);
+  });
+}
+// Berekent per apparaat uit de Apparatenlijst het jaartotaal kWh en CO2, voor een willekeurig jaar
+// (maanden-array). "Overige" is de sluitpost: totaal apparaten = Overige bedrijfslast van dat jaar.
+function berekenApparatenCo2(maanden){
+  const rijenApp = state.rvoApparaten||[];
+  const andereRijenTotaal = rijenApp.filter(r=>!r.overig).reduce((s,r)=> s + (r.aantal||0)*(r.vermogen||0)*(r.bedrijfstijd||0), 0);
+  const overigeTargetKwh = overigeBedrijfslastKwhPerMaand(maanden).reduce((s,v)=>s+v,0);
+  const overigeKwh = overigeTargetKwh - andereRijenTotaal;
+  return rijenApp.map(r=>{
+    const kwh = r.overig ? overigeKwh : (r.aantal||0)*(r.vermogen||0)*(r.bedrijfstijd||0);
+    const label = r.overig ? (r.proces||'Overige') : (r.machine || r.proces || '(onbekend)');
+    return { label, kwh, co2: co2Elektra(kwh) };
+  });
+}
 function renderRvoOnderzoeksplicht(){
   const thead = document.getElementById('theadRvo207');
   const tbody = document.getElementById('tbodyRvo207');
@@ -3704,23 +3723,7 @@ function renderRvoOnderzoeksplicht(){
   }
   headHtml += '</tr>';
   thead.innerHTML = headHtml;
-  const pctBelichting = state.rvoPctBelichting||0;
-  const pctAutomatisering = state.rvoPctAutomatisering||0;
-  const pctDrogers = state.rvoPctDrogers||0;
-  const pctOverig = state.rvoPctOverig||0;
-  const pctSom = pctBelichting + pctAutomatisering + pctDrogers + pctOverig;
-  const pct = { belichting:pctBelichting, automatisering:pctAutomatisering, drogers:pctDrogers, overig:pctOverig };
-  const statusEl = document.getElementById('rvoPctSomStatus');
-  if(statusEl){
-    if(Math.abs(pctSom-100)<0.001){
-      statusEl.textContent = `Som van de percentages: ${fmt(pctSom,0)}% ✓`;
-      statusEl.style.color = '';
-    } else {
-      statusEl.textContent = `Let op: som van de percentages is ${fmt(pctSom,1)}%, dit moet 100% zijn.`;
-      statusEl.style.color = '#c0392b';
-    }
-  }
-  const jaarUitkomsten = jaarWeergave ? jarenLijst.map(j=> berekenRvoJaarTotalen(state.jaren[j].maanden, pct)) : null;
+  const jaarUitkomsten = jaarWeergave ? jarenLijst.map(j=> berekenRvoJaarTotalen(state.jaren[j].maanden)) : null;
   // Per maand: gas (uit Locatie 207 "Gas totaal"), stroom inkoop, teruggeleverde elektra (negatief).
   const rijen = maanden.map(m=>{
     const gas = m.gastot||0;
@@ -3737,24 +3740,10 @@ function renderRvoOnderzoeksplicht(){
     const co2Aanvoer = co2Gastot + co2StroomInkoop + co2Teruggeleverd;
     // Plug: overige bedrijfslast = wat er nog nodig is zodat verbruik-totaal = aanvoer-totaal.
     const co2OverigeBedrijfslast = co2Aanvoer - co2Ketelgas - co2GasWarmte;
-    // Terugrekenen naar kWh (omgekeerde van de elektra-CO2-formule) — moet overeenkomen met
-    // "KWH bedrijfslast" (= eigen verbruik + inkoop) bij Locatie 207 hierboven.
-    const overigeBedrijfslastKwh = co2OverigeBedrijfslast / ((3.6/1000) * 56.2);
-    // Opsplitsing van "overige bedrijfslast" naar 4 categorieën, zelfde percentage in kWh en CO2.
-    const belichtingKwh = overigeBedrijfslastKwh * pctBelichting/100;
-    const automatiseringKwh = overigeBedrijfslastKwh * pctAutomatisering/100;
-    const drogersKwh = overigeBedrijfslastKwh * pctDrogers/100;
-    const overigKwh = overigeBedrijfslastKwh * pctOverig/100;
-    const belichtingCo2 = co2OverigeBedrijfslast * pctBelichting/100;
-    const automatiseringCo2 = co2OverigeBedrijfslast * pctAutomatisering/100;
-    const drogersCo2 = co2OverigeBedrijfslast * pctDrogers/100;
-    const overigCo2 = co2OverigeBedrijfslast * pctOverig/100;
     return {
       gas, stroomInkoop, teruggeleverd, ketelgas, gasWarmte,
       co2Gas: co2Gastot, co2StroomInkoop, co2Teruggeleverd, co2Ketelgas, co2GasWarmte,
-      co2Aanvoer, co2OverigeBedrijfslast, overigeBedrijfslastKwh,
-      belichtingKwh, automatiseringKwh, drogersKwh, overigKwh,
-      belichtingCo2, automatiseringCo2, drogersCo2, overigCo2,
+      co2Aanvoer, co2OverigeBedrijfslast,
       co2VerbruikTotaal: co2Ketelgas + co2GasWarmte + co2OverigeBedrijfslast,
       aardgasEquivalent: co2NaarAardgas(co2Ketelgas + co2GasWarmte + co2OverigeBedrijfslast)
     };
@@ -3796,19 +3785,27 @@ function renderRvoOnderzoeksplicht(){
   bodyHtml += `<tr class="rubriek-rij">${naamTt('Gas voor warmte CO2 (kg)', '31,65 ÷ 1000 × Gas voor warmte (m³) × 56,2. Beweeg over een waarde voor het aantal m³ (uit Locatie 207).')}`;
   if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.co2GasWarmte, r.gasWarmte, 'm³'));
   bodyHtml += totaalKolommen('co2GasWarmte') + '</tr>';
-  bodyHtml += `<tr class="rubriek-rij">${naamTt('Belichting CO2 (kg)', `Overige bedrijfslast CO2 × ${fmt(pctBelichting,0)}%. Beweeg over een waarde voor het aantal kWh.`)}`;
-  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.belichtingCo2, r.belichtingKwh, 'kWh'));
-  bodyHtml += totaalKolommen('belichtingCo2') + '</tr>';
-  bodyHtml += `<tr class="rubriek-rij">${naamTt('Automatisering CO2 (kg)', `Overige bedrijfslast CO2 × ${fmt(pctAutomatisering,0)}%. Beweeg over een waarde voor het aantal kWh.`)}`;
-  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.automatiseringCo2, r.automatiseringKwh, 'kWh'));
-  bodyHtml += totaalKolommen('automatiseringCo2') + '</tr>';
-  bodyHtml += `<tr class="rubriek-rij">${naamTt('Drogers CO2 (kg)', `Overige bedrijfslast CO2 × ${fmt(pctDrogers,0)}%. Beweeg over een waarde voor het aantal kWh.`)}`;
-  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.drogersCo2, r.drogersKwh, 'kWh'));
-  bodyHtml += totaalKolommen('drogersCo2') + '</tr>';
-  bodyHtml += `<tr class="rubriek-rij">${naamTt('Overige CO2 (kg)', `Overige bedrijfslast CO2 × ${fmt(pctOverig,0)}%. Beweeg over een waarde voor het aantal kWh.`)}`;
-  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.overigCo2, r.overigKwh, 'kWh'));
-  bodyHtml += totaalKolommen('overigCo2') + '</tr>';
-  bodyHtml += `<tr class="totaal">${naamTt('Totaal CO2 verbruik (kg)', 'Ketelgas CO2 + Gas voor warmte CO2 + Belichting/Automatisering/Drogers/Overige CO2 samen — moet gelijk zijn aan Totaal CO2 (aanvoer) hierboven.')}`;
+  const apparatenHuidigJaar = berekenApparatenCo2(maanden);
+  const apparatenPerJaar = jaarWeergave ? jarenLijst.map(j=> berekenApparatenCo2(state.jaren[j].maanden)) : null;
+  // Verdeel het jaartotaal per apparaat evenredig (proportioneel) over de maanden, volgens het
+  // werkelijke maandpatroon van de overige bedrijfslast — zo blijft ook per maand Aanvoer = Verbruik.
+  const overigeJaarTotaal = rijen.reduce((s,r)=> s + r.co2OverigeBedrijfslast, 0);
+  const maandGewichten = rijen.map(r=> overigeJaarTotaal ? (r.co2OverigeBedrijfslast/overigeJaarTotaal) : (1/(maanden.length||1)));
+  apparatenHuidigJaar.forEach((app, ai)=>{
+    bodyHtml += `<tr class="rubriek-rij">${naamTt(app.label, 'Uit de Apparatenlijst (tabblad RVO informatieplicht 207). Het jaartotaal wordt evenredig verdeeld over de maanden, volgens het maandpatroon van de overige bedrijfslast.')}`;
+    if(!jaarWeergave){
+      rijen.forEach((r,i)=>{
+        const maandCo2 = app.co2 * maandGewichten[i];
+        const maandKwh = app.kwh * maandGewichten[i];
+        bodyHtml += co2Cel(maandCo2, maandKwh, 'kWh');
+      });
+      bodyHtml += `<td class="wit th-totaal">${fmt(app.co2,0)}</td>`;
+    } else {
+      apparatenPerJaar.forEach(jaarApps=> bodyHtml += `<td class="wit th-totaal">${fmt(jaarApps[ai].co2,0)}</td>`);
+    }
+    bodyHtml += '</tr>';
+  });
+  bodyHtml += `<tr class="totaal">${naamTt('Totaal CO2 verbruik (kg)', 'Ketelgas CO2 + Gas voor warmte CO2 + Overige bedrijfslast CO2 (= som van de Apparatenlijst-regels) samen — moet gelijk zijn aan Totaal CO2 (aanvoer) hierboven, ook per maand.')}`;
   if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.co2Ketelgas + r.co2GasWarmte + r.co2OverigeBedrijfslast,0)}</td>`);
   bodyHtml += totaalKolommen('co2VerbruikTotaal', 'th-totaal') + '</tr>';
   bodyHtml += `<tr class="rubriek-rij">${naamTt('Aardgas-equivalent totaal verbruik (m³)', 'Omgekeerde van de gas-CO2-formule: Totaal CO2 verbruik ÷ (31,65 ÷ 1000 × 56,2). Het aantal m³ aardgas dat dezelfde hoeveelheid CO2 zou uitstoten.')}`;
@@ -3936,6 +3933,75 @@ function renderTeeltVerdeling(){
     statusEl.textContent = alleOk ? 'Som van de percentages per maand: 100% ✓' : 'Let op: niet elke maand telt op tot 100% (zie rode kolom "Totaal %").';
     statusEl.style.color = alleOk ? '' : '#c0392b';
   }
+}
+// ---------- RVO informatieplicht 207: apparatenlijst (energieverbruikers) ----------
+const RVO_APPARAAT_VELDEN = [
+  {key:'proces', label:'Proces', type:'tekst'},
+  {key:'machine', label:'Machine', type:'tekst'},
+  {key:'type', label:'Type', type:'tekst'},
+  {key:'aansturing', label:'Aansturing', type:'tekst'},
+  {key:'jaar', label:'Bouwjaar', type:'getal'},
+  {key:'aantal', label:'Aantal', type:'getal'},
+  {key:'vermogen', label:'Vermogen (kW)', type:'getal'},
+  {key:'bedrijfstijd', label:'Bruto bedrijfstijd (uur)', type:'getal'}
+];
+function renderRvoApparaten(){
+  const thead = document.getElementById('theadRvoApparaten');
+  const tbody = document.getElementById('tbodyRvoApparaten');
+  if(!thead || !tbody) return;
+  let headHtml = '<tr>';
+  RVO_APPARAAT_VELDEN.forEach(v=> headHtml += `<th style="text-align:${v.type==='tekst'?'left':'right'};padding:6px 8px;white-space:nowrap;">${v.label}</th>`);
+  headHtml += '<th style="text-align:right;padding:6px 8px;white-space:nowrap;">Elektriciteitsverbruik (kWh)</th>';
+  headHtml += '<th style="text-align:right;padding:6px 8px;white-space:nowrap;">CO2 (kg)</th>';
+  headHtml += '<th style="text-align:right;padding:6px 8px;white-space:nowrap;">% van totaal</th>';
+  headHtml += '</tr>';
+  thead.innerHTML = headHtml;
+  const rijen = state.rvoApparaten||[];
+  const jaarMaanden = (state.jaren[state.huidigJaarOverzicht]||{}).maanden || [];
+  const overigeTargetKwh = overigeBedrijfslastKwhPerMaand(jaarMaanden).reduce((s,v)=>s+v,0);
+  const andereRijenTotaal = rijen.filter(r=>!r.overig).reduce((s,r)=> s + (r.aantal||0)*(r.vermogen||0)*(r.bedrijfstijd||0), 0);
+  const overigeKwh = overigeTargetKwh - andereRijenTotaal;
+  const verbruiken = rijen.map(rij=> rij.overig ? overigeKwh : (rij.aantal||0) * (rij.vermogen||0) * (rij.bedrijfstijd||0));
+  const totaalVerbruik = verbruiken.reduce((s,v)=>s+v,0);
+  let bodyHtml = '';
+  rijen.forEach((rij, ri)=>{
+    bodyHtml += '<tr>';
+    RVO_APPARAAT_VELDEN.forEach(v=>{
+      if(rij.overig && v.key!=='proces'){
+        bodyHtml += '<td class="wit"></td>';
+        return;
+      }
+      const waarde = rij[v.key];
+      if(v.type==='tekst'){
+        const veilig = (waarde===undefined||waarde===null?'':String(waarde)).replace(/"/g,'&quot;');
+        bodyHtml += `<td class="geel"><input type="text" style="text-align:left;" data-ri="${ri}" data-veld="${v.key}" value="${veilig}"></td>`;
+      } else {
+        bodyHtml += `<td class="geel"><input type="number" step="any" data-ri="${ri}" data-veld="${v.key}" value="${waarde===undefined||waarde===null?0:waarde}"></td>`;
+      }
+    });
+    const verbruik = verbruiken[ri];
+    if(rij.overig){
+      bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;"><span class="tt" data-tt="Sluitpost: totaal Apparatenlijst wordt zo gelijk aan Overige bedrijfslast (RVO Energiebalans, jaar ${state.huidigJaarOverzicht}) omgerekend naar kWh.">${fmt(verbruik,0)}</span></td>`;
+    } else {
+      bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(verbruik,0)}</td>`;
+    }
+    bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(co2Elektra(verbruik),0)}</td>`;
+    const pct = totaalVerbruik ? (verbruik/totaalVerbruik*100) : 0;
+    bodyHtml += `<td class="wit" style="text-align:right;padding:6px 8px;">${fmt(pct,1)}%</td>`;
+    bodyHtml += '</tr>';
+  });
+  bodyHtml += `<tr><td class="naam">Totaal</td>${'<td></td>'.repeat(RVO_APPARAAT_VELDEN.length-1)}<td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">${fmt(totaalVerbruik,0)}</td><td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">${fmt(co2Elektra(totaalVerbruik),0)}</td><td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">100%</td></tr>`;
+  tbody.innerHTML = bodyHtml;
+  tbody.querySelectorAll('input[data-veld]').forEach(inp=>{
+    inp.addEventListener('change', e=>{
+      const ri = +e.target.getAttribute('data-ri');
+      const veld = e.target.getAttribute('data-veld');
+      const veldDef = RVO_APPARAAT_VELDEN.find(v=>v.key===veld);
+      const isTekst = veldDef ? veldDef.type === 'tekst' : false;
+      state.rvoApparaten[ri][veld] = isTekst ? e.target.value : (parseFloat(String(e.target.value).replace(',','.')) || 0);
+      render();
+    });
+  });
 }
 // ---------- Handleiding: eigen notities opslaan ----------
 const handleidingEl = document.getElementById('handleidingNotitie');
