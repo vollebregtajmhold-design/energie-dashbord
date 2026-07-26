@@ -420,6 +420,7 @@
     <nav class="sidenav" id="sidenav">
       <a href="javascript:void(0)" data-tab="facturen"><span class="dot"></span>Facturen Petra</a>
       <a href="javascript:void(0)" data-tab="overzicht"><span class="dot"></span>DNO, MPS, AGRO</a>
+      <a href="javascript:void(0)" data-tab="rvoInformatieplicht"><span class="dot"></span>RVO informatieplicht 207</a>
       <a href="javascript:void(0)" data-tab="wpberekening"><span class="dot"></span>WP berekening</a>
       <a href="javascript:void(0)" data-tab="energiehandel"><span class="dot"></span>Energie-handel</a>
       <a href="javascript:void(0)" data-tab="instellingen"><span class="dot"></span>Instellingen</a>
@@ -543,15 +544,71 @@
         </div>
       </div>
     </div>
-    <div class="accordion-item">
-      <button class="accordion-titel" type="button">RVO Onderzoeksplicht 207: Energiebalans <span class="accordion-pijl">&#9656;</span></button>
+  </div>
+  <div class="tab-paneel" id="rvoInformatieplicht">
+    <div class="accordion-item open">
+      <button class="accordion-titel" type="button">Instellingen <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
-        <div class="sub" style="margin-bottom:14px;">Energiebalans in kg CO&#8322; per maand &mdash; aanvoer (inkoop min verkoop) hierboven, verbruik (waar de CO&#8322; naartoe gaat, direct opgesplitst naar categorie) hieronder. Beweeg met de muis over een waarde om het onderliggende aantal m&sup3; gas of kWh stroom te zien. CO&#8322;-factor gas: 31,65 &divide; 1000 &times; m&sup3; &times; 56,2. CO&#8322;-factor elektra: 3,6 &divide; 1000 &times; kWh &times; 56,2. Data komt uit &quot;Locatie 207&quot; hierboven, voor het daar gekozen jaar. De opsplitsing van "overige bedrijfslast" (percentages) stel je in bij Instellingen &rarr; Omrekenfactoren.</div>
-        <div class="tafel-scroll tafel-transposed">
-          <table>
-            <thead id="theadRvo207"></thead>
-            <tbody id="tbodyRvo207"></tbody>
-          </table>
+        <div class="panel">
+          <div class="sub" style="margin-bottom:8px;font-weight:600;color:var(--tekst);">Opsplitsing overige bedrijfslast (RVO Onderzoeksplicht 207)</div>
+          <div class="invoerform invoervelden" style="max-width:640px;">
+            <div class="veld">
+              <label>Belichting (%)</label>
+              <input type="number" step="1" min="0" max="100" id="rvoPctBelichting">
+            </div>
+            <div class="veld">
+              <label>Automatisering (%)</label>
+              <input type="number" step="1" min="0" max="100" id="rvoPctAutomatisering">
+            </div>
+            <div class="veld">
+              <label>Drogers (%)</label>
+              <input type="number" step="1" min="0" max="100" id="rvoPctDrogers">
+            </div>
+            <div class="veld">
+              <label>Overige (%)</label>
+              <input type="number" step="1" min="0" max="100" id="rvoPctOverig">
+            </div>
+          </div>
+          <div class="sub" id="rvoPctSomStatus"></div>
+          <div class="note">Tip: voor de RVO-energiebalans (CO&#8322;) sluit de "Overige bedrijfslast"-regel exact als (Warmte uit 1 m³ gas &mdash; WKK) + (Factor WKK gas) &mdash; in te stellen bij Instellingen &rarr; Omrekenfactoren &mdash; samen precies 31,65 &divide; 3,6 = 8,7917 zijn.</div>
+          <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Energieverbruik verdeling per teelt (% per maand van het aardgasequivalent)</div>
+          <div class="sub" style="margin-bottom:10px;">Per teelt: aantal stuks en per maand het percentage van het totale aardgasequivalent dat aan deze teelt toegerekend wordt. De percentages per maand moeten samen 100% zijn.</div>
+          <div class="tafel-scroll tafel-transposed">
+            <table class="tabel-compact">
+              <thead id="theadTeeltVerdeling"></thead>
+              <tbody id="tbodyTeeltVerdeling"></tbody>
+            </table>
+          </div>
+          <div class="sub" id="teeltPctSomStatus" style="margin-top:8px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item open">
+      <button class="accordion-titel" type="button">Overzichten <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="panel">
+          <div class="jaar-kiezer-inline">
+            <label for="jaarSelectRvo">Jaar</label>
+            <select id="jaarSelectRvo"></select>
+            <button class="jaar-nieuw" id="jaarToevoegenRvo" type="button" title="Nieuw jaar toevoegen">+</button>
+          </div>
+          <div class="jaar-kiezer-inline klein" style="margin-bottom:16px;">
+            <label>Weergave</label>
+            <div class="weergave-toggle" id="rvoWeergaveToggle">
+              <button type="button" class="weergave-optie" data-weergave="maand">Per maand (+ totaal)</button>
+              <button type="button" class="weergave-optie" data-weergave="jaar">Jaartotaal</button>
+            </div>
+          </div>
+          <div class="toolbar" style="margin-bottom:14px;">
+            <button class="actie secundair" id="rvoAllesToggle" type="button">Alles inklappen</button>
+          </div>
+          <div class="sub" style="margin-bottom:14px;">Energiebalans in kg CO&#8322; per maand &mdash; aanvoer (inkoop min verkoop) hierboven, verbruik (waar de CO&#8322; naartoe gaat, direct opgesplitst naar categorie) hieronder. Beweeg met de muis over een waarde om het onderliggende aantal m&sup3; gas of kWh stroom te zien. CO&#8322;-factor gas: 31,65 &divide; 1000 &times; m&sup3; &times; 56,2. CO&#8322;-factor elektra: 3,6 &divide; 1000 &times; kWh &times; 56,2. Data komt uit "Locatie 207" (tab DNO, MPS, AGRO), voor het hierboven gekozen jaar. De opsplitsing per categorie en per teelt stel je in bij het blok Instellingen hierboven.</div>
+          <div class="tafel-scroll tafel-transposed">
+            <table>
+              <thead id="theadRvo207"></thead>
+              <tbody id="tbodyRvo207"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -826,36 +883,7 @@
             <input type="number" step="0.0001" id="wkkGasFactor">
           </div>
         </div>
-        <div class="note">WKK gas (m&sup3;) = KWH productie &divide; factor WKK gas. Ketelgas = Gas totaal &minus; WKK gas. Tip: voor de RVO-energiebalans (CO&#8322;) sluit de "Overige bedrijfslast"-regel exact als (Warmte uit 1 m³ gas &mdash; WKK) + (Factor WKK gas) samen precies 31,65 &divide; 3,6 = 8,7917 zijn.</div>
-        <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Opsplitsing overige bedrijfslast (RVO Onderzoeksplicht 207)</div>
-        <div class="invoerform invoervelden" style="max-width:640px;">
-          <div class="veld">
-            <label>Belichting (%)</label>
-            <input type="number" step="1" min="0" max="100" id="rvoPctBelichting">
-          </div>
-          <div class="veld">
-            <label>Automatisering (%)</label>
-            <input type="number" step="1" min="0" max="100" id="rvoPctAutomatisering">
-          </div>
-          <div class="veld">
-            <label>Drogers (%)</label>
-            <input type="number" step="1" min="0" max="100" id="rvoPctDrogers">
-          </div>
-          <div class="veld">
-            <label>Overige (%)</label>
-            <input type="number" step="1" min="0" max="100" id="rvoPctOverig">
-          </div>
-        </div>
-        <div class="sub" id="rvoPctSomStatus"></div>
-        <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Energieverbruik verdeling per teelt (% per maand van het aardgasequivalent)</div>
-        <div class="sub" style="margin-bottom:10px;">Per teelt: aantal stuks en per maand het percentage van het totale aardgasequivalent (RVO Onderzoeksplicht 207) dat aan deze teelt toegerekend wordt. De percentages per maand moeten samen 100% zijn.</div>
-        <div class="tafel-scroll tafel-transposed">
-          <table class="tabel-compact">
-            <thead id="theadTeeltVerdeling"></thead>
-            <tbody id="tbodyTeeltVerdeling"></tbody>
-          </table>
-        </div>
-        <div class="sub" id="teeltPctSomStatus" style="margin-top:8px;"></div>
+        <div class="note">WKK gas (m&sup3;) = KWH productie &divide; factor WKK gas. Ketelgas = Gas totaal &minus; WKK gas. Tip: voor de RVO-energiebalans (CO&#8322;) sluit de "Overige bedrijfslast"-regel exact als (Warmte uit 1 m³ gas &mdash; WKK) + (Factor WKK gas) samen precies 31,65 &divide; 3,6 = 8,7917 zijn. De RVO-instellingen zelf (opsplitsing % en teeltverdeling) staan bij het tabblad "RVO informatieplicht 207".</div>
       </div>
     </div>
     <div class="accordion-item">
@@ -938,7 +966,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 09:35</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 10:05</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -2732,16 +2760,29 @@ document.getElementById('alleGroepenToggle').addEventListener('click', ()=>{
   overzichtNiveau = (overzichtNiveau + 1) % 3;
   const accordionOpen = overzichtNiveau >= 1;
   const groepenOpen = overzichtNiveau >= 2;
-  // Niveau 0: alle 4 blokken (Locatie 207, Locatie 250, WKK kostprijs, RVO) helemaal dicht (alleen titels).
+  // Niveau 0: alle 3 blokken (Locatie 207, Locatie 250, WKK kostprijs) helemaal dicht (alleen titels).
   // Niveau 1: blokken open, maar de groepen erbinnen nog dicht (1 verdieping verder).
   // Niveau 2: ook de groepen open, alles volledig uitgeklapt (laatste verdieping).
   document.querySelectorAll('#overzicht > .accordion-item').forEach(it=> it.classList.toggle('open', accordionOpen));
   groepenDefinitie207.forEach(g=>{ if(g.naam) groepStatus[207][g.naam] = !groepenOpen; });
   groepenDefinitie250.forEach(g=>{ if(g.naam) groepStatus[250][g.naam] = !groepenOpen; });
+  document.getElementById('alleGroepenToggle').textContent = overzichtNiveauLabels[overzichtNiveau];
+  render();
+});
+let rvoNiveau = 2;
+const rvoNiveauLabels = ['Alles uitklappen', 'Details uitklappen', 'Alles inklappen'];
+document.getElementById('rvoAllesToggle').addEventListener('click', ()=>{
+  rvoNiveau = (rvoNiveau + 1) % 3;
+  const accordionOpen = rvoNiveau >= 1;
+  const groepenOpen = rvoNiveau >= 2;
+  // Niveau 0: Instellingen + Overzichten helemaal dicht (alleen titels).
+  // Niveau 1: blokken open, maar de groepen (Aanvoer/Verbruik/Teelt) erbinnen nog dicht.
+  // Niveau 2: ook de groepen open, alles volledig uitgeklapt.
+  document.querySelectorAll('#rvoInformatieplicht > .accordion-item').forEach(it=> it.classList.toggle('open', accordionOpen));
   groepStatus.rvo['Aanvoer'] = !groepenOpen;
   groepStatus.rvo['Verbruik'] = !groepenOpen;
   groepStatus.rvo['Teelt'] = !groepenOpen;
-  document.getElementById('alleGroepenToggle').textContent = overzichtNiveauLabels[overzichtNiveau];
+  document.getElementById('rvoAllesToggle').textContent = rvoNiveauLabels[rvoNiveau];
   render();
 });
 document.getElementById('exportCsv').addEventListener('click', exportCsv);
@@ -2856,6 +2897,7 @@ function laadJaarOpties(selectId, jaarVeld){
 }
 function laadAlleJaarOpties(){
   laadJaarOpties('jaarSelectOverzicht', 'huidigJaarOverzicht');
+  laadJaarOpties('jaarSelectRvo', 'huidigJaarOverzicht');
   laadJaarOpties('jaarSelectFacturen', 'huidigJaarFacturen');
 }
 laadAlleJaarOpties();
@@ -2863,19 +2905,23 @@ document.getElementById('jaarSelectOverzicht').addEventListener('change', e=>{
   state.huidigJaarOverzicht = e.target.value;
   render();
 });
+document.getElementById('jaarSelectRvo').addEventListener('change', e=>{
+  state.huidigJaarOverzicht = e.target.value;
+  render();
+});
 document.getElementById('jaarSelectFacturen').addEventListener('change', e=>{
   state.huidigJaarFacturen = e.target.value;
   render();
 });
-// ---------- Weergave-toggle "Per maand (+ totaal)" / "Jaartotaal" (geldt voor heel DNO, MPS, AGRO) ----------
-document.querySelectorAll('#overzichtWeergaveToggle .weergave-optie').forEach(btn=>{
+// ---------- Weergave-toggle "Per maand (+ totaal)" / "Jaartotaal" (DNO, MPS, AGRO en RVO informatieplicht 207 delen dezelfde instelling) ----------
+document.querySelectorAll('#overzichtWeergaveToggle .weergave-optie, #rvoWeergaveToggle .weergave-optie').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     state.overzichtWeergave = btn.getAttribute('data-weergave');
     render();
   });
 });
 function syncOverzichtWeergaveToggle(){
-  document.querySelectorAll('#overzichtWeergaveToggle .weergave-optie').forEach(btn=>{
+  document.querySelectorAll('#overzichtWeergaveToggle .weergave-optie, #rvoWeergaveToggle .weergave-optie').forEach(btn=>{
     btn.classList.toggle('actief', btn.getAttribute('data-weergave') === (state.overzichtWeergave||'maand'));
   });
 }
@@ -2899,6 +2945,7 @@ function nieuwJaarToevoegen(jaarVeld){
   render();
 }
 document.getElementById('jaarToevoegenOverzicht').addEventListener('click', ()=> nieuwJaarToevoegen('huidigJaarOverzicht'));
+document.getElementById('jaarToevoegenRvo').addEventListener('click', ()=> nieuwJaarToevoegen('huidigJaarOverzicht'));
 document.getElementById('jaarToevoegenFacturen').addEventListener('click', ()=> nieuwJaarToevoegen('huidigJaarFacturen'));
 // ---------- Sidebar tabs: klik toont precies 1 paneel ----------
 (function(){
