@@ -441,22 +441,18 @@
     </div>
   </div>
   <div class="tab-paneel" id="overzicht">
-    <div class="jaar-kiezer-inline">
+    <div class="jaar-kiezer-inline" style="flex-wrap:wrap;">
       <label for="jaarSelectOverzicht">Jaar</label>
       <select id="jaarSelectOverzicht"></select>
       <button class="jaar-nieuw" id="jaarToevoegenOverzicht" type="button" title="Nieuw jaar toevoegen">+</button>
-    </div>
-    <div class="jaar-kiezer-inline klein" style="margin-bottom:16px;">
-      <label>Weergave</label>
+      <label style="margin-left:14px;">Weergave</label>
       <div class="weergave-toggle" id="overzichtWeergaveToggle">
         <button type="button" class="weergave-optie" data-weergave="maand">Per maand (+ totaal)</button>
         <button type="button" class="weergave-optie" data-weergave="jaar">Jaartotaal</button>
       </div>
+      <button class="actie secundair" id="alleGroepenToggle" type="button" style="margin-left:14px;">Alles uitklappen</button>
     </div>
-    <div class="toolbar" style="margin-bottom:14px;">
-      <button class="actie secundair" id="alleGroepenToggle" type="button">Alles inklappen</button>
-    </div>
-    <div class="accordion-item open">
+    <div class="accordion-item">
       <button class="accordion-titel" type="button">Locatie 207 &mdash; Maandoverzicht (met WKK) <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
         <div class="panel">
@@ -473,7 +469,6 @@
               <label class="mak-optie"><input type="radio" name="makBron" value="agro"> AgroEnergy</label>
               <select id="makMaand"></select>
             </div>
-            <button class="actie secundair" id="exportCsv">Exporteer CSV</button>
           </div>
           <div class="tafel-scroll tafel-transposed">
             <table>
@@ -484,16 +479,13 @@
         </div>
       </div>
     </div>
-    <div class="accordion-item open">
+    <div class="accordion-item">
       <button class="accordion-titel" type="button">Locatie 250 &mdash; Maandoverzicht (zonder WKK) <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
         <div class="panel">
           <div class="legend">
             <span><span class="swatch sw-geel"></span>invoer (verbruik &amp; kosten)</span>
             <span><span class="swatch sw-groen"></span>rekenwaarden (automatisch)</span>
-          </div>
-          <div class="toolbar">
-            <button class="actie secundair" id="exportCsv250">Exporteer CSV</button>
           </div>
           <div class="tafel-scroll tafel-transposed">
             <table>
@@ -546,7 +538,7 @@
     </div>
   </div>
   <div class="tab-paneel" id="rvoInformatieplicht">
-    <div class="accordion-item open">
+    <div class="accordion-item">
       <button class="accordion-titel" type="button">Overzichten 207 <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
         <div class="panel">
@@ -559,7 +551,7 @@
               <button type="button" class="weergave-optie" data-weergave="maand">Per maand (+ totaal)</button>
               <button type="button" class="weergave-optie" data-weergave="jaar">Jaartotaal</button>
             </div>
-            <button class="actie secundair" id="rvoAllesToggle" type="button" style="margin-left:14px;">Alles inklappen</button>
+            <button class="actie secundair" id="rvoAllesToggle" type="button" style="margin-left:14px;">Alles uitklappen</button>
           </div>
           <div class="sub" style="margin-bottom:14px;">Energiebalans in kg CO&#8322; per maand &mdash; aanvoer (inkoop min verkoop) hierboven, verbruik (waar de CO&#8322; naartoe gaat, direct opgesplitst naar categorie) hieronder. Beweeg met de muis over een waarde om het onderliggende aantal m&sup3; gas of kWh stroom te zien. CO&#8322;-factor gas: 31,65 &divide; 1000 &times; m&sup3; &times; 56,2. CO&#8322;-factor elektra: 3,6 &divide; 1000 &times; kWh &times; 56,2. Data komt uit "Locatie 207" (tab DNO, MPS, AGRO), voor het hierboven gekozen jaar. De opsplitsing per categorie komt uit de Apparatenlijst en de opsplitsing per teelt stel je in bij het blok Instellingen hieronder.</div>
           <div class="tafel-scroll tafel-transposed">
@@ -571,7 +563,7 @@
         </div>
       </div>
     </div>
-    <div class="accordion-item open">
+    <div class="accordion-item">
       <button class="accordion-titel" type="button">Instellingen <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
         <div class="accordion-item">
@@ -606,6 +598,90 @@
         <div class="note" style="margin:18px;">Tip: voor de RVO-energiebalans (CO&#8322;) sluit de "Overige bedrijfslast"-regel exact als (Warmte uit 1 m³ gas &mdash; WKK) + (Factor WKK gas) &mdash; in te stellen bij Instellingen &rarr; Omrekenfactoren &mdash; samen precies 31,65 &divide; 3,6 = 8,7917 zijn. De opsplitsing van "Overige bedrijfslast" gebeurt automatisch via de Apparatenlijst hierboven.</div>
       </div>
     </div>
+    <div class="accordion-item">
+      <button class="accordion-titel" type="button">Rapportages <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="panel">
+          <div class="sub" style="margin-bottom:14px;">Bewaar hier de officiële RVO-onderzoeksplicht-rapporten (PDF), zodat ze altijd vanuit de app zelf terug te vinden zijn &mdash; ook later, op een andere computer. Upload eenmalig; het bestand blijft daarna bij je gegevens opgeslagen.</div>
+          <div class="toolbar">
+            <label class="actie secundair" style="cursor:pointer;">
+              + Rapport toevoegen (PDF)
+              <input type="file" id="rvoRapportUpload" accept="application/pdf" style="display:none;">
+            </label>
+          </div>
+          <div id="rvoRapportenLijst"></div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-titel" type="button">Aanvullende gegevens (RVO-rapport) <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="sub" style="margin:0 18px 14px;">Gegevens uit het onderzoeksrapport die nog niet elders in de app stonden: intern transport, energieprijzen, de maatregelentabellen en de streefwaarden. Dit zijn losse referentietabellen, nog niet doorgerekend in de energiebalans bij Overzichten 207.</div>
+        <div class="accordion-item">
+          <button class="accordion-titel" type="button">Intern transport <span class="accordion-pijl">&#9656;</span></button>
+          <div class="accordion-inhoud">
+            <div class="panel">
+              <div class="sub" style="margin-bottom:10px;">Heftruck, trekker e.d. Elektriciteitsverbruik = Aantal &times; Vermogen oplader &times; Bruto bedrijfstijd.</div>
+              <div class="tafel-scroll">
+                <table>
+                  <thead id="theadRvoTransport"></thead>
+                  <tbody id="tbodyRvoTransport"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-titel" type="button">Getroffen maatregelen <span class="accordion-pijl">&#9656;</span></button>
+          <div class="accordion-inhoud">
+            <div class="panel">
+              <div class="tafel-scroll">
+                <table>
+                  <thead id="theadRvoMaatrGetroffen"></thead>
+                  <tbody id="tbodyRvoMaatrGetroffen"></tbody>
+                </table>
+              </div>
+              <button class="actie secundair" id="rvoMaatrGetroffenToevoegen" type="button" style="margin-top:10px;">+ Regel toevoegen</button>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-titel" type="button">Geïdentificeerde maatregelen <span class="accordion-pijl">&#9656;</span></button>
+          <div class="accordion-inhoud">
+            <div class="panel">
+              <div class="tafel-scroll">
+                <table>
+                  <thead id="theadRvoMaatrGeid"></thead>
+                  <tbody id="tbodyRvoMaatrGeid"></tbody>
+                </table>
+              </div>
+              <button class="actie secundair" id="rvoMaatrGeidToevoegen" type="button" style="margin-top:10px;">+ Regel toevoegen</button>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-titel" type="button">Streefwaarden EPI/CPI per teelt <span class="accordion-pijl">&#9656;</span></button>
+          <div class="accordion-inhoud">
+            <div class="panel">
+              <div class="sub" style="margin-bottom:10px;">NM&sup3; per stuk, per teelt en jaar.</div>
+              <div class="tafel-scroll tafel-transposed">
+                <table class="tabel-compact">
+                  <thead id="theadStreefNm3"></thead>
+                  <tbody id="tbodyStreefNm3"></tbody>
+                </table>
+              </div>
+              <div class="sub" style="margin:14px 0 10px;">CO&#8322; per stuk (kg), per teelt en jaar.</div>
+              <div class="tafel-scroll tafel-transposed">
+                <table class="tabel-compact">
+                  <thead id="theadStreefCo2"></thead>
+                  <tbody id="tbodyStreefCo2"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="tab-paneel" id="facturen">
     <div class="jaar-kiezer-inline">
@@ -623,7 +699,6 @@
       </div>
       <div class="toolbar">
         <button class="actie secundair" id="alleGroepenToggleFact" type="button">Alles uitklappen</button>
-        <button class="actie secundair" id="exportCsvFact">Exporteer CSV</button>
       </div>
       <div class="tafel-scroll tafel-transposed">
         <table>
@@ -667,9 +742,9 @@
   </div>
   <div class="tab-paneel" id="wpberekening">
     <div class="toolbar" style="margin-bottom:14px;">
-      <button class="actie secundair" id="wpAllesToggle" type="button">Alles inklappen</button>
+      <button class="actie secundair" id="wpAllesToggle" type="button">Alles uitklappen</button>
     </div>
-    <div class="accordion-item open">
+    <div class="accordion-item">
       <button class="accordion-titel" type="button">Vergelijking gas vs. warmtepomp <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
         <div class="sub" style="margin-bottom:14px;">Appels-met-appels: kosten per kWh geleverde wármte, niet de kale grondstofprijs. Gas: (Gas incl. belasting) &divide; ketelfactor. Warmtepomp: (gewogen stroomprijs incl. belasting) &divide; COP. Ketelfactor en COP komen uit Instellingen / hieronder.</div>
@@ -683,7 +758,7 @@
         <div id="chartVglWpFallback" class="sub" style="display:none;">Grafiek kon niet geladen worden (geen internetverbinding voor Chart.js).</div>
       </div>
     </div>
-    <div class="accordion-item open">
+    <div class="accordion-item">
       <button class="accordion-titel" type="button">WP berekening &mdash; Investering warmtepomp (Locatie 250) <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
       <div class="sub" style="margin-bottom:14px;">Losse rekentool, onafhankelijk van je factuurgegevens. Je vult zelf de uitgangspunten in; de rekentool gebruikt daarnaast de offici&euml;le energiebelasting/ODE-schijven &oacute;n de marktprijzen (forward-curve) voor gas en elektriciteit (2026&ndash;2030) &mdash; beide per jaar, zodat je ziet hoe belasting &eacute;n markt samen de business case be&iuml;nvloeden.</div>
@@ -743,7 +818,7 @@
       </div>
       </div>
     </div>
-    <div class="accordion-item open">
+    <div class="accordion-item">
       <button class="accordion-titel" type="button">Resultaat per jaar (2026&ndash;2030) <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
       <div class="sub" style="margin-bottom:14px;">Gebruikt de offici&euml;le EB/ODE-schijven per jaar. De 2 gele rijen (marktprijs gas/stroom) zijn vooraf ingevuld met de forward-curve en zelf aan te passen &mdash; de rest is automatisch. Beweeg over een regelnaam voor de rekenwijze.</div>
@@ -759,7 +834,7 @@
       </div>
       </div>
     </div>
-    <div class="accordion-item open">
+    <div class="accordion-item">
       <button class="accordion-titel" type="button">Droger &mdash; investering &amp; besparing (Locatie 250) <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
       <div class="sub" style="margin-bottom:14px;">Losse rekentool voor een elektrische (warmtepomp-aangedreven) droger i.p.v. gas. De besparing hieronder in de resultatentabel gebruikt dezelfde marktprijzen en belastingschijven per jaar als hierboven.</div>
@@ -907,6 +982,12 @@
           <span id="backupStatus" class="sub" style="margin:0;"></span>
         </div>
         <div class="sub" style="margin-top:8px;">Let op: terugzetten vervangt al je huidige gegevens door de gegevens uit het back-upbestand.</div>
+        <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Excel-export</div>
+        <div class="sub" style="margin-bottom:14px;">1 Excel-bestand met 3 tabbladen: Locatie 207, Locatie 250 en Facturen &mdash; elk met de maandcijfers van het jaar dat je bij het betreffende tabblad hebt gekozen.</div>
+        <div class="toolbar">
+          <button class="actie secundair" id="exportExcelAlles" type="button">Exporteer Excel (3 tabbladen)</button>
+          <span id="excelExportStatus" class="sub" style="margin:0;"></span>
+        </div>
         <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">De app zelf (HTML-bestand)</div>
         <div class="sub" style="margin-bottom:14px;">Dit is niet je data, maar het programma zelf — handig als extra kopie naast GitHub, of om op een andere pc te zetten.</div>
         <div class="toolbar">
@@ -960,13 +1041,14 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 12:30</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 16:00</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const STORAGE_KEY = 'energie-wkk-app-v1';
 const maandNamenLijst = ['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
@@ -1179,6 +1261,24 @@ const seedData = {
     { proces:'4. Belichten', machine:'AFD 4: Lampen', type:'Rofianda LED', jaar:2024, aantal:120, rendement:0, aansturing:'ISII-klimaatcomputer', afgifte:'Licht', vermogen:0.30, bedrijfstijd:3000, pct:100, verbruik:108000 },
     { proces:'Overige', machine:'', type:'', aansturing:'', jaar:0, aantal:0, vermogen:0, bedrijfstijd:0, verbruik:0, overig:true }
   ],
+  rvoRapporten: [],
+  rvoInternTransport: [
+    { machine:'Heftruck', type:'Steel, stil r 50-15', jaar:1985, aantal:1, beweging:'Bedrijfsruimte en van/naar docks', vermogen:3.36, bedrijfstijd:100 },
+    { machine:'Trekker', type:'Donkey', jaar:1999, aantal:1, beweging:'Kas en bedrijfsruimte', vermogen:0.67, bedrijfstijd:200 }
+  ],
+  rvoMaatregelenGetroffen: [
+    { omschrijving:'Vervanging vloerverwarming door 4 IR-plafond verwarmingselementen', categorie:'Overig', jaar:2023, investering:1000, besparingElektra:1560, besparingGas:0, besparingWarmte:0, co2Reductie:421, tvt:4 },
+    { omschrijving:'GF14: 15 TL8-plafondarmaturen vervangen door LED-armaturen', categorie:'Overig', jaar:2023, investering:600, besparingElektra:390, besparingGas:0, besparingWarmte:0, co2Reductie:105, tvt:9.6 }
+  ],
+  rvoMaatregelenGeidentificeerd: [
+    { omschrijving:'Vervangen 60 verouderde SON-T-lampen door 26 nieuwe LED-lampen', categorie:'Vroegtijdige vervanging', investering:29505, besparingElektra:29811, co2Reductie:6031, tvt:7.6, beoogdJaar:2024 }
+  ],
+  rvoStreefwaarden: {
+    pluggen:   { nm3:[0.011,0.011,0.011,0.011,0.011,0.010,0.010,0.010], co2:[0.020,0.019,0.019,0.019,0.019,0.019,0.018,0.018] },
+    p6:        { nm3:[0.095,0.094,0.093,0.092,0.091,0.090,0.089,0.089], co2:[0.169,0.167,0.166,0.164,0.162,0.161,0.159,0.157] },
+    p10:       { nm3:[0.255,0.252,0.250,0.247,0.245,0.243,0.240,0.238], co2:[0.454,0.449,0.445,0.440,0.436,0.431,0.427,0.423] },
+    hortensia: { nm3:[0.802,0.794,0.786,0.778,0.770,0.763,0.755,0.748], co2:[1.427,1.412,1.398,1.384,1.370,1.357,1.343,1.330] }
+  },
   cloudSyncUrl: '',
   handleidingNotitie: '',
   gasInkoopGas: {
@@ -1329,6 +1429,11 @@ function normaliseerState(s){
   if(!s.rvoApparaten.some(r=>r.overig)){
     s.rvoApparaten.push({ proces:'Overige', machine:'', type:'', aansturing:'', jaar:0, aantal:0, vermogen:0, bedrijfstijd:0, verbruik:0, overig:true });
   }
+  if(!s.rvoRapporten) s.rvoRapporten = [];
+  if(!s.rvoInternTransport) s.rvoInternTransport = JSON.parse(JSON.stringify(seedData.rvoInternTransport));
+  if(!s.rvoMaatregelenGetroffen) s.rvoMaatregelenGetroffen = JSON.parse(JSON.stringify(seedData.rvoMaatregelenGetroffen));
+  if(!s.rvoMaatregelenGeidentificeerd) s.rvoMaatregelenGeidentificeerd = JSON.parse(JSON.stringify(seedData.rvoMaatregelenGeidentificeerd));
+  if(!s.rvoStreefwaarden) s.rvoStreefwaarden = JSON.parse(JSON.stringify(seedData.rvoStreefwaarden));
   if(s.cloudSyncUrl===undefined) s.cloudSyncUrl = seedData.cloudSyncUrl;
   if(s.handleidingNotitie===undefined) s.handleidingNotitie = seedData.handleidingNotitie;
   if(s.gasInkoop2027 && !s.gasInkoopGas){
@@ -1486,6 +1591,11 @@ function render(){
   renderTeeltVerdeling();
   renderRvoOnderzoeksplicht();
   renderRvoApparaten();
+  renderRvoRapporten();
+  renderRvoTransport();
+  renderRvoMaatrGetroffen();
+  renderRvoMaatrGeidentificeerd();
+  renderRvoStreefwaarden();
   verversMarkering();
   saveState();
 }
@@ -1553,7 +1663,7 @@ const uitlegVeld207 = {
   gasPerUur:    'Gas/draaiuur = WKK gas ÷ Draaiuren'
 };
 const groepStatus = { 207:{}, 250:{}, fact:{}, factSub:{}, rvo:{} };
-let overzichtNiveau = 2;
+let overzichtNiveau = 0;
 const overzichtNiveauLabels = ['Alles uitklappen', 'Details uitklappen', 'Alles inklappen'];
 let wp2TabelHuidigIngeklapt = true;
 let wp2TabelBesparingenIngeklapt = true;
@@ -1575,9 +1685,9 @@ const groepenDefinitie250 = [
 // "Alles in-/uitklappen" gewoon zoals altijd — dit bepaalt alleen de openingsstand.
 groepenDefinitie207.forEach(g=>{ if(g.naam) groepStatus[207][g.naam] = true; });
 groepenDefinitie250.forEach(g=>{ if(g.naam) groepStatus[250][g.naam] = true; });
-groepStatus.rvo['Aanvoer'] = false;
-groepStatus.rvo['Verbruik'] = false;
-groepStatus.rvo['Teelt'] = false;
+groepStatus.rvo['Aanvoer'] = true;
+groepStatus.rvo['Verbruik'] = true;
+groepStatus.rvo['Teelt'] = true;
 function waarde207(key,m,b){
   switch(key){
     case 'prod': return m.prod;
@@ -2435,15 +2545,14 @@ function renderWpScenario(){
     });
   }
 }
-function exportCsvFact(){
+function sheetFactData(){
   const velden = alleVeldenFact();
   const headers = ['Maand', ...velden.map(v=>v.label)];
   const rows = maandenFactNu().map(m=>{
-    const waarden = velden.map(v=> waardeFact(v.key,m).toFixed(2));
+    const waarden = velden.map(v=> afgerond(waardeFact(v.key,m),2));
     return [m.naam, ...waarden];
   });
-  const csv = [headers.join(';'), ...rows.map(r=>r.join(';'))].join('\n');
-  downloadCsv(csv, 'facturen-overzicht.csv');
+  return [headers, ...rows];
 }
 function renderFactRubricering(){
   const wrap = document.getElementById('factRubricering');
@@ -2486,32 +2595,41 @@ function renderFactRubricering(){
     });
   });
 }
-function exportCsv(){
+function afgerond(n, dec){
+  const f = Math.pow(10, dec===undefined?0:dec);
+  return Math.round((n||0) * f) / f;
+}
+function sheet207Data(){
   const headers = ['Maand','KWH prod','KWH geleverd','KWH eigen','KWH inkoop','Bedrijfslast','Warmte','Gas tot','WKK gas','WKK gas officieel','Ketelgas','Gasprijs','Gaskosten','Elektra','Netto resultaat','Draaiuren','KWH per draaiuur','Gas per draaiuur'];
   const rows = maandenNu().map(m=>{
     const b = bereken(m);
-    return [m.naam,m.prod,m.geleverd,b.eigen,m.inkoop,b.bedrijfslast,b.warmte.toFixed(2),b.gastot,b.wkkgas.toFixed(0),b.wkkgasOfficieel.toFixed(0),b.ketelgas.toFixed(0),b.gasprijs.toFixed(2),m.gaskosten,m.elektra,b.netto.toFixed(2),m.draaiuren,b.kwhPerUur.toFixed(1),b.gasPerUur.toFixed(2)];
+    return [m.naam,m.prod,m.geleverd,afgerond(b.eigen),m.inkoop,afgerond(b.bedrijfslast),afgerond(b.warmte,2),afgerond(b.gastot),afgerond(b.wkkgas,0),afgerond(b.wkkgasOfficieel,0),afgerond(b.ketelgas,0),afgerond(b.gasprijs,2),m.gaskosten,m.elektra,afgerond(b.netto,2),m.draaiuren,afgerond(b.kwhPerUur,1),afgerond(b.gasPerUur,2)];
   });
-  const csv = [headers.join(';'), ...rows.map(r=>r.join(';'))].join('\n');
-  downloadCsv(csv, 'locatie-207-overzicht.csv');
+  return [headers, ...rows];
 }
-function exportCsv250(){
+function sheet250Data(){
   const headers = ['Maand','Gasverbruik','Gaskosten','Gasprijs','Elektraverbruik','Elektrakosten','Elektraprijs','Totaal'];
   const rows = maanden250Nu().map(m=>{
     const b = bereken250(m);
-    return [m.naam,m.gas,m.gaskosten,b.gasprijs.toFixed(2),m.elektra,m.elektrakosten,b.elektraprijs.toFixed(3),b.totaal.toFixed(2)];
+    return [m.naam,m.gas,m.gaskosten,afgerond(b.gasprijs,2),m.elektra,m.elektrakosten,afgerond(b.elektraprijs,3),afgerond(b.totaal,2)];
   });
-  const csv = [headers.join(';'), ...rows.map(r=>r.join(';'))].join('\n');
-  downloadCsv(csv, 'locatie-250-overzicht.csv');
+  return [headers, ...rows];
 }
-function downloadCsv(csv, naam){
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = naam;
-  a.click();
-  URL.revokeObjectURL(url);
+function exportAlleExcel(){
+  const statusEl = document.getElementById('excelExportStatus');
+  if(typeof XLSX === 'undefined'){
+    if(statusEl) statusEl.textContent = 'Excel-export vereist (eenmalig) internet om de bibliotheek te laden. Probeer het opnieuw met een actieve verbinding.';
+    return;
+  }
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheet207Data()), 'Locatie 207');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheet250Data()), 'Locatie 250');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sheetFactData()), 'Facturen');
+  XLSX.writeFile(wb, `energie-overzicht-${state.huidigJaarOverzicht}.xlsx`);
+  if(statusEl){
+    statusEl.textContent = 'Excel gedownload — ' + new Date().toLocaleDateString('nl-NL');
+    setTimeout(()=>{ statusEl.textContent=''; }, 6000);
+  }
 }
 // ---------- Back-up ----------
 const TWEE_WEKEN_MS = 14 * 24 * 60 * 60 * 1000;
@@ -2776,7 +2894,7 @@ document.getElementById('alleGroepenToggle').addEventListener('click', ()=>{
   document.getElementById('alleGroepenToggle').textContent = overzichtNiveauLabels[overzichtNiveau];
   render();
 });
-let rvoGroepenOpen = true;
+let rvoGroepenOpen = false;
 document.getElementById('rvoAllesToggle').addEventListener('click', ()=>{
   rvoGroepenOpen = !rvoGroepenOpen;
   // Alleen de groepen (Aanvoer/Verbruik/Teelt) binnen het overzicht zelf in-/uitklappen.
@@ -2786,9 +2904,7 @@ document.getElementById('rvoAllesToggle').addEventListener('click', ()=>{
   document.getElementById('rvoAllesToggle').textContent = rvoGroepenOpen ? 'Alles inklappen' : 'Alles uitklappen';
   render();
 });
-document.getElementById('exportCsv').addEventListener('click', exportCsv);
-document.getElementById('exportCsv250').addEventListener('click', exportCsv250);
-document.getElementById('exportCsvFact').addEventListener('click', exportCsvFact);
+document.getElementById('exportExcelAlles').addEventListener('click', exportAlleExcel);
 document.getElementById('alleGroepenToggleFact').addEventListener('click', ()=>{
   factNiveau = (factNiveau + 1) % 3;
   const hoofdOpen = factNiveau >= 1;
@@ -3945,6 +4061,36 @@ const RVO_APPARAAT_VELDEN = [
   {key:'vermogen', label:'Vermogen (kW)', type:'getal'},
   {key:'bedrijfstijd', label:'Bruto bedrijfstijd (uur)', type:'getal'}
 ];
+const RVO_TRANSPORT_VELDEN = [
+  {key:'machine', label:'Voertuig', type:'tekst'},
+  {key:'type', label:'Type/merk', type:'tekst'},
+  {key:'jaar', label:'Bouwjaar', type:'getal'},
+  {key:'aantal', label:'Aantal', type:'getal'},
+  {key:'beweging', label:'Vervoersbeweging', type:'tekst'},
+  {key:'vermogen', label:'Vermogen oplader (kW)', type:'getal'},
+  {key:'bedrijfstijd', label:'Bruto bedrijfstijd (uur)', type:'getal'}
+];
+const RVO_MAATR_GETROFFEN_VELDEN = [
+  {key:'omschrijving', label:'Omschrijving maatregel', type:'tekst'},
+  {key:'categorie', label:'Categorie', type:'tekst'},
+  {key:'jaar', label:'Jaar uitvoering', type:'getal'},
+  {key:'investering', label:'Investering (€)', type:'getal'},
+  {key:'besparingElektra', label:'Besparing elektra (kWh/jr)', type:'getal'},
+  {key:'besparingGas', label:'Besparing gas (Nm³/jr)', type:'getal'},
+  {key:'besparingWarmte', label:'Besparing warmte (GJ/jr)', type:'getal'},
+  {key:'co2Reductie', label:'CO2-reductie (ton/jr)', type:'getal'},
+  {key:'tvt', label:'TVT (jaar)', type:'getal'}
+];
+const RVO_MAATR_GEID_VELDEN = [
+  {key:'omschrijving', label:'Omschrijving maatregel', type:'tekst'},
+  {key:'categorie', label:'Categorie', type:'tekst'},
+  {key:'investering', label:'Investering (€)', type:'getal'},
+  {key:'besparingElektra', label:'Besparing elektra (kWh/jr)', type:'getal'},
+  {key:'co2Reductie', label:'CO2-reductie (ton/jr)', type:'getal'},
+  {key:'tvt', label:'TVT (jaar)', type:'getal'},
+  {key:'beoogdJaar', label:'Beoogd jaar', type:'getal'}
+];
+const STREEF_JAREN = [2023,2024,2025,2026,2027,2028,2029,2030];
 function renderRvoApparaten(){
   const thead = document.getElementById('theadRvoApparaten');
   const tbody = document.getElementById('tbodyRvoApparaten');
@@ -4001,6 +4147,177 @@ function renderRvoApparaten(){
       state.rvoApparaten[ri][veld] = isTekst ? e.target.value : (parseFloat(String(e.target.value).replace(',','.')) || 0);
       render();
     });
+  });
+}
+// ---------- Rapportages: RVO-onderzoeksplicht-rapporten opslaan/tonen ----------
+function renderRvoRapporten(){
+  const el = document.getElementById('rvoRapportenLijst');
+  if(!el) return;
+  const rapporten = state.rvoRapporten||[];
+  if(!rapporten.length){
+    el.innerHTML = '<div class="sub">Nog geen rapporten toegevoegd.</div>';
+    return;
+  }
+  let html = '<table><thead><tr><th style="text-align:left;padding:6px 8px;">Jaar</th><th style="text-align:left;padding:6px 8px;">Naam</th><th style="text-align:left;padding:6px 8px;">Toegevoegd op</th><th style="padding:6px 8px;"></th><th style="padding:6px 8px;"></th></tr></thead><tbody>';
+  rapporten.forEach((r, ri)=>{
+    html += `<tr>
+      <td style="padding:6px 8px;">${r.jaar||''}</td>
+      <td style="padding:6px 8px;">${(r.naam||r.bestandsnaam||'').replace(/</g,'&lt;')}</td>
+      <td style="padding:6px 8px;">${r.toegevoegdOp||''}</td>
+      <td style="padding:6px 8px;"><a href="${r.dataUrl}" download="${(r.bestandsnaam||'rapport.pdf').replace(/"/g,'')}" class="actie secundair" style="text-decoration:none;">Downloaden</a></td>
+      <td style="padding:6px 8px;"><button type="button" class="actie secundair" data-verwijder-rapport="${ri}">Verwijderen</button></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+  el.querySelectorAll('[data-verwijder-rapport]').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const ri = +e.target.getAttribute('data-verwijder-rapport');
+      if(confirm('Dit rapport verwijderen?')){
+        state.rvoRapporten.splice(ri,1);
+        render();
+      }
+    });
+  });
+}
+const rvoRapportUploadEl = document.getElementById('rvoRapportUpload');
+if(rvoRapportUploadEl){
+  rvoRapportUploadEl.addEventListener('change', e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      state.rvoRapporten = state.rvoRapporten || [];
+      state.rvoRapporten.push({
+        jaar: state.huidigJaarOverzicht,
+        naam: 'Rapportage onderzoeksplicht',
+        bestandsnaam: file.name,
+        toegevoegdOp: new Date().toLocaleDateString('nl-NL'),
+        dataUrl: reader.result
+      });
+      render();
+      e.target.value = '';
+    };
+    reader.readAsDataURL(file);
+  });
+}
+// ---------- Aanvullende RVO-gegevens: generieke bewerkbare tabel ----------
+function renderBewerkbareTabel(theadId, tbodyId, velden, rijen, opties){
+  opties = opties || {};
+  const thead = document.getElementById(theadId);
+  const tbody = document.getElementById(tbodyId);
+  if(!thead || !tbody) return;
+  let headHtml = '<tr>';
+  velden.forEach(v=> headHtml += `<th style="text-align:${v.type==='tekst'?'left':'right'};padding:6px 8px;white-space:nowrap;">${v.label}</th>`);
+  if(opties.extraKoppen) opties.extraKoppen.forEach(k=> headHtml += `<th style="text-align:right;padding:6px 8px;white-space:nowrap;">${k}</th>`);
+  if(opties.verwijderbaar) headHtml += '<th></th>';
+  headHtml += '</tr>';
+  thead.innerHTML = headHtml;
+  let bodyHtml = '';
+  rijen.forEach((rij, ri)=>{
+    bodyHtml += '<tr>';
+    velden.forEach(v=>{
+      const waarde = rij[v.key];
+      if(v.type==='tekst'){
+        const veilig = (waarde===undefined||waarde===null?'':String(waarde)).replace(/"/g,'&quot;');
+        bodyHtml += `<td class="geel"><input type="text" style="text-align:left;min-width:160px;" data-ri="${ri}" data-veld="${v.key}" value="${veilig}"></td>`;
+      } else {
+        bodyHtml += `<td class="geel"><input type="number" step="any" data-ri="${ri}" data-veld="${v.key}" value="${waarde===undefined||waarde===null?0:waarde}"></td>`;
+      }
+    });
+    if(opties.extraKolomWaarden) opties.extraKolomWaarden(rij, ri).forEach(w=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${w}</td>`);
+    if(opties.verwijderbaar) bodyHtml += `<td style="padding:6px 8px;"><button type="button" class="actie secundair" data-verwijder-ri="${ri}">&times;</button></td>`;
+    bodyHtml += '</tr>';
+  });
+  if(opties.totaalRij) bodyHtml += opties.totaalRij(rijen);
+  tbody.innerHTML = bodyHtml;
+  tbody.querySelectorAll('input[data-veld]').forEach(inp=>{
+    inp.addEventListener('change', e=>{
+      const ri = +e.target.getAttribute('data-ri');
+      const veld = e.target.getAttribute('data-veld');
+      const veldDef = velden.find(v=>v.key===veld);
+      const isTekst = veldDef ? veldDef.type === 'tekst' : false;
+      rijen[ri][veld] = isTekst ? e.target.value : (parseFloat(String(e.target.value).replace(',','.')) || 0);
+      render();
+    });
+  });
+  if(opties.verwijderbaar){
+    tbody.querySelectorAll('[data-verwijder-ri]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const ri = +e.target.getAttribute('data-verwijder-ri');
+        rijen.splice(ri,1);
+        render();
+      });
+    });
+  }
+}
+function renderRvoTransport(){
+  const rijen = state.rvoInternTransport||[];
+  let totaalVerbruik = 0;
+  renderBewerkbareTabel('theadRvoTransport','tbodyRvoTransport', RVO_TRANSPORT_VELDEN, rijen, {
+    extraKoppen: ['Elektriciteitsverbruik (kWh)','CO2 (kg)'],
+    extraKolomWaarden: (rij)=>{
+      const verbruik = (rij.aantal||0) * (rij.vermogen||0) * (rij.bedrijfstijd||0);
+      totaalVerbruik += verbruik;
+      return [fmt(verbruik,0), fmt(co2Elektra(verbruik),0)];
+    },
+    totaalRij: ()=> `<tr><td class="naam">Totaal</td>${'<td></td>'.repeat(RVO_TRANSPORT_VELDEN.length-1)}<td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">${fmt(totaalVerbruik,0)}</td><td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">${fmt(co2Elektra(totaalVerbruik),0)}</td></tr>`
+  });
+}
+function renderRvoMaatrGetroffen(){
+  renderBewerkbareTabel('theadRvoMaatrGetroffen','tbodyRvoMaatrGetroffen', RVO_MAATR_GETROFFEN_VELDEN, state.rvoMaatregelenGetroffen||[], { verwijderbaar:true });
+}
+function renderRvoMaatrGeidentificeerd(){
+  renderBewerkbareTabel('theadRvoMaatrGeid','tbodyRvoMaatrGeid', RVO_MAATR_GEID_VELDEN, state.rvoMaatregelenGeidentificeerd||[], { verwijderbaar:true });
+}
+function renderStreefTabel(theadId, tbodyId, veld){
+  const thead = document.getElementById(theadId);
+  const tbody = document.getElementById(tbodyId);
+  if(!thead || !tbody) return;
+  let headHtml = '<tr><th class="th-sticky th-hoek">Teelt</th>';
+  STREEF_JAREN.forEach(j=> headHtml += `<th style="text-align:right;padding:6px 8px;">${j}</th>`);
+  headHtml += '</tr>';
+  thead.innerHTML = headHtml;
+  let bodyHtml = '';
+  TEELTEN.forEach(t=>{
+    if(!state.rvoStreefwaarden[t.key]) state.rvoStreefwaarden[t.key] = { nm3:[], co2:[] };
+    const rij = state.rvoStreefwaarden[t.key][veld] || [];
+    bodyHtml += `<tr><td class="naam">${t.naam}</td>`;
+    STREEF_JAREN.forEach((j, i)=>{
+      const waarde = rij[i]===undefined ? 0 : rij[i];
+      bodyHtml += `<td class="geel"><input type="number" step="0.001" data-teelt="${t.key}" data-veld="${veld}" data-i="${i}" value="${waarde}"></td>`;
+    });
+    bodyHtml += '</tr>';
+  });
+  tbody.innerHTML = bodyHtml;
+  tbody.querySelectorAll('input[data-veld]').forEach(inp=>{
+    inp.addEventListener('change', e=>{
+      const teelt = e.target.getAttribute('data-teelt');
+      const v = e.target.getAttribute('data-veld');
+      const i = +e.target.getAttribute('data-i');
+      if(!state.rvoStreefwaarden[teelt]) state.rvoStreefwaarden[teelt] = { nm3:[], co2:[] };
+      if(!state.rvoStreefwaarden[teelt][v]) state.rvoStreefwaarden[teelt][v] = [];
+      state.rvoStreefwaarden[teelt][v][i] = parseFloat(String(e.target.value).replace(',','.')) || 0;
+      render();
+    });
+  });
+}
+function renderRvoStreefwaarden(){
+  renderStreefTabel('theadStreefNm3','tbodyStreefNm3','nm3');
+  renderStreefTabel('theadStreefCo2','tbodyStreefCo2','co2');
+}
+const rvoMaatrGetroffenToevoegenEl = document.getElementById('rvoMaatrGetroffenToevoegen');
+if(rvoMaatrGetroffenToevoegenEl){
+  rvoMaatrGetroffenToevoegenEl.addEventListener('click', ()=>{
+    state.rvoMaatregelenGetroffen.push({ omschrijving:'', categorie:'', jaar:new Date().getFullYear(), investering:0, besparingElektra:0, besparingGas:0, besparingWarmte:0, co2Reductie:0, tvt:0 });
+    render();
+  });
+}
+const rvoMaatrGeidToevoegenEl = document.getElementById('rvoMaatrGeidToevoegen');
+if(rvoMaatrGeidToevoegenEl){
+  rvoMaatrGeidToevoegenEl.addEventListener('click', ()=>{
+    state.rvoMaatregelenGeidentificeerd.push({ omschrijving:'', categorie:'', investering:0, besparingElektra:0, co2Reductie:0, tvt:0, beoogdJaar:new Date().getFullYear() });
+    render();
   });
 }
 // ---------- Handleiding: eigen notities opslaan ----------
