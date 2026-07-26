@@ -12,6 +12,7 @@
     --groen:#f7f9fc;
     --groen-rand:#e3e8ef;
     --wit:#cfe1f5;
+    --wit-gebroken:#f1ece0;
     --blauw:#c3daf3;
     --blauw-licht:#e2eefa;
     --blauw-heellicht:#f1f7fd;
@@ -38,7 +39,7 @@
   .app{display:flex;min-height:100vh;}
   .sidebar{
     width:230px;flex-shrink:0;
-    background:#fff;border-right:1px solid var(--rand);
+    background:var(--wit-gebroken);border-right:1px solid var(--rand);
     padding:26px 18px;position:sticky;top:0;height:100vh;overflow-y:auto;
     display:flex;flex-direction:column;gap:22px;
   }
@@ -49,15 +50,15 @@
   .jaar-kiezer-inline label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);font-weight:700;}
   .jaar-kiezer-inline select{
     padding:7px 10px;border:1px solid var(--rand);border-radius:7px;
-    font-size:13.5px;font-weight:700;color:var(--tekst);background:#fff;min-width:100px;
+    font-size:13.5px;font-weight:700;color:var(--tekst);background:var(--wit-gebroken);min-width:100px;
   }
   .jaar-rij{display:flex;gap:6px;}
   .jaar-rij select{
     flex:1;padding:7px 8px;border:1px solid var(--rand);border-radius:7px;
-    font-size:13.5px;font-weight:700;color:var(--tekst);background:#fff;
+    font-size:13.5px;font-weight:700;color:var(--tekst);background:var(--wit-gebroken);
   }
   .jaar-nieuw{
-    width:32px;flex-shrink:0;border:1px solid var(--accent);background:#fff;color:var(--accent);
+    width:32px;flex-shrink:0;border:1px solid var(--accent);background:var(--wit-gebroken);color:var(--accent);
     border-radius:7px;font-size:16px;font-weight:700;cursor:pointer;
   }
   .jaar-nieuw:hover{background:var(--wit);}
@@ -133,7 +134,7 @@
     .wp2-layout{grid-template-columns:1fr;}
   }
   .card{
-    background:#fff;
+    background:var(--wit-gebroken);
     border:1px solid var(--rand);
     border-radius:12px;
     padding:14px 16px;
@@ -146,7 +147,7 @@
   input.neg{color:var(--neg);}
   .card .value.pos{color:var(--pos);}
   .panel{
-    background:#fff;
+    background:var(--wit-gebroken);
     border:1px solid var(--rand);
     border-radius:12px;
     padding:18px;
@@ -155,7 +156,7 @@
   }
   .panel h2{font-size:15px;margin:0 0 12px;}
   .accordion-item{
-    background:#fff;border:1px solid var(--rand);border-radius:12px;
+    background:var(--wit-gebroken);border:1px solid var(--rand);border-radius:12px;
     margin-bottom:20px;box-shadow:0 1px 2px rgba(31,58,95,0.04);overflow:hidden;
   }
   .accordion-titel{
@@ -177,6 +178,8 @@
   .sw-groen{background:var(--groen);border:1px solid var(--groen-rand);}
   .sw-wit{background:var(--wit);border:1px solid var(--rand);}
   table{border-collapse:collapse;width:100%;font-size:16.6px;}
+  table.tabel-compact{width:auto;min-width:0;}
+  table.tabel-compact td.naam{text-align:left;padding-right:24px;}
   th{
     background:#f8f9fb;
     border:1px solid var(--rand);
@@ -215,7 +218,7 @@
     background:var(--accent);color:#fff;border:none;padding:8px 14px;border-radius:7px;
     font-size:13px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-block;
   }
-  .actie.secundair{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  .actie.secundair{background:var(--wit-gebroken);color:var(--accent);border:1px solid var(--accent);}
   .actie:hover{opacity:.9;}
   .settings{display:flex;gap:24px;flex-wrap:wrap;align-items:center;font-size:13px;}
   .settings .veld{display:flex;flex-direction:column;gap:4px;}
@@ -236,7 +239,7 @@
   }
   .rubricering-rij select{
     padding:5px 7px;border:1px solid var(--rand);border-radius:6px;
-    font-size:12.5px;background:#fff;min-width:150px;
+    font-size:12.5px;background:var(--wit-gebroken);min-width:150px;
   }
   .rubricering-rij em{color:var(--sub);font-style:normal;font-size:11.5px;}
   .verwijder-regel{
@@ -248,7 +251,7 @@
     max-width:640px;padding:10px;background:#fbfbfd;border:1px solid var(--rand);border-radius:8px;
   }
   .nieuwe-regel-form select, .nieuwe-regel-form input[type="text"]{
-    padding:6px 8px;border:1px solid var(--rand);border-radius:6px;font-size:12.5px;background:#fff;
+    padding:6px 8px;border:1px solid var(--rand);border-radius:6px;font-size:12.5px;background:var(--wit-gebroken);
   }
   .nieuwe-regel-form input[type="text"]{flex:1;min-width:160px;}
   .nieuwe-regel-aftrek{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--sub);white-space:nowrap;}
@@ -264,12 +267,15 @@
   .invoerform select, .invoerform input{
     padding:8px 9px;border:1px solid var(--rand);border-radius:6px;font-size:13.5px;background:var(--geel);
   }
-  .invoerform select{background:#fff;}
+  .invoerform select{background:var(--wit-gebroken);}
   #invStatus.opgeslagen{color:var(--pos);font-weight:600;}
   .tafel-transposed{overflow:visible;}
   .tafel-transposed table{table-layout:fixed;width:100%;font-size:15.2px;}
   .tafel-transposed th, .tafel-transposed td{width:auto;padding:0;}
   .tafel-transposed td.naam, .tafel-transposed th.th-sticky{width:270px;}
+  .tafel-transposed table.tabel-compact{table-layout:auto;width:auto;}
+  .tafel-transposed table.tabel-compact td.naam, .tafel-transposed table.tabel-compact th.th-sticky{width:auto;white-space:nowrap;padding-right:24px;}
+  .tafel-transposed table.tabel-compact td.wit, .tafel-transposed table.tabel-compact td.groen, .tafel-transposed table.tabel-compact th.th-totaal{white-space:nowrap;}
   .tafel-transposed td input{padding:5px 4px;font-size:15.2px;}
   .th-sticky, td.naam{
     background:#f8f9fb;text-align:left;padding:6px 8px;
@@ -292,7 +298,7 @@
   .th-totaal{background:#eef3f9;}
   .tafel-transposed td:not(.naam) input{text-align:right;}
   .tafel-transposed td.groen, .tafel-transposed td.wit{text-align:right;padding:6px 8px;}
-  tr.groep-scheiding td{background:#fff;border-top:1px solid var(--rand);border-bottom:1px solid var(--rand);padding:3px 8px;height:22px;text-align:left;}
+  tr.groep-scheiding td{background:var(--wit-gebroken);border-top:1px solid var(--rand);border-bottom:1px solid var(--rand);padding:3px 8px;height:22px;text-align:left;}
   tr.groep-scheiding{cursor:pointer;user-select:none;}
   tr.groep-scheiding:hover .groep-label{filter:brightness(0.95);}
   tr.groep-scheiding .groep-label{
@@ -345,14 +351,14 @@
   .mak-rij{display:flex;gap:20px;align-items:center;flex-wrap:wrap;font-size:13.5px;padding-top:6px;}
   .sidebar-links{display:flex;flex-direction:column;gap:9px;}
   .link-btn{
-    display:block;background:#fff;border:1.5px solid var(--accent);color:var(--accent);
+    display:block;background:var(--wit-gebroken);border:1.5px solid var(--accent);color:var(--accent);
     border-radius:8px;padding:9px 13px;
     font-size:13px;font-weight:600;text-decoration:none;text-align:left;
   }
   .link-btn:hover{background:var(--wit);}
   .mak-label{color:var(--sub);font-weight:600;}
   .mak-optie{display:flex;align-items:center;gap:5px;cursor:pointer;}
-  .mak-rij select{padding:6px 8px;border:1px solid var(--rand);border-radius:6px;font-size:13px;background:#fff;}
+  .mak-rij select{padding:6px 8px;border:1px solid var(--rand);border-radius:6px;font-size:13px;background:var(--wit-gebroken);}
   td.mak-hl{background:#ffe58a !important;box-shadow:inset 0 0 0 2px #e6a817;}
   td.mak-hl input{background:transparent;}
   .tt{position:relative;cursor:help;border-bottom:1px dotted var(--sub);}
@@ -373,6 +379,10 @@
     width:340px;font-size:13.5px;padding:11px 14px;
   }
   .jaar-kiezer-inline.klein{margin-bottom:10px;}
+  .weergave-toggle{display:inline-flex;border:1px solid var(--rand);border-radius:7px;overflow:hidden;}
+  .weergave-optie{background:var(--wit-gebroken);border:none;padding:7px 12px;font-size:12.5px;font-weight:600;color:var(--sub);cursor:pointer;}
+  .weergave-optie+.weergave-optie{border-left:1px solid var(--rand);}
+  .weergave-optie.actief{background:var(--accent);color:#fff;}
   textarea.plak-invoer{
     width:100%;min-height:70px;padding:8px;border:1px solid var(--rand);border-radius:6px;
     font-family:monospace;font-size:12.5px;resize:vertical;
@@ -381,7 +391,7 @@
 </head>
 <body>
 <div id="loginOverlay" style="position:fixed;inset:0;background:#e2edf9;z-index:1000;display:flex;align-items:center;justify-content:center;">
-  <div style="background:#fff;border:1px solid #dbe6f2;border-radius:12px;padding:32px;max-width:340px;width:90%;box-shadow:0 4px 16px rgba(31,58,95,0.10);">
+  <div style="background:var(--wit-gebroken);border:1px solid #dbe6f2;border-radius:12px;padding:32px;max-width:340px;width:90%;box-shadow:0 4px 16px rgba(31,58,95,0.10);">
     <div id="loginLaden" style="color:#7189a3;font-size:14px;text-align:center;">Laden...</div>
     <div id="loginFormulier" style="display:none;">
       <h2 style="margin:0 0 6px;font-size:20px;color:#1f3a5f;">Inloggen</h2>
@@ -435,45 +445,62 @@
       <select id="jaarSelectOverzicht"></select>
       <button class="jaar-nieuw" id="jaarToevoegenOverzicht" type="button" title="Nieuw jaar toevoegen">+</button>
     </div>
-    <div class="panel">
-      <h2>Locatie 207 &mdash; Maandoverzicht (met WKK)</h2>
-      <div class="legend">
-        <span><span class="swatch sw-geel"></span>invoer (meterstanden &amp; prijzen)</span>
-        <span><span class="swatch sw-groen"></span>rekenwaarden (automatisch)</span>
-        <span><span class="swatch sw-wit"></span>uitvoer / totaal</span>
-      </div>
-      <div class="toolbar toolbar-mak">
-        <div class="mak-rij">
-          <span class="mak-label">Markeer velden voor:</span>
-          <label class="mak-optie"><input type="radio" name="makBron" value="geen" checked> Geen</label>
-          <label class="mak-optie"><input type="radio" name="makBron" value="mps"> MPS</label>
-          <label class="mak-optie"><input type="radio" name="makBron" value="agro"> AgroEnergy</label>
-          <select id="makMaand"></select>
-        </div>
-        <button class="actie secundair" id="alleGroepenToggle" type="button">Alles inklappen</button>
-        <button class="actie secundair" id="exportCsv">Exporteer CSV</button>
-      </div>
-      <div class="tafel-scroll tafel-transposed">
-        <table>
-          <thead id="theadLoc207"></thead>
-          <tbody id="tbody"></tbody>
-        </table>
+    <div class="jaar-kiezer-inline klein" style="margin-bottom:16px;">
+      <label>Weergave</label>
+      <div class="weergave-toggle" id="overzichtWeergaveToggle">
+        <button type="button" class="weergave-optie" data-weergave="maand">Per maand (+ totaal)</button>
+        <button type="button" class="weergave-optie" data-weergave="jaar">Jaartotaal</button>
       </div>
     </div>
-    <div class="panel">
-      <h2>Locatie 250 &mdash; Maandoverzicht (zonder WKK)</h2>
-      <div class="legend">
-        <span><span class="swatch sw-geel"></span>invoer (verbruik &amp; kosten)</span>
-        <span><span class="swatch sw-groen"></span>rekenwaarden (automatisch)</span>
+    <div class="toolbar" style="margin-bottom:14px;">
+      <button class="actie secundair" id="alleGroepenToggle" type="button">Alles inklappen</button>
+    </div>
+    <div class="accordion-item open">
+      <button class="accordion-titel" type="button">Locatie 207 &mdash; Maandoverzicht (met WKK) <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="panel">
+          <div class="legend">
+            <span><span class="swatch sw-geel"></span>invoer (meterstanden &amp; prijzen)</span>
+            <span><span class="swatch sw-groen"></span>rekenwaarden (automatisch)</span>
+            <span><span class="swatch sw-wit"></span>uitvoer / totaal</span>
+          </div>
+          <div class="toolbar toolbar-mak">
+            <div class="mak-rij">
+              <span class="mak-label">Markeer velden voor:</span>
+              <label class="mak-optie"><input type="radio" name="makBron" value="geen" checked> Geen</label>
+              <label class="mak-optie"><input type="radio" name="makBron" value="mps"> MPS</label>
+              <label class="mak-optie"><input type="radio" name="makBron" value="agro"> AgroEnergy</label>
+              <select id="makMaand"></select>
+            </div>
+            <button class="actie secundair" id="exportCsv">Exporteer CSV</button>
+          </div>
+          <div class="tafel-scroll tafel-transposed">
+            <table>
+              <thead id="theadLoc207"></thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <div class="toolbar">
-        <button class="actie secundair" id="exportCsv250">Exporteer CSV</button>
-      </div>
-      <div class="tafel-scroll tafel-transposed">
-        <table>
-          <thead id="theadLoc250"></thead>
-          <tbody id="tbody250"></tbody>
-        </table>
+    </div>
+    <div class="accordion-item open">
+      <button class="accordion-titel" type="button">Locatie 250 &mdash; Maandoverzicht (zonder WKK) <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="panel">
+          <div class="legend">
+            <span><span class="swatch sw-geel"></span>invoer (verbruik &amp; kosten)</span>
+            <span><span class="swatch sw-groen"></span>rekenwaarden (automatisch)</span>
+          </div>
+          <div class="toolbar">
+            <button class="actie secundair" id="exportCsv250">Exporteer CSV</button>
+          </div>
+          <div class="tafel-scroll tafel-transposed">
+            <table>
+              <thead id="theadLoc250"></thead>
+              <tbody id="tbody250"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -513,6 +540,18 @@
               <tbody id="tbodyWkkKost"></tbody>
             </table>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-titel" type="button">RVO Onderzoeksplicht 207: Energiebalans <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="sub" style="margin-bottom:14px;">Energiebalans in kg CO&#8322; per maand &mdash; aanvoer (inkoop min verkoop) hierboven, verbruik (waar de CO&#8322; naartoe gaat, direct opgesplitst naar categorie) hieronder. Beweeg met de muis over een waarde om het onderliggende aantal m&sup3; gas of kWh stroom te zien. CO&#8322;-factor gas: 31,65 &divide; 1000 &times; m&sup3; &times; 56,2. CO&#8322;-factor elektra: 3,6 &divide; 1000 &times; kWh &times; 56,2. Data komt uit &quot;Locatie 207&quot; hierboven, voor het daar gekozen jaar. De opsplitsing van "overige bedrijfslast" (percentages) stel je in bij Instellingen &rarr; Omrekenfactoren.</div>
+        <div class="tafel-scroll tafel-transposed">
+          <table>
+            <thead id="theadRvo207"></thead>
+            <tbody id="tbodyRvo207"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -776,18 +815,47 @@
         <div class="settings">
           <div class="veld">
             <label>Warmte uit 1 m&sup3; gas &mdash; ketel</label>
-            <input type="number" step="0.01" id="ketelFactor">
+            <input type="number" step="0.0001" id="ketelFactor">
           </div>
           <div class="veld">
             <label>Warmte uit 1 m&sup3; gas &mdash; WKK</label>
-            <input type="number" step="0.01" id="wkkFactor">
+            <input type="number" step="0.0001" id="wkkFactor">
           </div>
           <div class="veld">
             <label>Factor WKK gas (kWh productie per m&sup3;)</label>
-            <input type="number" step="0.01" id="wkkGasFactor">
+            <input type="number" step="0.0001" id="wkkGasFactor">
           </div>
         </div>
-        <div class="note">WKK gas (m&sup3;) = KWH productie &divide; factor WKK gas. Ketelgas = Gas totaal &minus; WKK gas.</div>
+        <div class="note">WKK gas (m&sup3;) = KWH productie &divide; factor WKK gas. Ketelgas = Gas totaal &minus; WKK gas. Tip: voor de RVO-energiebalans (CO&#8322;) sluit de "Overige bedrijfslast"-regel exact als (Warmte uit 1 m³ gas &mdash; WKK) + (Factor WKK gas) samen precies 31,65 &divide; 3,6 = 8,7917 zijn.</div>
+        <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Opsplitsing overige bedrijfslast (RVO Onderzoeksplicht 207)</div>
+        <div class="invoerform invoervelden" style="max-width:640px;">
+          <div class="veld">
+            <label>Belichting (%)</label>
+            <input type="number" step="1" min="0" max="100" id="rvoPctBelichting">
+          </div>
+          <div class="veld">
+            <label>Automatisering (%)</label>
+            <input type="number" step="1" min="0" max="100" id="rvoPctAutomatisering">
+          </div>
+          <div class="veld">
+            <label>Drogers (%)</label>
+            <input type="number" step="1" min="0" max="100" id="rvoPctDrogers">
+          </div>
+          <div class="veld">
+            <label>Overige (%)</label>
+            <input type="number" step="1" min="0" max="100" id="rvoPctOverig">
+          </div>
+        </div>
+        <div class="sub" id="rvoPctSomStatus"></div>
+        <div class="sub" style="margin-top:18px;margin-bottom:8px;font-weight:600;color:var(--tekst);">Energieverbruik verdeling per teelt (% per maand van het aardgasequivalent)</div>
+        <div class="sub" style="margin-bottom:10px;">Per teelt: aantal stuks en per maand het percentage van het totale aardgasequivalent (RVO Onderzoeksplicht 207) dat aan deze teelt toegerekend wordt. De percentages per maand moeten samen 100% zijn.</div>
+        <div class="tafel-scroll tafel-transposed">
+          <table class="tabel-compact">
+            <thead id="theadTeeltVerdeling"></thead>
+            <tbody id="tbodyTeeltVerdeling"></tbody>
+          </table>
+        </div>
+        <div class="sub" id="teeltPctSomStatus" style="margin-top:8px;"></div>
       </div>
     </div>
     <div class="accordion-item">
@@ -870,7 +938,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 22 juli 2026, 12:45</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 09:35</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -1038,7 +1106,15 @@ const MARKT_PRIJZEN = {
     { kwartaal:'Q1 2031', gas:24.210, elektra:null, peakload:null, baseload:null, offpeak:null }
   ]
 };
+// Verdeling energieverbruik per teelt (aantal stuks + % per maand van het totaal aardgasequivalent).
+const TEELTEN = [
+  { key:'pluggen',   naam:'Pluggen',   stuks:10000000, pct:[35,55,55,60,90,90,90,90,60,20,20,20] },
+  { key:'p6',        naam:'P6',        stuks:400000,   pct:[5,5,5,0,5,5,5,5,20,40,40,40] },
+  { key:'p10',       naam:'P10',       stuks:240000,   pct:[30,20,20,20,5,5,5,5,20,40,40,40] },
+  { key:'hortensia', naam:'Hortensia', stuks:35000,    pct:[30,20,20,20,0,0,0,0,0,0,0,0] }
+];
 const seedData = {
+  overzichtWeergave: 'maand',
   ketelFactor: 9.28,
   wkkFactor: 5.94,
   wkkGasFactor: 2.85,
@@ -1046,6 +1122,10 @@ const seedData = {
   wkkKostGasPerUur: 110,
   wkkKostOnderhoud: 6,
   wkkKostGasprijsInkoop: 0,
+  rvoPctBelichting: 70,
+  rvoPctAutomatisering: 11,
+  rvoPctDrogers: 14,
+  rvoPctOverig: 5,
   wp2Gasverbruik: 0,
   wp2Stroomverbruik: 0,
   wp2PctVervangen: 100,
@@ -1131,6 +1211,10 @@ const seedData = {
     }
   }
 };
+TEELTEN.forEach(t=>{
+  seedData['teelt_'+t.key+'_stuks'] = t.stuks;
+  t.pct.forEach((p,i)=>{ seedData['teelt_'+t.key+'_pct_'+i] = p; });
+});
 function normaliseerState(s){
   if(!s.jaren){
     if(!s.maanden250) s.maanden250 = legeJaar250();
@@ -1194,8 +1278,16 @@ function normaliseerState(s){
     if(r.baseload===undefined) r.baseload = null;
     if(r.offpeak===undefined) r.offpeak = null;
   });
-  ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop'].forEach(veld=>{
+  ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop','rvoPctBelichting','rvoPctAutomatisering','rvoPctDrogers','rvoPctOverig','overzichtWeergave'].forEach(veld=>{
     if(s[veld]===undefined) s[veld] = seedData[veld];
+  });
+  TEELTEN.forEach(t=>{
+    const stuksVeld = 'teelt_'+t.key+'_stuks';
+    if(s[stuksVeld]===undefined) s[stuksVeld] = seedData[stuksVeld];
+    for(let i=0;i<12;i++){
+      const pctVeld = 'teelt_'+t.key+'_pct_'+i;
+      if(s[pctVeld]===undefined) s[pctVeld] = seedData[pctVeld];
+    }
   });
   if(!s.maandNamen) s.maandNamen = maandNamenLijst;
   if(!s.factCategorie) s.factCategorie = {};
@@ -1347,6 +1439,7 @@ function bereken250(m){
   return {gasprijs,warmte,elektraprijs,totaal};
 }
 function render(){
+  syncOverzichtWeergaveToggle();
   renderTable();
   renderTable250();
   renderTableFact();
@@ -1356,6 +1449,8 @@ function render(){
   renderWpScenario();
   renderTarieven();
   renderWkkKostprijs();
+  renderTeeltVerdeling();
+  renderRvoOnderzoeksplicht();
   verversMarkering();
   saveState();
 }
@@ -1422,8 +1517,9 @@ const uitlegVeld207 = {
   kwhPerUur:    'KWH/draaiuur = KWH productie ÷ Draaiuren',
   gasPerUur:    'Gas/draaiuur = WKK gas ÷ Draaiuren'
 };
-const groepStatus = { 207:{}, 250:{}, fact:{}, factSub:{} };
-let alleGroepenIngeklapt = false;
+const groepStatus = { 207:{}, 250:{}, fact:{}, factSub:{}, rvo:{} };
+let overzichtNiveau = 2;
+const overzichtNiveauLabels = ['Alles uitklappen', 'Details uitklappen', 'Alles inklappen'];
 let wp2TabelHuidigIngeklapt = true;
 let wp2TabelBesparingenIngeklapt = true;
 let wp2TabelDrogerIngeklapt = true;
@@ -1444,6 +1540,9 @@ const groepenDefinitie250 = [
 // "Alles in-/uitklappen" gewoon zoals altijd — dit bepaalt alleen de openingsstand.
 groepenDefinitie207.forEach(g=>{ if(g.naam) groepStatus[207][g.naam] = true; });
 groepenDefinitie250.forEach(g=>{ if(g.naam) groepStatus[250][g.naam] = true; });
+groepStatus.rvo['Aanvoer'] = false;
+groepStatus.rvo['Verbruik'] = false;
+groepStatus.rvo['Teelt'] = false;
 function waarde207(key,m,b){
   switch(key){
     case 'prod': return m.prod;
@@ -1479,8 +1578,9 @@ function formatWaarde(v, opmaak){
   const tekst = opmaak==='dec1' ? fmt(v,1) : fmt(v,0);
   return v<0 ? `<span class="neg">${tekst}</span>` : tekst;
 }
-function totaalVoorVeld207(veld){
-  const maanden = maandenNu();
+function alleJarenSorted(){ return Object.keys(state.jaren).sort((a,b)=>a-b); }
+function totaalVoorVeld207(veld, maandenOverride){
+  const maanden = maandenOverride || maandenNu();
   const bs = maanden.map(bereken);
   const som = key => maanden.reduce((s,m,i)=> s + waarde207(key,m,bs[i]), 0);
   let v;
@@ -1502,14 +1602,22 @@ function totaalVoorVeld207(veld){
 function renderTable(){
   const thead = document.getElementById('theadLoc207');
   const tbody = document.getElementById('tbody');
+  const jaarWeergave = state.overzichtWeergave === 'jaar';
+  thead.closest('table').classList.toggle('tabel-compact', jaarWeergave);
   const bs = maandenNu().map(bereken);
+  const jarenLijst = alleJarenSorted();
   let headHtml = '<tr><th class="th-sticky th-hoek"></th>';
-  maandenNu().forEach((m,i)=>{
-    headHtml += `<th><div class="th-maand"><input data-f="naam" data-i="${i}" value="${m.naam}" readonly></div></th>`;
-  });
-  headHtml += '<th class="th-totaal">Totaal</th></tr>';
+  if(jaarWeergave){
+    jarenLijst.forEach(jaar=> headHtml += `<th class="th-totaal">${jaar}</th>`);
+  } else {
+    maandenNu().forEach((m,i)=>{
+      headHtml += `<th><div class="th-maand"><input data-f="naam" data-i="${i}" value="${m.naam}" readonly></div></th>`;
+    });
+    headHtml += '<th class="th-totaal">Totaal</th>';
+  }
+  headHtml += '</tr>';
   thead.innerHTML = headHtml;
-  const kolomAantal = maandenNu().length + 2;
+  const kolomAantal = 1 + (jaarWeergave ? jarenLijst.length : maandenNu().length + 1);
   let bodyHtml = '';
   groepenDefinitie207.forEach((groep,gi)=>{
     const ingeklapt = !!groepStatus[207][groep.naam];
@@ -1521,22 +1629,28 @@ function renderTable(){
       const uitleg = uitlegVeld207[veld.key];
       const labelHtml = uitleg ? `<span class="tt" data-tt="${uitleg}">${veld.label}</span>` : veld.label;
       bodyHtml += `<tr><td class="naam">${labelHtml}</td>`;
-      maandenNu().forEach((m,i)=>{
-        const b = bs[i];
-        if(veld.type==='geel'){
-          const isEuro = (veld.fmt||'').indexOf('euro')===0;
-          const heel = Math.round(waarde207(veld.key,m,b));
-          const input = `<input type="text" inputmode="numeric" class="dz-invoer${heel<0?' neg':''}" data-f="${veld.key}" data-i="${i}" value="${heel.toLocaleString('nl-NL')}">`;
-          bodyHtml += isEuro
-            ? `<td class="geel" data-veld="${veld.key}" data-mi="${i}"><div class="euro-invoer"><span class="eur-teken">€</span>${input}</div></td>`
-            : `<td class="geel" data-veld="${veld.key}" data-mi="${i}">${input}</td>`;
-        } else {
-          const v = waarde207(veld.key,m,b);
-          const negCls = (veld.key==='netto' && v<0) ? 'neg' : '';
-          bodyHtml += `<td class="${veld.type} ${negCls}" data-veld="${veld.key}" data-mi="${i}">${formatWaarde(v, veld.fmt)}</td>`;
-        }
-      });
-      bodyHtml += `<td class="wit th-totaal">${totaalVoorVeld207(veld)}</td>`;
+      if(jaarWeergave){
+        jarenLijst.forEach(jaar=>{
+          bodyHtml += `<td class="wit th-totaal">${totaalVoorVeld207(veld, state.jaren[jaar].maanden)}</td>`;
+        });
+      } else {
+        maandenNu().forEach((m,i)=>{
+          const b = bs[i];
+          if(veld.type==='geel'){
+            const isEuro = (veld.fmt||'').indexOf('euro')===0;
+            const heel = Math.round(waarde207(veld.key,m,b));
+            const input = `<input type="text" inputmode="numeric" class="dz-invoer${heel<0?' neg':''}" data-f="${veld.key}" data-i="${i}" value="${heel.toLocaleString('nl-NL')}">`;
+            bodyHtml += isEuro
+              ? `<td class="geel" data-veld="${veld.key}" data-mi="${i}"><div class="euro-invoer"><span class="eur-teken">€</span>${input}</div></td>`
+              : `<td class="geel" data-veld="${veld.key}" data-mi="${i}">${input}</td>`;
+          } else {
+            const v = waarde207(veld.key,m,b);
+            const negCls = (veld.key==='netto' && v<0) ? 'neg' : '';
+            bodyHtml += `<td class="${veld.type} ${negCls}" data-veld="${veld.key}" data-mi="${i}">${formatWaarde(v, veld.fmt)}</td>`;
+          }
+        });
+        bodyHtml += `<td class="wit th-totaal">${totaalVoorVeld207(veld)}</td>`;
+      }
       bodyHtml += '</tr>';
     });
   });
@@ -1644,8 +1758,8 @@ function waarde250(key,m,b){
     default: return 0;
   }
 }
-function totaalVoorVeld250(veld){
-  const maanden = maanden250Nu();
+function totaalVoorVeld250(veld, maandenOverride){
+  const maanden = maandenOverride || maanden250Nu();
   const bs = maanden.map(bereken250);
   const som = key => maanden.reduce((s,m,i)=> s + waarde250(key,m,bs[i]), 0);
   let v;
@@ -1665,14 +1779,22 @@ function totaalVoorVeld250(veld){
 function renderTable250(){
   const thead = document.getElementById('theadLoc250');
   const tbody = document.getElementById('tbody250');
+  const jaarWeergave = state.overzichtWeergave === 'jaar';
+  thead.closest('table').classList.toggle('tabel-compact', jaarWeergave);
   const bs = maanden250Nu().map(bereken250);
+  const jarenLijst = alleJarenSorted();
   let headHtml = '<tr><th class="th-sticky th-hoek"></th>';
-  maanden250Nu().forEach((m,i)=>{
-    headHtml += `<th><div class="th-maand"><input data-f="naam" data-i="${i}" value="${m.naam}" readonly></div></th>`;
-  });
-  headHtml += '<th class="th-totaal">Totaal</th></tr>';
+  if(jaarWeergave){
+    jarenLijst.forEach(jaar=> headHtml += `<th class="th-totaal">${jaar}</th>`);
+  } else {
+    maanden250Nu().forEach((m,i)=>{
+      headHtml += `<th><div class="th-maand"><input data-f="naam" data-i="${i}" value="${m.naam}" readonly></div></th>`;
+    });
+    headHtml += '<th class="th-totaal">Totaal</th>';
+  }
+  headHtml += '</tr>';
   thead.innerHTML = headHtml;
-  const kolomAantal = maanden250Nu().length + 2;
+  const kolomAantal = 1 + (jaarWeergave ? jarenLijst.length : maanden250Nu().length + 1);
   let bodyHtml = '';
   groepenDefinitie250.forEach((groep,gi)=>{
     const ingeklapt = !!groepStatus[250][groep.naam];
@@ -1684,27 +1806,33 @@ function renderTable250(){
       const uitleg = uitlegVeld250[veld.key];
       const labelHtml = uitleg ? `<span class="tt" data-tt="${uitleg}">${veld.label}</span>` : veld.label;
       bodyHtml += `<tr><td class="naam">${labelHtml}</td>`;
-      maanden250Nu().forEach((m,i)=>{
-        const b = bs[i];
-        if(veld.type==='geel'){
-          const isEuro = (veld.fmt||'').indexOf('euro')===0;
-          const ruw = waarde250(veld.key,m,b);
-          if(veld.dz){
-            const heel = Math.round(ruw);
-            const input = `<input type="text" inputmode="numeric" class="dz-invoer${heel<0?' neg':''}" data-f="${veld.key}" data-i="${i}" value="${heel.toLocaleString('nl-NL')}">`;
-            bodyHtml += isEuro
-              ? `<td class="geel" data-veld="${veld.key}" data-mi="${i}"><div class="euro-invoer"><span class="eur-teken">€</span>${input}</div></td>`
-              : `<td class="geel" data-veld="${veld.key}" data-mi="${i}">${input}</td>`;
+      if(jaarWeergave){
+        jarenLijst.forEach(jaar=>{
+          bodyHtml += `<td class="wit th-totaal">${totaalVoorVeld250(veld, state.jaren[jaar].maanden250)}</td>`;
+        });
+      } else {
+        maanden250Nu().forEach((m,i)=>{
+          const b = bs[i];
+          if(veld.type==='geel'){
+            const isEuro = (veld.fmt||'').indexOf('euro')===0;
+            const ruw = waarde250(veld.key,m,b);
+            if(veld.dz){
+              const heel = Math.round(ruw);
+              const input = `<input type="text" inputmode="numeric" class="dz-invoer${heel<0?' neg':''}" data-f="${veld.key}" data-i="${i}" value="${heel.toLocaleString('nl-NL')}">`;
+              bodyHtml += isEuro
+                ? `<td class="geel" data-veld="${veld.key}" data-mi="${i}"><div class="euro-invoer"><span class="eur-teken">€</span>${input}</div></td>`
+                : `<td class="geel" data-veld="${veld.key}" data-mi="${i}">${input}</td>`;
+            } else {
+              const step = veld.fmt==='euro3' ? '0.001' : '0.01';
+              bodyHtml += `<td class="geel" data-veld="${veld.key}" data-mi="${i}"><div class="euro-invoer"><span class="eur-teken">€</span><input type="number" class="${ruw<0?'neg':''}" step="${step}" data-f="${veld.key}" data-i="${i}" value="${ruw}"></div></td>`;
+            }
           } else {
-            const step = veld.fmt==='euro3' ? '0.001' : '0.01';
-            bodyHtml += `<td class="geel" data-veld="${veld.key}" data-mi="${i}"><div class="euro-invoer"><span class="eur-teken">€</span><input type="number" class="${ruw<0?'neg':''}" step="${step}" data-f="${veld.key}" data-i="${i}" value="${ruw}"></div></td>`;
+            const v = waarde250(veld.key,m,b);
+            bodyHtml += `<td class="${veld.type}" data-veld="${veld.key}" data-mi="${i}">${formatWaarde(v, veld.fmt)}</td>`;
           }
-        } else {
-          const v = waarde250(veld.key,m,b);
-          bodyHtml += `<td class="${veld.type}" data-veld="${veld.key}" data-mi="${i}">${formatWaarde(v, veld.fmt)}</td>`;
-        }
-      });
-      bodyHtml += `<td class="wit th-totaal">${totaalVoorVeld250(veld)}</td>`;
+        });
+        bodyHtml += `<td class="wit th-totaal">${totaalVoorVeld250(veld)}</td>`;
+      }
       bodyHtml += '</tr>';
     });
   });
@@ -2601,10 +2729,19 @@ document.getElementById('downloadAppHtml').addEventListener('click', async ()=>{
   setTimeout(()=>{ statusEl.textContent=''; }, 6000);
 });
 document.getElementById('alleGroepenToggle').addEventListener('click', ()=>{
-  alleGroepenIngeklapt = !alleGroepenIngeklapt;
-  groepenDefinitie207.forEach(g=>{ if(g.naam) groepStatus[207][g.naam] = alleGroepenIngeklapt; });
-  groepenDefinitie250.forEach(g=>{ if(g.naam) groepStatus[250][g.naam] = alleGroepenIngeklapt; });
-  document.getElementById('alleGroepenToggle').textContent = alleGroepenIngeklapt ? 'Alles uitklappen' : 'Alles inklappen';
+  overzichtNiveau = (overzichtNiveau + 1) % 3;
+  const accordionOpen = overzichtNiveau >= 1;
+  const groepenOpen = overzichtNiveau >= 2;
+  // Niveau 0: alle 4 blokken (Locatie 207, Locatie 250, WKK kostprijs, RVO) helemaal dicht (alleen titels).
+  // Niveau 1: blokken open, maar de groepen erbinnen nog dicht (1 verdieping verder).
+  // Niveau 2: ook de groepen open, alles volledig uitgeklapt (laatste verdieping).
+  document.querySelectorAll('#overzicht > .accordion-item').forEach(it=> it.classList.toggle('open', accordionOpen));
+  groepenDefinitie207.forEach(g=>{ if(g.naam) groepStatus[207][g.naam] = !groepenOpen; });
+  groepenDefinitie250.forEach(g=>{ if(g.naam) groepStatus[250][g.naam] = !groepenOpen; });
+  groepStatus.rvo['Aanvoer'] = !groepenOpen;
+  groepStatus.rvo['Verbruik'] = !groepenOpen;
+  groepStatus.rvo['Teelt'] = !groepenOpen;
+  document.getElementById('alleGroepenToggle').textContent = overzichtNiveauLabels[overzichtNiveau];
   render();
 });
 document.getElementById('exportCsv').addEventListener('click', exportCsv);
@@ -2649,6 +2786,17 @@ document.getElementById('wkkGasFactor').value = state.wkkGasFactor;
 });
 // ---------- WKK kostprijs & vernietigingsprijs: invoervelden ----------
 ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop'].forEach(veld=>{
+  const el = document.getElementById(veld);
+  if(!el) return;
+  el.value = state[veld];
+  el.addEventListener('focus', ()=> el.select());
+  el.addEventListener('change', e=>{
+    state[veld] = parseFloat(e.target.value.replace(',','.')) || 0;
+    render();
+  });
+});
+// ---------- RVO Onderzoeksplicht 207: opsplitsing overige bedrijfslast (percentages) ----------
+['rvoPctBelichting','rvoPctAutomatisering','rvoPctDrogers','rvoPctOverig'].forEach(veld=>{
   const el = document.getElementById(veld);
   if(!el) return;
   el.value = state[veld];
@@ -2719,6 +2867,18 @@ document.getElementById('jaarSelectFacturen').addEventListener('change', e=>{
   state.huidigJaarFacturen = e.target.value;
   render();
 });
+// ---------- Weergave-toggle "Per maand (+ totaal)" / "Jaartotaal" (geldt voor heel DNO, MPS, AGRO) ----------
+document.querySelectorAll('#overzichtWeergaveToggle .weergave-optie').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    state.overzichtWeergave = btn.getAttribute('data-weergave');
+    render();
+  });
+});
+function syncOverzichtWeergaveToggle(){
+  document.querySelectorAll('#overzichtWeergaveToggle .weergave-optie').forEach(btn=>{
+    btn.classList.toggle('actief', btn.getAttribute('data-weergave') === (state.overzichtWeergave||'maand'));
+  });
+}
 function nieuwJaarToevoegen(jaarVeld){
   const jaren = Object.keys(state.jaren).map(Number);
   const voorstelJaar = Math.max(...jaren) + 1;
@@ -3334,22 +3494,11 @@ function renderTarieven(){
   renderPositieTabel('elektra');
 }
 // ---------- WKK kostprijs & vernietigingsprijs elektriciteit ----------
-function renderWkkKostprijs(){
-  const thead = document.getElementById('theadWkkKost');
-  const tbody = document.getElementById('tbodyWkkKost');
-  const jaarLabel = document.getElementById('wkkKostJaarLabel');
-  if(!thead || !tbody) return;
-  const jaar = state.huidigJaarOverzicht;
-  if(jaarLabel) jaarLabel.textContent = jaar;
-  const maanden = maandenNu();
-  const vermogen = state.wkkKostVermogen || 0;
+function berekenWkkKostJaar(jaar, maanden){
   const gasPerUur = state.wkkKostGasPerUur || 0;
   const onderhoud = state.wkkKostOnderhoud || 0;
   const gasprijsInkoop = state.wkkKostGasprijsInkoop || 0;
-  let headHtml = '<tr><th class="th-sticky th-hoek">Maand</th>';
-  maanden.forEach(m=> headHtml += `<th style="text-align:right;padding:6px 8px;">${m.naam}</th>`);
-  headHtml += `<th class="th-totaal">${jaar}</th></tr>`;
-  thead.innerHTML = headHtml;
+  const vermogen = state.wkkKostVermogen || 0;
   let cumulatiefVoor = 0;
   const rijen = maanden.map(m=>{
     const ebOverBlok = gasPerUur>0 ? ebGasKostenOverRange(jaar, cumulatiefVoor, cumulatiefVoor+gasPerUur) : 0;
@@ -3370,24 +3519,376 @@ function renderWkkKostprijs(){
     if(totDraaiuren>0) return rijen.reduce((s,r)=> s + r[key]*r.draaiuren, 0) / totDraaiuren;
     return rijen.reduce((s,r)=> s + r[key], 0) / (rijen.length||1);
   }
-  const gemKostprijs = gemiddeld('kostprijs');
-  const gemVernietiging = gemiddeld('vernietiging');
-  const gemEb = gemiddeld('ebPerM3');
+  return {
+    rijen, totDraaiuren,
+    gemKostprijs: gemiddeld('kostprijs'),
+    gemVernietiging: gemiddeld('vernietiging'),
+    gemEb: gemiddeld('ebPerM3')
+  };
+}
+function renderWkkKostprijs(){
+  const thead = document.getElementById('theadWkkKost');
+  const tbody = document.getElementById('tbodyWkkKost');
+  const jaarLabel = document.getElementById('wkkKostJaarLabel');
+  if(!thead || !tbody) return;
+  const jaar = state.huidigJaarOverzicht;
+  if(jaarLabel) jaarLabel.textContent = jaar;
+  const jaarWeergave = state.overzichtWeergave === 'jaar';
+  thead.closest('table').classList.toggle('tabel-compact', jaarWeergave);
+  const maanden = maandenNu();
+  const jarenLijst = alleJarenSorted();
+  let headHtml = '<tr><th class="th-sticky th-hoek">Maand</th>';
+  if(jaarWeergave){
+    jarenLijst.forEach(j=> headHtml += `<th class="th-totaal">${j}</th>`);
+  } else {
+    maanden.forEach(m=> headHtml += `<th style="text-align:right;padding:6px 8px;">${m.naam}</th>`);
+    headHtml += `<th class="th-totaal">${jaar}</th>`;
+  }
+  headHtml += '</tr>';
+  thead.innerHTML = headHtml;
+  const jaarUitkomsten = jaarWeergave
+    ? jarenLijst.map(j=> berekenWkkKostJaar(j, state.jaren[j].maanden))
+    : null;
+  const { rijen, totDraaiuren, gemKostprijs, gemVernietiging, gemEb } = berekenWkkKostJaar(jaar, maanden);
   const naamTt = (label, uitleg) => `<td class="naam"><span class="tt tt-formule" data-tt="${uitleg}">${label}</span></td>`;
   let bodyHtml = '';
   bodyHtml += `<tr>${naamTt('Draaiuren', 'Werkelijke draaiuren van de WKK die maand, uit "DNO, MPS, AGRO" → Locatie 207.')}`;
-  rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.draaiuren,0)}</td>`);
-  bodyHtml += `<td class="wit th-totaal">${fmt(totDraaiuren,0)}</td></tr>`;
+  if(jaarWeergave) jaarUitkomsten.forEach(u=> bodyHtml += `<td class="wit th-totaal">${fmt(u.totDraaiuren,0)}</td>`);
+  else{
+    rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.draaiuren,0)}</td>`);
+    bodyHtml += `<td class="wit th-totaal">${fmt(totDraaiuren,0)}</td>`;
+  }
+  bodyHtml += '</tr>';
   bodyHtml += `<tr>${naamTt('EB/ODE gas (marginaal, ct/m³)', 'Energiebelasting/ODE over het gasverbruik van 1 draaiuur, berekend als het verschil tussen de EB op de cumulatieve gasstand vóór deze maand en die stand plus dit draaiuur-gasverbruik.')}`;
-  rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.ebPerM3*100,2)}</td>`);
-  bodyHtml += `<td class="wit th-totaal">${fmt(gemEb*100,2)}</td></tr>`;
+  if(jaarWeergave) jaarUitkomsten.forEach(u=> bodyHtml += `<td class="wit th-totaal">${fmt(u.gemEb*100,2)}</td>`);
+  else{
+    rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.ebPerM3*100,2)}</td>`);
+    bodyHtml += `<td class="wit th-totaal">${fmt(gemEb*100,2)}</td>`;
+  }
+  bodyHtml += '</tr>';
   bodyHtml += `<tr class="rubriek-rij">${naamTt('Kostprijs (€/MWh)', 'Kostprijs van 1 MWh WKK-stroom: (gaskosten + onderhoud van 1 draaiuur) min de waarde van de warmte die je anders met de ketel had moeten opwekken, gedeeld door het vermogen.')}`;
-  rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(r.kostprijs,0)}</td>`);
-  bodyHtml += `<td class="wit th-totaal">${fmt(gemKostprijs,0)}</td></tr>`;
+  if(jaarWeergave) jaarUitkomsten.forEach(u=> bodyHtml += `<td class="wit th-totaal">${fmt(u.gemKostprijs,0)}</td>`);
+  else{
+    rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(r.kostprijs,0)}</td>`);
+    bodyHtml += `<td class="wit th-totaal">${fmt(gemKostprijs,0)}</td>`;
+  }
+  bodyHtml += '</tr>';
   bodyHtml += `<tr class="rubriek-rij">${naamTt('Vernietigingsprijs (€/MWh)', 'Ondergrens waarboven de WKK moet blijven draaien, óók zonder warmtevraag: (gaskosten + onderhoud van 1 draaiuur) gedeeld door het vermogen, zonder de warmte te crediteren.')}`;
-  rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(r.vernietiging,0)}</td>`);
-  bodyHtml += `<td class="wit th-totaal">${fmt(gemVernietiging,0)}</td></tr>`;
+  if(jaarWeergave) jaarUitkomsten.forEach(u=> bodyHtml += `<td class="wit th-totaal">${fmt(u.gemVernietiging,0)}</td>`);
+  else{
+    rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(r.vernietiging,0)}</td>`);
+    bodyHtml += `<td class="wit th-totaal">${fmt(gemVernietiging,0)}</td>`;
+  }
+  bodyHtml += '</tr>';
   tbody.innerHTML = bodyHtml;
+}
+// ---------- RVO Onderzoeksplicht 207: energiebalans in kg CO2 ----------
+// CO2 gas (kg) = 31,65 ÷ 1000 (GJ per m³, calorische bovenwaarde aardgas) × m³ × 56,2 (kg CO2/GJ).
+// CO2 elektra (kg) = 3,6 ÷ 1000 (GJ per kWh, 1 kWh = 3,6 MJ) × kWh × 56,2 (kg CO2/GJ).
+function co2Gas(m3){ return (31.65/1000) * (m3||0) * 56.2; }
+function co2Elektra(kwh){ return (3.6/1000) * (kwh||0) * 56.2; }
+function co2NaarAardgas(co2kg){ return (co2kg||0) / ((31.65/1000) * 56.2); }
+function berekenRvoJaarTotalen(maanden, pct){
+  const som = {gas:0, stroomInkoop:0, teruggeleverd:0, ketelgas:0, gasWarmte:0,
+    co2Gas:0, co2StroomInkoop:0, co2Teruggeleverd:0, co2Ketelgas:0, co2GasWarmte:0,
+    co2Aanvoer:0, co2OverigeBedrijfslast:0};
+  maanden.forEach(m=>{
+    const gas = m.gastot||0;
+    const stroomInkoop = m.inkoop||0;
+    const teruggeleverd = -(m.geleverd||0);
+    const b = bereken(m);
+    const ketelgas = b.ketelgas||0;
+    const gasWarmte = b.gasWarmte||0;
+    const co2Gastot = co2Gas(gas);
+    const co2StroomInkoopM = co2Elektra(stroomInkoop);
+    const co2TeruggeleverdM = co2Elektra(teruggeleverd);
+    const co2Ketelgas = co2Gas(ketelgas);
+    const co2GasWarmte = co2Gas(gasWarmte);
+    const co2Aanvoer = co2Gastot + co2StroomInkoopM + co2TeruggeleverdM;
+    const co2OverigeBedrijfslast = co2Aanvoer - co2Ketelgas - co2GasWarmte;
+    som.gas += gas; som.stroomInkoop += stroomInkoop; som.teruggeleverd += teruggeleverd;
+    som.ketelgas += ketelgas; som.gasWarmte += gasWarmte;
+    som.co2Gas += co2Gastot; som.co2StroomInkoop += co2StroomInkoopM; som.co2Teruggeleverd += co2TeruggeleverdM;
+    som.co2Ketelgas += co2Ketelgas; som.co2GasWarmte += co2GasWarmte;
+    som.co2Aanvoer += co2Aanvoer; som.co2OverigeBedrijfslast += co2OverigeBedrijfslast;
+  });
+  som.belichtingCo2 = som.co2OverigeBedrijfslast * pct.belichting/100;
+  som.automatiseringCo2 = som.co2OverigeBedrijfslast * pct.automatisering/100;
+  som.drogersCo2 = som.co2OverigeBedrijfslast * pct.drogers/100;
+  som.overigCo2 = som.co2OverigeBedrijfslast * pct.overig/100;
+  som.co2VerbruikTotaal = som.co2Ketelgas + som.co2GasWarmte + som.co2OverigeBedrijfslast;
+  som.aardgasEquivalent = co2NaarAardgas(som.co2VerbruikTotaal);
+  return som;
+}
+// Aardgasequivalent (m³) per maand voor een willekeurig jaar (voor de verdeling per teelt).
+function aardgasEquivalentPerMaand(maanden){
+  return maanden.map(m=>{
+    const gas = m.gastot||0;
+    const stroomInkoop = m.inkoop||0;
+    const teruggeleverd = -(m.geleverd||0);
+    const b = bereken(m);
+    const ketelgas = b.ketelgas||0;
+    const gasWarmte = b.gasWarmte||0;
+    const co2Gastot = co2Gas(gas);
+    const co2StroomInkoopM = co2Elektra(stroomInkoop);
+    const co2TeruggeleverdM = co2Elektra(teruggeleverd);
+    const co2Ketelgas = co2Gas(ketelgas);
+    const co2GasWarmte = co2Gas(gasWarmte);
+    const co2Aanvoer = co2Gastot + co2StroomInkoopM + co2TeruggeleverdM;
+    const co2OverigeBedrijfslast = co2Aanvoer - co2Ketelgas - co2GasWarmte;
+    const co2VerbruikTotaal = co2Ketelgas + co2GasWarmte + co2OverigeBedrijfslast;
+    return co2NaarAardgas(co2VerbruikTotaal);
+  });
+}
+function renderRvoOnderzoeksplicht(){
+  const thead = document.getElementById('theadRvo207');
+  const tbody = document.getElementById('tbodyRvo207');
+  if(!thead || !tbody) return;
+  const jaarWeergave = state.overzichtWeergave === 'jaar';
+  thead.closest('table').classList.toggle('tabel-compact', jaarWeergave);
+  const maanden = maandenNu();
+  const jarenLijst = alleJarenSorted();
+  let headHtml = '<tr><th class="th-sticky th-hoek"></th>';
+  if(jaarWeergave){
+    jarenLijst.forEach(j=> headHtml += `<th class="th-totaal">${j}</th>`);
+  } else {
+    maanden.forEach(m=> headHtml += `<th style="text-align:right;padding:6px 8px;">${m.naam}</th>`);
+    headHtml += `<th class="th-totaal">${state.huidigJaarOverzicht}</th>`;
+  }
+  headHtml += '</tr>';
+  thead.innerHTML = headHtml;
+  const pctBelichting = state.rvoPctBelichting||0;
+  const pctAutomatisering = state.rvoPctAutomatisering||0;
+  const pctDrogers = state.rvoPctDrogers||0;
+  const pctOverig = state.rvoPctOverig||0;
+  const pctSom = pctBelichting + pctAutomatisering + pctDrogers + pctOverig;
+  const pct = { belichting:pctBelichting, automatisering:pctAutomatisering, drogers:pctDrogers, overig:pctOverig };
+  const statusEl = document.getElementById('rvoPctSomStatus');
+  if(statusEl){
+    if(Math.abs(pctSom-100)<0.001){
+      statusEl.textContent = `Som van de percentages: ${fmt(pctSom,0)}% ✓`;
+      statusEl.style.color = '';
+    } else {
+      statusEl.textContent = `Let op: som van de percentages is ${fmt(pctSom,1)}%, dit moet 100% zijn.`;
+      statusEl.style.color = '#c0392b';
+    }
+  }
+  const jaarUitkomsten = jaarWeergave ? jarenLijst.map(j=> berekenRvoJaarTotalen(state.jaren[j].maanden, pct)) : null;
+  // Per maand: gas (uit Locatie 207 "Gas totaal"), stroom inkoop, teruggeleverde elektra (negatief).
+  const rijen = maanden.map(m=>{
+    const gas = m.gastot||0;
+    const stroomInkoop = m.inkoop||0;
+    const teruggeleverd = -(m.geleverd||0); // negatief: dit wordt terugverkocht, niet verbruikt
+    const b = bereken(m);
+    const ketelgas = b.ketelgas||0; // verbruik-kant: gas dat rechtstreeks naar de ketel gaat (geen WKK)
+    const gasWarmte = b.gasWarmte||0; // verbruik-kant: WKK-gasdeel toegerekend aan warmteproductie
+    const co2Gastot = co2Gas(gas);
+    const co2StroomInkoop = co2Elektra(stroomInkoop);
+    const co2Teruggeleverd = co2Elektra(teruggeleverd);
+    const co2Ketelgas = co2Gas(ketelgas);
+    const co2GasWarmte = co2Gas(gasWarmte);
+    const co2Aanvoer = co2Gastot + co2StroomInkoop + co2Teruggeleverd;
+    // Plug: overige bedrijfslast = wat er nog nodig is zodat verbruik-totaal = aanvoer-totaal.
+    const co2OverigeBedrijfslast = co2Aanvoer - co2Ketelgas - co2GasWarmte;
+    // Terugrekenen naar kWh (omgekeerde van de elektra-CO2-formule) — moet overeenkomen met
+    // "KWH bedrijfslast" (= eigen verbruik + inkoop) bij Locatie 207 hierboven.
+    const overigeBedrijfslastKwh = co2OverigeBedrijfslast / ((3.6/1000) * 56.2);
+    // Opsplitsing van "overige bedrijfslast" naar 4 categorieën, zelfde percentage in kWh en CO2.
+    const belichtingKwh = overigeBedrijfslastKwh * pctBelichting/100;
+    const automatiseringKwh = overigeBedrijfslastKwh * pctAutomatisering/100;
+    const drogersKwh = overigeBedrijfslastKwh * pctDrogers/100;
+    const overigKwh = overigeBedrijfslastKwh * pctOverig/100;
+    const belichtingCo2 = co2OverigeBedrijfslast * pctBelichting/100;
+    const automatiseringCo2 = co2OverigeBedrijfslast * pctAutomatisering/100;
+    const drogersCo2 = co2OverigeBedrijfslast * pctDrogers/100;
+    const overigCo2 = co2OverigeBedrijfslast * pctOverig/100;
+    return {
+      gas, stroomInkoop, teruggeleverd, ketelgas, gasWarmte,
+      co2Gas: co2Gastot, co2StroomInkoop, co2Teruggeleverd, co2Ketelgas, co2GasWarmte,
+      co2Aanvoer, co2OverigeBedrijfslast, overigeBedrijfslastKwh,
+      belichtingKwh, automatiseringKwh, drogersKwh, overigKwh,
+      belichtingCo2, automatiseringCo2, drogersCo2, overigCo2,
+      co2VerbruikTotaal: co2Ketelgas + co2GasWarmte + co2OverigeBedrijfslast,
+      aardgasEquivalent: co2NaarAardgas(co2Ketelgas + co2GasWarmte + co2OverigeBedrijfslast)
+    };
+  });
+  function totVeld(key){ return rijen.reduce((s,r)=>s+r[key],0); }
+  function totaalKolommen(key, cls){
+    cls = cls || 'wit th-totaal';
+    if(jaarWeergave) return jaarUitkomsten.map(u=> `<td class="${cls}">${fmt(u[key],0)}</td>`).join('');
+    return `<td class="${cls}">${fmt(totVeld(key),0)}</td>`;
+  }
+  const naamTt = (label, uitleg) => `<td class="naam"><span class="tt tt-formule" data-tt="${uitleg}">${label}</span></td>`;
+  const co2Cel = (co2Waarde, ruweWaarde, eenheid) => `<td class="groen" style="text-align:right;padding:6px 8px;"><span class="tt" data-tt="${fmt(ruweWaarde,0)} ${eenheid}">${fmt(co2Waarde,0)}</span></td>`;
+  const legeKolommen = (jaarWeergave ? jarenLijst.length : maanden.length) + 1;
+  const aanvoerIngeklapt = !!groepStatus.rvo['Aanvoer'];
+  const aanvoerPijl = aanvoerIngeklapt ? '&#9656;' : '&#9662;';
+  const verbruikIngeklapt = !!groepStatus.rvo['Verbruik'];
+  const verbruikPijl = verbruikIngeklapt ? '&#9656;' : '&#9662;';
+  let bodyHtml = '';
+  bodyHtml += `<tr class="groep-scheiding" data-groep="Aanvoer" data-tabel="rvo"><td class="groep-label">Aanvoer<span class="groep-pijl">${aanvoerPijl}</span></td>${'<td></td>'.repeat(legeKolommen)}</tr>`;
+  if(!aanvoerIngeklapt){
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Gas CO2 (kg)', '31,65 ÷ 1000 × Gas (m³) × 56,2. Beweeg over een waarde voor het aantal m³ (uit Locatie 207).')}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.co2Gas, r.gas, 'm³'));
+  bodyHtml += totaalKolommen('co2Gas') + '</tr>';
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Stroom inkoop CO2 (kg)', '3,6 ÷ 1000 × Stroom inkoop (kWh) × 56,2. Beweeg over een waarde voor het aantal kWh (uit Locatie 207).')}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.co2StroomInkoop, r.stroomInkoop, 'kWh'));
+  bodyHtml += totaalKolommen('co2StroomInkoop') + '</tr>';
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Teruggeleverde elektra CO2 (kg)', '3,6 ÷ 1000 × Teruggeleverde elektra (kWh, negatief) × 56,2. Beweeg over een waarde voor het aantal kWh (uit Locatie 207).')}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.co2Teruggeleverd, r.teruggeleverd, 'kWh'));
+  bodyHtml += totaalKolommen('co2Teruggeleverd') + '</tr>';
+  bodyHtml += `<tr class="totaal">${naamTt('Totaal CO2 (kg)', 'Gas CO2 + Stroom inkoop CO2 + Teruggeleverde elektra CO2.')}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.co2Aanvoer,0)}</td>`);
+  bodyHtml += totaalKolommen('co2Aanvoer', 'th-totaal') + '</tr>';
+  }
+  bodyHtml += `<tr class="groep-scheiding" data-groep="Verbruik" data-tabel="rvo"><td class="groep-label">Verbruik<span class="groep-pijl">${verbruikPijl}</span></td>${'<td></td>'.repeat(legeKolommen)}</tr>`;
+  if(!verbruikIngeklapt){
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Ketelgas CO2 (kg)', '31,65 ÷ 1000 × Ketelgas (m³) × 56,2. Beweeg over een waarde voor het aantal m³ ketelgas (uit Locatie 207).')}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.co2Ketelgas, r.ketelgas, 'm³'));
+  bodyHtml += totaalKolommen('co2Ketelgas') + '</tr>';
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Gas voor warmte CO2 (kg)', '31,65 ÷ 1000 × Gas voor warmte (m³) × 56,2. Beweeg over een waarde voor het aantal m³ (uit Locatie 207).')}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.co2GasWarmte, r.gasWarmte, 'm³'));
+  bodyHtml += totaalKolommen('co2GasWarmte') + '</tr>';
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Belichting CO2 (kg)', `Overige bedrijfslast CO2 × ${fmt(pctBelichting,0)}%. Beweeg over een waarde voor het aantal kWh.`)}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.belichtingCo2, r.belichtingKwh, 'kWh'));
+  bodyHtml += totaalKolommen('belichtingCo2') + '</tr>';
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Automatisering CO2 (kg)', `Overige bedrijfslast CO2 × ${fmt(pctAutomatisering,0)}%. Beweeg over een waarde voor het aantal kWh.`)}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.automatiseringCo2, r.automatiseringKwh, 'kWh'));
+  bodyHtml += totaalKolommen('automatiseringCo2') + '</tr>';
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Drogers CO2 (kg)', `Overige bedrijfslast CO2 × ${fmt(pctDrogers,0)}%. Beweeg over een waarde voor het aantal kWh.`)}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.drogersCo2, r.drogersKwh, 'kWh'));
+  bodyHtml += totaalKolommen('drogersCo2') + '</tr>';
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Overige CO2 (kg)', `Overige bedrijfslast CO2 × ${fmt(pctOverig,0)}%. Beweeg over een waarde voor het aantal kWh.`)}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.overigCo2, r.overigKwh, 'kWh'));
+  bodyHtml += totaalKolommen('overigCo2') + '</tr>';
+  bodyHtml += `<tr class="totaal">${naamTt('Totaal CO2 verbruik (kg)', 'Ketelgas CO2 + Gas voor warmte CO2 + Belichting/Automatisering/Drogers/Overige CO2 samen — moet gelijk zijn aan Totaal CO2 (aanvoer) hierboven.')}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.co2Ketelgas + r.co2GasWarmte + r.co2OverigeBedrijfslast,0)}</td>`);
+  bodyHtml += totaalKolommen('co2VerbruikTotaal', 'th-totaal') + '</tr>';
+  bodyHtml += `<tr class="rubriek-rij">${naamTt('Aardgas-equivalent totaal verbruik (m³)', 'Omgekeerde van de gas-CO2-formule: Totaal CO2 verbruik ÷ (31,65 ÷ 1000 × 56,2). Het aantal m³ aardgas dat dezelfde hoeveelheid CO2 zou uitstoten.')}`;
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(r.aardgasEquivalent,0)}</td>`);
+  bodyHtml += totaalKolommen('aardgasEquivalent') + '</tr>';
+  }
+  const teeltIngeklapt = !!groepStatus.rvo['Teelt'];
+  const teeltPijl = teeltIngeklapt ? '&#9656;' : '&#9662;';
+  bodyHtml += `<tr class="groep-scheiding" data-groep="Teelt" data-tabel="rvo"><td class="groep-label">Verdeling per teelt<span class="groep-pijl">${teeltPijl}</span></td>${'<td></td>'.repeat(legeKolommen)}</tr>`;
+  if(!teeltIngeklapt){
+    const jaarAardgasPerJaar = jaarWeergave ? jarenLijst.map(j=> aardgasEquivalentPerMaand(state.jaren[j].maanden)) : null;
+    const pctPerTeelt = {};
+    TEELTEN.forEach(t=>{ pctPerTeelt[t.key] = [...Array(12)].map((_,i)=> state['teelt_'+t.key+'_pct_'+i]||0); });
+    TEELTEN.forEach(t=>{
+      const pctArr = pctPerTeelt[t.key];
+      bodyHtml += `<tr class="rubriek-rij">${naamTt(t.naam + ' &mdash; aardgasequivalent (m³)', 'Percentage per maand (Instellingen &rarr; Omrekenfactoren) &times; Aardgas-equivalent totaal verbruik van die maand.')}`;
+      if(!jaarWeergave){
+        rijen.forEach((r,i)=>{
+          const v = (pctArr[i]/100) * r.aardgasEquivalent;
+          bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(v,0)}</td>`;
+        });
+        const totJaar = rijen.reduce((s,r,i)=> s + (pctArr[i]/100)*r.aardgasEquivalent, 0);
+        bodyHtml += `<td class="wit th-totaal">${fmt(totJaar,0)}</td>`;
+      } else {
+        jarenLijst.forEach((j,ji)=>{
+          const totJaar = jaarAardgasPerJaar[ji].reduce((s,v,i)=> s + (pctArr[i]/100)*v, 0);
+          bodyHtml += `<td class="wit th-totaal">${fmt(totJaar,0)}</td>`;
+        });
+      }
+      bodyHtml += '</tr>';
+    });
+    bodyHtml += `<tr class="totaal">${naamTt('Totaal verdeeld per teelt (m³)', 'Som van alle teelten samen &mdash; moet gelijk zijn aan Aardgas-equivalent totaal verbruik hierboven.')}`;
+    if(!jaarWeergave){
+      rijen.forEach((r,i)=>{
+        const som = TEELTEN.reduce((s,t)=> s + (pctPerTeelt[t.key][i]/100)*r.aardgasEquivalent, 0);
+        bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(som,0)}</td>`;
+      });
+      const totAlles = rijen.reduce((s,r,i)=> s + TEELTEN.reduce((s2,t)=> s2 + (pctPerTeelt[t.key][i]/100)*r.aardgasEquivalent, 0), 0);
+      bodyHtml += `<td class="th-totaal">${fmt(totAlles,0)}</td>`;
+    } else {
+      jarenLijst.forEach((j,ji)=>{
+        const totAlles = jaarAardgasPerJaar[ji].reduce((s,v,i)=> s + TEELTEN.reduce((s2,t)=> s2 + (pctPerTeelt[t.key][i]/100)*v, 0), 0);
+        bodyHtml += `<td class="th-totaal">${fmt(totAlles,0)}</td>`;
+      });
+    }
+    bodyHtml += '</tr>';
+    const m3PerStukCel = (m3PerStuk) => `<td class="groen" style="text-align:right;padding:6px 8px;"><span class="tt" data-tt="${fmt(co2Gas(m3PerStuk),1)} kg CO2/stuk">${fmt(m3PerStuk,3)}</span></td>`;
+    TEELTEN.forEach(t=>{
+      const stuks = state['teelt_'+t.key+'_stuks']||0;
+      const pctArr = pctPerTeelt[t.key];
+      bodyHtml += `<tr class="rubriek-rij">${naamTt(t.naam + ' &mdash; m³ gas/stuk (jaartotaal)', 'Jaartotaal aardgasequivalent voor deze teelt gedeeld door het aantal stuks. Beweeg over de waarde voor het aantal kg CO2/stuk.')}`;
+      if(!jaarWeergave){
+        const totJaarM3 = rijen.reduce((s,r,i)=> s + (pctArr[i]/100)*r.aardgasEquivalent, 0);
+        const m3PerStuk = stuks ? totJaarM3/stuks : 0;
+        bodyHtml += m3PerStukCel(m3PerStuk);
+        bodyHtml += '<td></td>'.repeat(maanden.length-1);
+      } else {
+        jarenLijst.forEach((j,ji)=>{
+          const totJaarM3 = jaarAardgasPerJaar[ji].reduce((s,v,i)=> s + (pctArr[i]/100)*v, 0);
+          const m3PerStuk = stuks ? totJaarM3/stuks : 0;
+          bodyHtml += m3PerStukCel(m3PerStuk);
+        });
+      }
+      bodyHtml += '</tr>';
+    });
+  }
+  tbody.innerHTML = bodyHtml;
+  tbody.querySelectorAll('tr.groep-scheiding[data-tabel="rvo"]').forEach(tr=>{
+    tr.addEventListener('click', ()=>{
+      const naam = tr.getAttribute('data-groep');
+      groepStatus.rvo[naam] = !groepStatus.rvo[naam];
+      render();
+    });
+  });
+}
+// ---------- Instellingen: verdeling energieverbruik per teelt ----------
+function renderTeeltVerdeling(){
+  const thead = document.getElementById('theadTeeltVerdeling');
+  const tbody = document.getElementById('tbodyTeeltVerdeling');
+  if(!thead || !tbody) return;
+  let headHtml = '<tr><th class="th-sticky th-hoek">Teelt</th><th style="text-align:right;padding:6px 8px;">Aantal stuks</th>';
+  maandNamenLijst.forEach(naam=> headHtml += `<th style="text-align:right;padding:6px 8px;">${naam.slice(0,3)}</th>`);
+  headHtml += '</tr>';
+  thead.innerHTML = headHtml;
+  let bodyHtml = '';
+  TEELTEN.forEach(t=>{
+    bodyHtml += `<tr><td class="naam">${t.naam}</td>`;
+    const stuks = state['teelt_'+t.key+'_stuks']||0;
+    bodyHtml += `<td class="geel"><input type="text" inputmode="numeric" class="dz-invoer" data-veld="teelt_${t.key}_stuks" value="${Math.round(stuks).toLocaleString('nl-NL')}"></td>`;
+    for(let i=0;i<12;i++){
+      const p = state['teelt_'+t.key+'_pct_'+i]||0;
+      bodyHtml += `<td class="geel"><input type="number" step="1" min="0" max="100" data-veld="teelt_${t.key}_pct_${i}" value="${fmt(p,0)}"></td>`;
+    }
+    bodyHtml += '</tr>';
+  });
+  bodyHtml += `<tr class="totaal"><td class="naam">Totaal %</td><td class="wit"></td>`;
+  for(let i=0;i<12;i++){
+    const som = TEELTEN.reduce((s,t)=> s + (state['teelt_'+t.key+'_pct_'+i]||0), 0);
+    const ok = Math.abs(som-100)<0.001;
+    bodyHtml += `<td class="wit${ok?'':' neg'}" style="text-align:right;padding:6px 8px;">${fmt(som,0)}%</td>`;
+  }
+  bodyHtml += '</tr>';
+  tbody.innerHTML = bodyHtml;
+  tbody.querySelectorAll('input.dz-invoer[data-veld]').forEach(inp=>{
+    inp.addEventListener('focus', ()=>{ inp.value = inp.value.replace(/\./g,''); });
+    inp.addEventListener('blur', ()=> formatDuizendtalCel(inp));
+    inp.addEventListener('change', e=>{
+      state[e.target.getAttribute('data-veld')] = parseDuizendtal(e.target.value);
+      render();
+    });
+  });
+  tbody.querySelectorAll('input[type="number"][data-veld]').forEach(inp=>{
+    inp.addEventListener('change', e=>{
+      state[e.target.getAttribute('data-veld')] = parseFloat(String(e.target.value).replace(',','.')) || 0;
+      render();
+    });
+  });
+  const statusEl = document.getElementById('teeltPctSomStatus');
+  if(statusEl){
+    let alleOk = true;
+    for(let i=0;i<12;i++){
+      const som = TEELTEN.reduce((s,t)=> s + (state['teelt_'+t.key+'_pct_'+i]||0), 0);
+      if(Math.abs(som-100)>0.001) alleOk = false;
+    }
+    statusEl.textContent = alleOk ? 'Som van de percentages per maand: 100% ✓' : 'Let op: niet elke maand telt op tot 100% (zie rode kolom "Totaal %").';
+    statusEl.style.color = alleOk ? '' : '#c0392b';
+  }
 }
 // ---------- Handleiding: eigen notities opslaan ----------
 const handleidingEl = document.getElementById('handleidingNotitie');
