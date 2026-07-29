@@ -698,7 +698,12 @@
         <span><span class="swatch sw-wit"></span>uitvoer / totaal</span>
       </div>
       <div class="toolbar">
-        <button class="actie secundair" id="alleGroepenToggleFact" type="button">Alles uitklappen</button>
+        <label style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);font-weight:700;">Weergave</label>
+        <div class="weergave-toggle" id="factWeergaveToggle">
+          <button type="button" class="weergave-optie" data-weergave="maand">Per maand (+ totaal)</button>
+          <button type="button" class="weergave-optie" data-weergave="jaar">Jaartotaal</button>
+        </div>
+        <button class="actie secundair" id="alleGroepenToggleFact" type="button" style="margin-left:14px;">Alles uitklappen</button>
       </div>
       <div class="tafel-scroll tafel-transposed">
         <table>
@@ -1041,7 +1046,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 16:00</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 16:25</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -1219,6 +1224,7 @@ const TEELTEN = [
 ];
 const seedData = {
   overzichtWeergave: 'maand',
+  factWeergave: 'maand',
   ketelFactor: 9.28,
   wkkFactor: 5.94,
   wkkGasFactor: 2.85,
@@ -1407,7 +1413,7 @@ function normaliseerState(s){
     if(r.baseload===undefined) r.baseload = null;
     if(r.offpeak===undefined) r.offpeak = null;
   });
-  ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop','overzichtWeergave'].forEach(veld=>{
+  ['wkkKostVermogen','wkkKostGasPerUur','wkkKostOnderhoud','wkkKostGasprijsInkoop','overzichtWeergave','factWeergave'].forEach(veld=>{
     if(s[veld]===undefined) s[veld] = seedData[veld];
   });
   TEELTEN.forEach(t=>{
@@ -1579,6 +1585,7 @@ function bereken250(m){
 }
 function render(){
   syncOverzichtWeergaveToggle();
+  syncFactWeergaveToggle();
   renderTable();
   renderTable250();
   renderTableFact();
@@ -2099,8 +2106,8 @@ function hoofdrubriekTotaalFact(hoofd, m){
   return hoofd.subs.reduce((s,sub)=> s + subTotaalFact(sub, m), 0);
 }
 function waardeFact(key,m){ return m[key] || 0; }
-function totaalVoorVeldFact(veld){
-  const maanden = maandenFactNu();
+function totaalVoorVeldFact(veld, maandenOverride){
+  const maanden = maandenOverride || maandenFactNu();
   return maanden.reduce((s,m)=> s + waardeFact(veld.key,m), 0);
 }
 function rijHtmlFact(trAttrs, td0, waarden, jaarWaarde, dec){
@@ -2117,61 +2124,99 @@ function rijHtmlFact(trAttrs, td0, waarden, jaarWaarde, dec){
 function renderTableFact(){
   const thead = document.getElementById('theadFact');
   const tbody = document.getElementById('tbodyFact');
+  const jaarWeergave = state.factWeergave === 'jaar';
+  thead.closest('table').classList.toggle('tabel-compact', jaarWeergave);
   const maanden = maandenFactNu();
+  const jarenLijst = alleJarenSorted();
   let headHtml = '<tr><th class="th-sticky th-hoek"></th>';
-  maanden.forEach((m,i)=>{
-    headHtml += `<th><div class="th-maand"><input data-f="naam" data-i="${i}" value="${m.naam}" readonly></div></th>`;
-  });
-  headHtml += '<th class="th-totaal">Totaal</th></tr>';
+  if(jaarWeergave){
+    jarenLijst.forEach(jaar=> headHtml += `<th class="th-totaal">${jaar}</th>`);
+  } else {
+    maanden.forEach((m,i)=>{
+      headHtml += `<th><div class="th-maand"><input data-f="naam" data-i="${i}" value="${m.naam}" readonly></div></th>`;
+    });
+    headHtml += '<th class="th-totaal">Totaal</th>';
+  }
+  headHtml += '</tr>';
   thead.innerHTML = headHtml;
   let bodyHtml = '';
-  const eindWaarden = maanden.map(()=>0);
+  const eindWaarden = (jaarWeergave ? jarenLijst : maanden).map(()=>0);
   hoofdrubriekenFact.forEach(hoofd=>{
     const hoofdIngeklapt = !!groepStatus.fact[hoofd.naam];
     const hoofdPijl = hoofdIngeklapt ? '&#9656;' : '&#9662;';
-    const hoofdWaarden = maanden.map(m=> hoofdrubriekTotaalFact(hoofd, m));
-    const hoofdJaar = hoofdWaarden.reduce((a,b)=>a+b,0);
-    hoofdWaarden.forEach((v,i)=>{ eindWaarden[i] += v; });
     const hoofdTd0 = `<td class="naam">${hoofd.naam}<span class="groep-pijl">${hoofdPijl}</span></td>`;
     const hoofdAttrs = `class="groep-scheiding groep-totaal-rij" data-niveau="hoofd" data-sleutel="${hoofd.naam}"`;
-    bodyHtml += rijHtmlFact(hoofdAttrs, hoofdTd0, hoofdWaarden, hoofdJaar);
+    if(jaarWeergave){
+      const hoofdWaarden = jarenLijst.map(jaar=> (state.jaren[jaar].facturen||[]).reduce((s,m)=> s + hoofdrubriekTotaalFact(hoofd, m), 0));
+      hoofdWaarden.forEach((v,i)=>{ eindWaarden[i] += v; });
+      let html = `<tr ${hoofdAttrs}>${hoofdTd0}`;
+      hoofdWaarden.forEach(v=>{ html += `<td class="wit th-totaal${v<0?' neg':''}">${euroCel(v,2)}</td>`; });
+      bodyHtml += html + '</tr>';
+    } else {
+      const hoofdWaarden = maanden.map(m=> hoofdrubriekTotaalFact(hoofd, m));
+      const hoofdJaar = hoofdWaarden.reduce((a,b)=>a+b,0);
+      hoofdWaarden.forEach((v,i)=>{ eindWaarden[i] += v; });
+      bodyHtml += rijHtmlFact(hoofdAttrs, hoofdTd0, hoofdWaarden, hoofdJaar);
+    }
     if(!hoofdIngeklapt){
       hoofd.subs.forEach(sub=>{
         const subIngeklapt = !!groepStatus.factSub[sub.sleutel];
         const subPijl = subIngeklapt ? '&#9656;' : '&#9662;';
-        const subWaarden = maanden.map(m=> subTotaalFact(sub, m));
-        const subJaar = subWaarden.reduce((a,b)=>a+b,0);
         const subTd0 = `<td class="naam" style="padding-left:14px;">${sub.naam}<span class="groep-pijl">${subPijl}</span></td>`;
         const subAttrs = `class="groep-scheiding groep-totaal-rij sub-niveau" data-niveau="sub" data-sleutel="${sub.sleutel}"`;
-        bodyHtml += rijHtmlFact(subAttrs, subTd0, subWaarden, subJaar);
+        if(jaarWeergave){
+          const subWaarden = jarenLijst.map(jaar=> (state.jaren[jaar].facturen||[]).reduce((s,m)=> s + subTotaalFact(sub, m), 0));
+          let html = `<tr ${subAttrs}>${subTd0}`;
+          subWaarden.forEach(v=>{ html += `<td class="wit th-totaal${v<0?' neg':''}">${euroCel(v,2)}</td>`; });
+          bodyHtml += html + '</tr>';
+        } else {
+          const subWaarden = maanden.map(m=> subTotaalFact(sub, m));
+          const subJaar = subWaarden.reduce((a,b)=>a+b,0);
+          bodyHtml += rijHtmlFact(subAttrs, subTd0, subWaarden, subJaar);
+        }
         if(!subIngeklapt){
           subVeldenFactGesorteerd(sub).forEach(key=>{
             const veld = veldDefFact(key);
             const isVolume = veld.type==='volume';
             bodyHtml += `<tr><td class="naam" style="padding-left:26px;">${veld.label}</td>`;
-            maanden.forEach((m,i)=>{
-              if(isVolume){
-                const heel = Math.round(waardeFact(veld.key,m));
-                const input = `<input type="text" inputmode="numeric" class="dz-invoer${heel<0?' neg':''}" data-f="${veld.key}" data-i="${i}" value="${heel.toLocaleString('nl-NL')}">`;
-                bodyHtml += `<td class="geel-licht" data-veld="${veld.key}" data-mi="${i}">${input}</td>`;
-              } else {
-                const ruw = waardeFact(veld.key,m);
-                const weergave = ruw.toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
-                const input = `<input type="text" inputmode="decimal" class="euro2-invoer${ruw<0?' neg':''}" data-f="${veld.key}" data-i="${i}" value="${weergave}">`;
-                bodyHtml += `<td class="geel" data-veld="${veld.key}" data-mi="${i}"><div class="euro-invoer"><span class="eur-teken">€</span>${input}</div></td>`;
-              }
-            });
-            const jaarTot = totaalVoorVeldFact(veld);
-            const jaarCel = isVolume ? fmt(jaarTot,0) : euroCel(jaarTot,2);
-            bodyHtml += `<td class="wit th-totaal">${jaarCel}</td></tr>`;
+            if(jaarWeergave){
+              jarenLijst.forEach(jaar=>{
+                const v = totaalVoorVeldFact(veld, state.jaren[jaar].facturen);
+                const cel = isVolume ? fmt(v,0) : euroCel(v,2);
+                bodyHtml += `<td class="wit th-totaal">${cel}</td>`;
+              });
+            } else {
+              maanden.forEach((m,i)=>{
+                if(isVolume){
+                  const heel = Math.round(waardeFact(veld.key,m));
+                  const input = `<input type="text" inputmode="numeric" class="dz-invoer${heel<0?' neg':''}" data-f="${veld.key}" data-i="${i}" value="${heel.toLocaleString('nl-NL')}">`;
+                  bodyHtml += `<td class="geel-licht" data-veld="${veld.key}" data-mi="${i}">${input}</td>`;
+                } else {
+                  const ruw = waardeFact(veld.key,m);
+                  const weergave = ruw.toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
+                  const input = `<input type="text" inputmode="decimal" class="euro2-invoer${ruw<0?' neg':''}" data-f="${veld.key}" data-i="${i}" value="${weergave}">`;
+                  bodyHtml += `<td class="geel" data-veld="${veld.key}" data-mi="${i}"><div class="euro-invoer"><span class="eur-teken">€</span>${input}</div></td>`;
+                }
+              });
+              const jaarTot = totaalVoorVeldFact(veld);
+              const jaarCel = isVolume ? fmt(jaarTot,0) : euroCel(jaarTot,2);
+              bodyHtml += `<td class="wit th-totaal">${jaarCel}</td>`;
+            }
+            bodyHtml += '</tr>';
           });
         }
       });
     }
   });
-  const eindJaar = eindWaarden.reduce((a,b)=>a+b,0);
   const eindTd0 = `<td class="naam">Totaal Facturen</td>`;
-  bodyHtml += rijHtmlFact('class="eind-totaal-rij"', eindTd0, eindWaarden, eindJaar);
+  if(jaarWeergave){
+    let html = `<tr class="eind-totaal-rij">${eindTd0}`;
+    eindWaarden.forEach(v=>{ html += `<td class="th-totaal${v<0?' neg':''}">${euroCel(v,2)}</td>`; });
+    bodyHtml += html + '</tr>';
+  } else {
+    const eindJaar = eindWaarden.reduce((a,b)=>a+b,0);
+    bodyHtml += rijHtmlFact('class="eind-totaal-rij"', eindTd0, eindWaarden, eindJaar);
+  }
   tbody.innerHTML = bodyHtml;
   tbody.querySelectorAll('input').forEach(inp=> inp.addEventListener('change', onCellChangeFact));
   tbody.querySelectorAll('.dz-invoer').forEach(el=>{
@@ -3031,6 +3076,18 @@ function syncOverzichtWeergaveToggle(){
     btn.classList.toggle('actief', btn.getAttribute('data-weergave') === (state.overzichtWeergave||'maand'));
   });
 }
+// ---------- Weergave-toggle "Per maand (+ totaal)" / "Jaartotaal" voor Facturen (eigen instelling, los jaar) ----------
+document.querySelectorAll('#factWeergaveToggle .weergave-optie').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    state.factWeergave = btn.getAttribute('data-weergave');
+    render();
+  });
+});
+function syncFactWeergaveToggle(){
+  document.querySelectorAll('#factWeergaveToggle .weergave-optie').forEach(btn=>{
+    btn.classList.toggle('actief', btn.getAttribute('data-weergave') === (state.factWeergave||'maand'));
+  });
+}
 function nieuwJaarToevoegen(jaarVeld){
   const jaren = Object.keys(state.jaren).map(Number);
   const voorstelJaar = Math.max(...jaren) + 1;
@@ -3058,7 +3115,14 @@ document.getElementById('jaarToevoegenFacturen').addEventListener('click', ()=> 
   const sidenav = document.getElementById('sidenav');
   const links = Array.from(sidenav.querySelectorAll('a[data-tab]'));
   const panelen = links.map(a=>document.getElementById(a.getAttribute('data-tab'))).filter(Boolean);
-  function toonTab(id){
+  const tabGeschiedenis = [];
+  let huidigeTab = null;
+  function toonTab(id, viaTerug){
+    if(!panelen.some(p=>p.id===id)) return;
+    if(!viaTerug && huidigeTab && huidigeTab !== id){
+      tabGeschiedenis.push(huidigeTab);
+    }
+    huidigeTab = id;
     panelen.forEach(p=> p.style.display = (p.id===id) ? 'block' : 'none');
     links.forEach(a=> a.classList.toggle('actief', a.getAttribute('data-tab') === id));
   }
@@ -3070,6 +3134,16 @@ document.getElementById('jaarToevoegenFacturen').addEventListener('click', ()=> 
     toonTab(a.getAttribute('data-tab'));
   });
   toonTab('overzicht');
+  // Backspace = terug naar de vorige geopende tab (behalve als je aan het typen bent in een veld).
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Backspace') return;
+    const el = e.target;
+    const inVeld = el && (el.matches('input, textarea, select') || el.isContentEditable);
+    if(inVeld) return;
+    if(!tabGeschiedenis.length) return;
+    e.preventDefault();
+    toonTab(tabGeschiedenis.pop(), true);
+  });
 })();
 // ---------- Accordion: titel aanklikken vouwt het blok uit/in ----------
 document.querySelectorAll('.accordion-titel').forEach(btn=>{
