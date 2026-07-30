@@ -406,6 +406,7 @@
           <input type="password" id="loginWachtwoord" autocomplete="current-password" style="width:100%;padding:9px 10px;border:1px solid #dbe6f2;border-radius:6px;font-size:14px;box-sizing:border-box;">
         </div>
         <button class="actie" id="loginKnop" type="button" style="margin-top:6px;">Inloggen</button>
+        <a href="javascript:void(0)" id="wachtwoordVergetenLink" style="font-size:12.5px;color:#3a6ea5;text-align:center;">Wachtwoord vergeten?</a>
         <div id="loginFout" style="color:#c06868;font-size:12.5px;min-height:16px;"></div>
       </div>
     </div>
@@ -429,6 +430,9 @@
       <a class="link-btn" href="https://portaal1.dnoenergie.nl/portal/result-calculations/e/results" target="_blank" rel="noopener">DNO-Energy &#8599;</a>
       <a class="link-btn" href="https://www.my-mps.com" target="_blank" rel="noopener">MPS &#8599;</a>
       <a class="link-btn" href="https://energy-manager.agro-energy.nl/Login.aspx" target="_blank" rel="noopener">AgroEnergy &#8599;</a>
+    </div>
+    <div class="sidebar-links">
+      <a class="link-btn" href="javascript:void(0)" id="uitloggenSidebar">Uitloggen</a>
     </div>
     <div class="sidebar-footer">Locatie 207 (met WKK) en locatie 250 (zonder WKK). Berekeningen lopen automatisch mee.</div>
   </aside>
@@ -1046,7 +1050,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 16:25</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 17:00</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -2844,6 +2848,19 @@ function firebaseVerderMetSync(){
     toonFirebaseStatus('Firebase-configuratie fout: ' + err.message, false);
   }
 }
+const LAATSTE_EMAIL_SLEUTEL = 'energie-wkk-laatste-email';
+function vulLaatsteEmailIn(){
+  const emailEl = document.getElementById('loginEmail');
+  const wwEl = document.getElementById('loginWachtwoord');
+  if(!emailEl) return;
+  const laatste = localStorage.getItem(LAATSTE_EMAIL_SLEUTEL);
+  if(laatste){
+    emailEl.value = laatste;
+    if(wwEl) wwEl.focus();
+  } else {
+    emailEl.focus();
+  }
+}
 function firebaseInit(){
   if(typeof firebase === 'undefined'){
     toonFirebaseStatus('Firebase kon niet laden (geen internetverbinding?).', false);
@@ -2857,6 +2874,7 @@ function firebaseInit(){
   firebase.auth().onAuthStateChanged(gebruiker=>{
     if(gebruiker){
       toonLoginOverlay(false);
+      if(gebruiker.email) localStorage.setItem(LAATSTE_EMAIL_SLEUTEL, gebruiker.email);
       firebaseVerderMetSync();
     } else {
       const ladenEl = document.getElementById('loginLaden');
@@ -2865,6 +2883,7 @@ function firebaseInit(){
       if(formEl) formEl.style.display = 'block';
       toonLoginOverlay(true);
       toonFirebaseStatus('Niet ingelogd.', false);
+      vulLaatsteEmailIn();
     }
   });
 }
@@ -2881,13 +2900,38 @@ function firebaseInloggen(){
     foutEl.textContent = 'Inloggen mislukt: onjuist e-mailadres of wachtwoord.';
   });
 }
+function wachtwoordVergeten(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const foutEl = document.getElementById('loginFout');
+  foutEl.style.color = '';
+  if(!email){
+    foutEl.textContent = 'Vul eerst je e-mailadres in bij het veld hierboven, klik daarna op "Wachtwoord vergeten?".';
+    return;
+  }
+  foutEl.textContent = 'Bezig met versturen...';
+  firebase.auth().sendPasswordResetEmail(email).then(()=>{
+    foutEl.style.color = '#3f8c5f';
+    foutEl.textContent = 'E-mail verstuurd naar ' + email + ' — volg de link daarin om een nieuw wachtwoord in te stellen.';
+  }).catch(err=>{
+    foutEl.style.color = '';
+    if(err.code === 'auth/user-not-found'){
+      foutEl.textContent = 'Geen account bekend bij dit e-mailadres. Weet je zeker dat dit het juiste adres is?';
+    } else {
+      foutEl.textContent = 'Versturen mislukt: ' + err.message;
+    }
+  });
+}
 firebaseInit();
 document.getElementById('loginKnop').addEventListener('click', firebaseInloggen);
+document.getElementById('wachtwoordVergetenLink').addEventListener('click', wachtwoordVergeten);
 document.getElementById('loginWachtwoord').addEventListener('keydown', e=>{
   if(e.key==='Enter') firebaseInloggen();
 });
 document.getElementById('firebaseUploadEerste').addEventListener('click', firebaseUploadEersteKeer);
 document.getElementById('firebaseUitloggen').addEventListener('click', ()=>{
+  firebase.auth().signOut();
+});
+document.getElementById('uitloggenSidebar').addEventListener('click', ()=>{
   firebase.auth().signOut();
 });
 document.getElementById('backupNu').addEventListener('click', exportBackup);
