@@ -3,40 +3,55 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Energie &amp; WKK dashboard</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%23f3efe6' stroke='%23bfbfbf' stroke-width='6'/%3E%3Crect x='86' y='356' width='84' height='60' rx='14' fill='%237AB648'/%3E%3Crect x='214' y='326' width='84' height='90' rx='14' fill='%237AB648'/%3E%3Crect x='342' y='296' width='84' height='120' rx='14' fill='%237AB648'/%3E%3Cpolygon points='290,64 170,200 245,200 215,280 345,130 265,130' fill='%234a2a6b'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23f3efe6'/%3E%3Crect x='86' y='356' width='84' height='60' rx='14' fill='%237AB648'/%3E%3Crect x='214' y='326' width='84' height='90' rx='14' fill='%237AB648'/%3E%3Crect x='342' y='296' width='84' height='120' rx='14' fill='%237AB648'/%3E%3Cpolygon points='290,64 170,200 245,200 215,280 345,130 265,130' fill='%234a2a6b'/%3E%3C/svg%3E">
 <style>
   :root{
     --geel:#ddf3e2;
-    --geel-rand:#a9dab1;
+    --geel-rand:#7AB648;
     --geel-licht:#fff3c4;
     --geel-licht-rand:#e8cf6a;
     --groen:#f7f9fc;
     --groen-rand:#e3e8ef;
     --wit:#cfe1f5;
-    --wit-gebroken:#f1ece0;
+    --wit-gebroken:#f3efe6;
     --blauw:#c3daf3;
     --blauw-licht:#e2eefa;
     --blauw-heellicht:#f1f7fd;
     --blauw-rand:#9dc3e8;
     --blauw-rand-licht:#bdd8f0;
     --blauw-rand-heellicht:#d8e8f8;
-    --tekst:#1f3a5f;
-    --sub:#7189a3;
-    --accent:#3f7cc9;
+    --tekst:#2b2b2b;
+    --sub:#6d747a;
+    --accent:#1B5EBE;
+    --groen-merk:#7AB648;
+    --roze-merk:#E8007D;
     --neg:#c06868;
     --pos:#3f8c5f;
     --rand:#dbe6f2;
+    --kader:#222222;
+    --cel-rand:#bfbfbf;
+    --cel-rand-sterk:#8f8f8f;
   }
   *{box-sizing:border-box;}
   html, body{ height:100%; }
   body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-    background:#e2edf9;
+    background:#6d747a;
     color:var(--tekst);
   }
+  /* Losse elementen op de antraciet achtergrond krijgen een gebroken-wit vlak */
+  .tab-paneel > .jaar-kiezer-inline, .tab-paneel > .toolbar, .tab-paneel > h2{
+    background:var(--wit-gebroken);border-radius:10px;padding:8px 12px;width:fit-content;max-width:100%;
+  }
+  .tab-paneel > h2{padding:6px 14px;}
+  .accordion-item.smal, .panel.smal{width:fit-content;min-width:min(100%,560px);max-width:100%;}
   h1{font-size:22px;margin:0 0 2px;}
   .sub{color:var(--sub);font-size:13px;margin-bottom:20px;}
-  .app{display:flex;min-height:100vh;}
+  html{background:#6d747a;}
+  .app{display:flex;min-height:100vh;background:#6d747a;}
+  .tab-paneel{background:transparent;}
   .sidebar{
     width:230px;flex-shrink:0;
     background:var(--wit-gebroken);border-right:1px solid var(--rand);
@@ -49,19 +64,19 @@
   .jaar-kiezer-inline{display:flex;align-items:center;gap:9px;margin-bottom:16px;}
   .jaar-kiezer-inline label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);font-weight:700;}
   .jaar-kiezer-inline select{
-    padding:7px 10px;border:1px solid var(--rand);border-radius:7px;
-    font-size:13.5px;font-weight:700;color:var(--tekst);background:var(--wit-gebroken);min-width:100px;
+    padding:5px 6px;border:1px solid var(--kader);border-radius:7px;
+    font-size:13.5px;font-weight:700;color:var(--tekst);background:var(--wit-gebroken);min-width:90px;
   }
   .jaar-rij{display:flex;gap:6px;}
   .jaar-rij select{
-    flex:1;padding:7px 8px;border:1px solid var(--rand);border-radius:7px;
+    flex:1;padding:5px 6px;border:1px solid var(--kader);border-radius:7px;
     font-size:13.5px;font-weight:700;color:var(--tekst);background:var(--wit-gebroken);
   }
   .jaar-nieuw{
     width:32px;flex-shrink:0;border:1px solid var(--accent);background:var(--wit-gebroken);color:var(--accent);
     border-radius:7px;font-size:16px;font-weight:700;cursor:pointer;
   }
-  .jaar-nieuw:hover{background:var(--wit);}
+  .jaar-nieuw:hover{background:var(--wit-gebroken);}
   .backup-banner{
     display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
     background:#fff4d6;border:1px solid #f0cf7e;border-radius:10px;
@@ -76,11 +91,12 @@
     border:1px solid transparent;
   }
   .sidenav a .dot{width:7px;height:7px;border-radius:50%;background:var(--blauw-rand);flex-shrink:0;}
-  .sidenav a:hover{background:var(--wit);}
-  .sidenav a.actief{background:var(--blauw);color:var(--accent);border-color:var(--blauw-rand);}
-  .sidenav a.actief .dot{background:var(--accent);}
+  .sidenav a:hover{background:var(--wit-gebroken);}
+  .sidenav a.actief{background:var(--wit-gebroken);color:var(--accent);border-color:var(--blauw-rand);}
+  .sidenav a.actief .dot{background:var(--groen-merk);}
+  .sidenav a.actief{border-left:4px solid var(--groen-merk);}
   .sidebar-footer{margin-top:auto;font-size:11px;color:var(--sub);line-height:1.5;}
-  .wrap{max-width:1900px;margin:0 auto;flex:1;padding:24px;min-width:0;}
+  .wrap{max-width:none;margin:0;flex:1;padding:24px;min-width:0;background:#6d747a;}
   @media (max-width:860px){
     .app{flex-direction:column;}
     .sidebar{width:100%;height:auto;position:relative;flex-direction:row;flex-wrap:wrap;align-items:center;gap:14px;padding:14px 16px;}
@@ -109,9 +125,9 @@
   .wp2-layout .wp2-kolom .veld label{font-size:12.5px;color:var(--tekst);font-weight:600;line-height:1.35;flex:1 1 auto;min-height:0;}
   .wp2-layout .wp2-kolom .veld input{
     background:var(--geel);
-    border:1px solid var(--geel-rand);
+    border:1px solid var(--kader);
     border-radius:6px;
-    padding:6px 8px;
+    padding:5px 6px;
     font-size:14.5px;
     font-weight:600;
     text-align:right;
@@ -157,6 +173,7 @@
   .panel h2{font-size:15px;margin:0 0 12px;}
   .accordion-item{
     background:var(--wit-gebroken);border:1px solid var(--rand);border-radius:12px;
+    border-top:3px solid var(--accent);border-bottom:3px solid var(--roze-merk);
     margin-bottom:20px;box-shadow:0 1px 2px rgba(31,58,95,0.04);overflow:hidden;
   }
   .accordion-titel{
@@ -175,38 +192,38 @@
   .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;}
   .sw-geel{background:var(--geel);border:1px solid var(--geel-rand);}
   .sw-geel-licht{background:var(--geel-licht);border:1px solid var(--geel-licht-rand);}
-  .sw-groen{background:var(--groen);border:1px solid var(--groen-rand);}
-  .sw-wit{background:var(--wit);border:1px solid var(--rand);}
-  table{border-collapse:collapse;width:100%;font-size:16.6px;}
+  .sw-groen{background:var(--wit-gebroken);border:1px solid var(--kader);}
+  .sw-wit{background:var(--wit-gebroken);border:1px solid var(--kader);}
+  table{border-collapse:collapse;width:100%;font-size:15px;color:#000;}
   table.tabel-compact{width:auto;min-width:0;}
-  table.tabel-compact td.naam{text-align:left;padding-right:24px;}
+  table.tabel-compact td.naam{text-align:left;padding-right:16px;}
   th{
-    background:#f8f9fb;
-    border:1px solid var(--rand);
-    padding:6px 5px;
+    background:#e4e4e4;
+    border:1px solid var(--cel-rand);
+    padding:5px 4px;
     font-weight:600;
     text-align:center;
     white-space:nowrap;
     position:sticky;top:0;
   }
-  td{border:1px solid var(--rand);padding:0;text-align:center;white-space:nowrap;}
+  td{border:1px solid var(--cel-rand);padding:0;text-align:center;white-space:nowrap;}
   td input{
     width:100%;
     border:none;
     background:transparent;
-    padding:6px 5px;
+    padding:5px 4px;
     text-align:right;
-    font-size:16.6px;
+    font-size:15px;
     font-family:inherit;
-    color:var(--tekst);
+    color:#000;
   }
   td.naam input{text-align:left;font-weight:600;}
   td.geel{background:var(--geel);}
   td.geel-licht{background:var(--geel-licht);}
-  td.groen{background:var(--groen);color:var(--tekst);font-weight:700;padding:6px 5px;font-variant-numeric:tabular-nums;letter-spacing:-0.2px;}
-  td.wit{background:var(--wit);font-weight:600;padding:6px 5px;}
+  td.groen{background:var(--wit-gebroken);color:#000;font-weight:700;padding:5px 4px;font-variant-numeric:tabular-nums;letter-spacing:-0.2px;}
+  td.wit{background:var(--wit-gebroken);font-weight:600;padding:5px 4px;}
   td.groen.neg, td.wit.neg{color:var(--neg);}
-  tr.totaal td{background:#b9d8f2;color:var(--tekst);font-weight:700;}
+  tr.totaal td{background:var(--wit-gebroken);color:#000;font-weight:700;}
   .tafel-scroll{overflow-x:auto;}
   .rij-acties{width:34px;}
   .del-btn{
@@ -224,8 +241,8 @@
   .settings .veld{display:flex;flex-direction:column;gap:4px;}
   .settings label{color:var(--sub);font-size:11px;}
   .settings input{
-    background:var(--blauw);border:1px solid var(--blauw-rand);border-radius:6px;
-    padding:6px 8px;width:90px;font-size:13px;text-align:right;
+    background:var(--wit-gebroken);border:1px solid var(--kader);border-radius:6px;
+    padding:5px 6px;width:90px;font-size:13px;text-align:right;
   }
   .note{font-size:11.5px;color:var(--sub);margin-top:10px;line-height:1.5;}
   .rubricering-lijst{display:flex;flex-direction:column;gap:2px;max-width:640px;}
@@ -238,7 +255,7 @@
     padding:6px 4px;border-bottom:1px solid var(--rand);font-size:13px;
   }
   .rubricering-rij select{
-    padding:5px 7px;border:1px solid var(--rand);border-radius:6px;
+    padding:5px 7px;border:1px solid var(--kader);border-radius:6px;
     font-size:12.5px;background:var(--wit-gebroken);min-width:150px;
   }
   .rubricering-rij em{color:var(--sub);font-style:normal;font-size:11.5px;}
@@ -251,11 +268,11 @@
     max-width:640px;padding:10px;background:#fbfbfd;border:1px solid var(--rand);border-radius:8px;
   }
   .nieuwe-regel-form select, .nieuwe-regel-form input[type="text"]{
-    padding:6px 8px;border:1px solid var(--rand);border-radius:6px;font-size:12.5px;background:var(--wit-gebroken);
+    padding:5px 6px;border:1px solid var(--kader);border-radius:6px;font-size:12.5px;background:var(--wit-gebroken);
   }
   .nieuwe-regel-form input[type="text"]{flex:1;min-width:160px;}
   .nieuwe-regel-aftrek{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--sub);white-space:nowrap;}
-  footer{text-align:center;color:var(--sub);font-size:11.5px;margin-top:10px;}
+  footer{text-align:center;color:#e6e2d8;font-size:11.5px;margin-top:10px;}
   .invoerform{
     display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:6px;
   }
@@ -265,26 +282,26 @@
   .invoerform .veld{display:flex;flex-direction:column;gap:4px;}
   .invoerform label{font-size:11.5px;color:var(--sub);}
   .invoerform select, .invoerform input{
-    padding:8px 9px;border:1px solid var(--rand);border-radius:6px;font-size:13.5px;background:var(--geel);
+    padding:8px 9px;border:1px solid var(--kader);border-radius:6px;font-size:13.5px;background:var(--geel);
   }
   .invoerform select{background:var(--wit-gebroken);}
   #invStatus.opgeslagen{color:var(--pos);font-weight:600;}
   .tafel-transposed{overflow:visible;}
-  .tafel-transposed table{table-layout:fixed;width:100%;font-size:15.2px;}
+  .tafel-transposed table{table-layout:fixed;width:100%;font-size:13.5px;}
   .tafel-transposed th, .tafel-transposed td{width:auto;padding:0;}
-  .tafel-transposed td.naam, .tafel-transposed th.th-sticky{width:270px;}
+  .tafel-transposed td.naam, .tafel-transposed th.th-sticky{width:190px;}
   .tafel-transposed table.tabel-compact{table-layout:auto;width:auto;}
-  .tafel-transposed table.tabel-compact td.naam, .tafel-transposed table.tabel-compact th.th-sticky{width:auto;white-space:nowrap;padding-right:24px;}
+  .tafel-transposed table.tabel-compact td.naam, .tafel-transposed table.tabel-compact th.th-sticky{width:auto;white-space:nowrap;padding-right:16px;}
   .tafel-transposed table.tabel-compact td.wit, .tafel-transposed table.tabel-compact td.groen, .tafel-transposed table.tabel-compact th.th-totaal{white-space:nowrap;}
-  .tafel-transposed td input{padding:5px 4px;font-size:15.2px;}
+  .tafel-transposed td input{padding:4px 3px;font-size:13.5px;}
   .th-sticky, td.naam{
-    background:#f8f9fb;text-align:left;padding:6px 8px;
-    border-right:2px solid var(--rand);font-weight:600;white-space:nowrap;
+    background:#e4e4e4;text-align:left;padding:5px 6px;
+    border-right:1px solid var(--cel-rand-sterk);font-weight:600;white-space:nowrap;
   }
   .th-maand{display:flex;align-items:center;justify-content:flex-end;gap:3px;padding:2px 8px 2px 4px;}
   .th-maand input{
     flex:1;min-width:0;border:none;background:transparent;text-align:right;font-weight:700;
-    font-size:15.9px;color:var(--tekst);padding:6px 2px;font-family:inherit;
+    font-size:15.9px;color:#000;padding:6px 2px;font-family:inherit;
   }
   .th-maand .del-btn{font-size:14.5px;padding:2px;flex-shrink:0;line-height:1;}
   .euro-cel{display:flex;align-items:center;justify-content:space-between;gap:4px;}
@@ -295,31 +312,31 @@
     color:var(--sub);font-weight:600;font-size:15.2px;pointer-events:none;
   }
   .euro-invoer input{padding-left:20px !important;}
-  .th-totaal{background:#eef3f9;}
+  .th-totaal{background:var(--wit-gebroken);}
   .tafel-transposed td:not(.naam) input{text-align:right;}
-  .tafel-transposed td.groen, .tafel-transposed td.wit{text-align:right;padding:6px 8px;}
-  tr.groep-scheiding td{background:var(--wit-gebroken);border-top:1px solid var(--rand);border-bottom:1px solid var(--rand);padding:3px 8px;height:22px;text-align:left;}
+  .tafel-transposed td.groen, .tafel-transposed td.wit{text-align:right;padding:5px 6px;}
+  tr.groep-scheiding td{background:var(--wit-gebroken);border-top:1px solid var(--cel-rand-sterk);border-bottom:1px solid var(--cel-rand-sterk);padding:3px 8px;height:22px;text-align:left;}
   tr.groep-scheiding{cursor:pointer;user-select:none;}
   tr.groep-scheiding:hover .groep-label{filter:brightness(0.95);}
   tr.groep-scheiding .groep-label{
     font-size:13.9px;text-transform:uppercase;letter-spacing:.05em;color:var(--tekst);font-weight:700;
-    background:var(--geel-rand);
+    background:#e4e4e4;
   }
   .groep-pijl{display:inline-block;margin-left:6px;}
   tr.groep-scheiding.groep-totaal-rij td{
-    background:var(--blauw-licht);font-weight:700;height:auto;
-    border-top:2px solid var(--blauw-rand-licht);border-bottom:1px solid var(--blauw-rand-licht);
-    text-align:right;padding:6px 8px;
+    background:var(--wit-gebroken);font-weight:700;height:auto;
+    border-top:2px solid var(--cel-rand-sterk);border-bottom:1px solid var(--cel-rand-sterk);
+    text-align:right;padding:5px 6px;
   }
   tr.groep-scheiding.groep-totaal-rij td.naam{text-align:left;}
   tr.groep-scheiding.groep-totaal-rij td.neg{color:var(--neg);}
   tr.groep-scheiding.groep-totaal-rij.sub-niveau td{
-    background:var(--blauw-heellicht);font-weight:600;font-size:14.5px;
-    border-top:1px solid var(--blauw-rand-heellicht);border-bottom:1px solid var(--blauw-rand-heellicht);
+    background:var(--wit-gebroken);font-weight:600;font-size:14.5px;
+    border-top:1px solid var(--cel-rand);border-bottom:1px solid var(--cel-rand);
   }
   tr.eind-totaal-rij td{
-    background:var(--blauw);font-weight:800;text-align:right;padding:8px;
-    border-top:3px double var(--blauw-rand);border-bottom:1px solid var(--blauw-rand);
+    background:var(--wit-gebroken);font-weight:800;text-align:right;padding:6px;
+    border-top:3px double var(--cel-rand-sterk);border-bottom:1px solid var(--cel-rand-sterk);
   }
   tr.eind-totaal-rij td.naam{text-align:left;}
   tr.eind-totaal-rij td.neg{color:var(--neg);}
@@ -328,17 +345,43 @@
     background:linear-gradient(to right, transparent, var(--blauw-rand), transparent);
   }
   tr.rubriek-rij td{
-    background:var(--blauw-heellicht);font-weight:600;
-    border-top:1px solid var(--blauw-rand-heellicht);border-bottom:1px solid var(--blauw-rand-heellicht);
-    text-align:right;padding:6px 8px;
+    background:var(--wit-gebroken);font-weight:600;
+    border-top:1px solid var(--cel-rand);border-bottom:1px solid var(--cel-rand);
+    text-align:right;padding:5px 6px;
   }
   tr.rubriek-rij td.naam{text-align:left;}
   tr.rubriek-rij td.neg{color:var(--neg);}
   .th-sticky.th-hoek{
-    background:var(--geel-rand);color:var(--tekst);
+    background:#e4e4e4;color:#000;
     font-size:13.9px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;
-    text-align:left;padding:6px 8px;
+    text-align:left;padding:5px 6px;
   }
+  .maand-filter{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 10px;font-size:13px;}
+  .maand-filter-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);font-weight:700;}
+  .maand-filter-optie{display:flex;align-items:center;gap:4px;cursor:pointer;color:var(--tekst);}
+  /* ---- Kleurenthema in de stijl van CyclaPilot: paars, mintgroen, antraciet, crème ---- */
+  :root{--paars:#4a2a6b;--mint:#e1f0e5;--mint-rand:#4f8a5f;--donkergroen:#2f6b4a;--kop-grijs:#b3b3b3;}
+  .sidebar{background:var(--paars);border-right:none;}
+  .sidebar-kop .eyebrow{color:#cdb8e6;}
+  .sidebar-kop .titel{color:#fff;}
+  .sidebar-footer{color:#cdb8e6;}
+  .sidenav a{color:#f1eaf8;}
+  .sidenav a:hover{background:rgba(255,255,255,.14);}
+  .sidenav a.actief{background:var(--mint);color:var(--donkergroen);border-color:var(--mint);border-left:4px solid var(--groen-merk);}
+  .sidenav a .dot{background:#cdb8e6;}
+  .actie{background:var(--donkergroen);}
+  .actie.secundair, .link-btn, .jaar-nieuw{background:var(--mint);color:var(--donkergroen);border:1.5px solid var(--mint-rand);}
+  .link-btn:hover, .jaar-nieuw:hover{background:#d2e8d8;}
+  .weergave-optie.actief{background:var(--donkergroen);color:#fff;}
+  th, .th-sticky, .th-sticky.th-hoek{background:var(--kop-grijs);color:#222;}
+  td.naam{background:var(--wit-gebroken);}
+  tr.totaal td, td.wit, td.th-totaal, tr.eind-totaal-rij td, tr.groep-scheiding.groep-totaal-rij td, tr.groep-scheiding.groep-totaal-rij.sub-niveau td{background:var(--mint);}
+  .accordion-item{border-left:4px solid var(--groen-merk);}
+  .maand-dd{position:relative;}
+  .maand-dd-lijst{position:absolute;top:100%;left:0;z-index:50;margin-top:4px;min-width:200px;padding:10px 12px;
+    background:var(--wit-gebroken);border:1px solid var(--kader);border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.15);}
+  .maand-dd-acties{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--cel-rand);}
+  .maand-dd-lijst .maand-filter-optie{padding:3px 0;}
   .tab-paneel{display:none;}
   .tab-paneel:first-of-type{display:block;}
   .dubbelkolom{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;}
@@ -355,10 +398,10 @@
     border-radius:8px;padding:9px 13px;
     font-size:13px;font-weight:600;text-decoration:none;text-align:left;
   }
-  .link-btn:hover{background:var(--wit);}
+  .link-btn:hover{background:var(--wit-gebroken);}
   .mak-label{color:var(--sub);font-weight:600;}
   .mak-optie{display:flex;align-items:center;gap:5px;cursor:pointer;}
-  .mak-rij select{padding:6px 8px;border:1px solid var(--rand);border-radius:6px;font-size:13px;background:var(--wit-gebroken);}
+  .mak-rij select{padding:5px 6px;border:1px solid var(--kader);border-radius:6px;font-size:13px;background:var(--wit-gebroken);}
   td.mak-hl{background:#ffe58a !important;box-shadow:inset 0 0 0 2px #e6a817;}
   td.mak-hl input{background:transparent;}
   .tt{position:relative;cursor:help;border-bottom:1px dotted var(--sub);}
@@ -384,13 +427,13 @@
   .weergave-optie+.weergave-optie{border-left:1px solid var(--rand);}
   .weergave-optie.actief{background:var(--accent);color:#fff;}
   textarea.plak-invoer{
-    width:100%;min-height:70px;padding:8px;border:1px solid var(--rand);border-radius:6px;
+    width:100%;min-height:70px;padding:8px;border:1px solid var(--kader);border-radius:6px;
     font-family:monospace;font-size:12.5px;resize:vertical;
   }
 </style>
 </head>
 <body>
-<div id="loginOverlay" style="position:fixed;inset:0;background:#e2edf9;z-index:1000;display:flex;align-items:center;justify-content:center;">
+<div id="loginOverlay" style="position:fixed;inset:0;background:var(--wit-gebroken);z-index:1000;display:flex;align-items:center;justify-content:center;">
   <div style="background:var(--wit-gebroken);border:1px solid #dbe6f2;border-radius:12px;padding:32px;max-width:340px;width:90%;box-shadow:0 4px 16px rgba(31,58,95,0.10);">
     <div id="loginLaden" style="color:#7189a3;font-size:14px;text-align:center;">Laden...</div>
     <div id="loginFormulier" style="display:none;">
@@ -399,11 +442,11 @@
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div>
           <label style="font-size:11.5px;color:#7189a3;display:block;margin-bottom:4px;">E-mailadres</label>
-          <input type="email" id="loginEmail" autocomplete="username" style="width:100%;padding:9px 10px;border:1px solid #dbe6f2;border-radius:6px;font-size:14px;box-sizing:border-box;">
+          <input type="email" id="loginEmail" autocomplete="username" style="width:100%;padding:9px 10px;border:1px solid #222222;border-radius:6px;font-size:14px;box-sizing:border-box;">
         </div>
         <div>
           <label style="font-size:11.5px;color:#7189a3;display:block;margin-bottom:4px;">Wachtwoord</label>
-          <input type="password" id="loginWachtwoord" autocomplete="current-password" style="width:100%;padding:9px 10px;border:1px solid #dbe6f2;border-radius:6px;font-size:14px;box-sizing:border-box;">
+          <input type="password" id="loginWachtwoord" autocomplete="current-password" style="width:100%;padding:9px 10px;border:1px solid #222222;border-radius:6px;font-size:14px;box-sizing:border-box;">
         </div>
         <button class="actie" id="loginKnop" type="button" style="margin-top:6px;">Inloggen</button>
         <a href="javascript:void(0)" id="wachtwoordVergetenLink" style="font-size:12.5px;color:#3a6ea5;text-align:center;">Wachtwoord vergeten?</a>
@@ -501,45 +544,6 @@
       </div>
     </div>
 
-    <div class="accordion-item">
-      <button class="accordion-titel" type="button">WKK kostprijs &amp; vernietigingsprijs <span class="accordion-pijl">&#9656;</span></button>
-      <div class="accordion-inhoud">
-        <div class="panel">
-          <h2>WKK kostprijs &amp; vernietigingsprijs elektriciteit</h2>
-          <div class="sub" style="margin-bottom:14px;">Losse rekentool voor Locatie 207. Kostprijs is het kantelpunt om (bij warmtevraag) over te schakelen naar de ketel + inkoop van stroom. Vernietigingsprijs is de ondergrens waarboven de WKK moet blijven draaien &oacute;&oacute;k zonder warmtevraag, omdat de stroomprijs dat rechtvaardigt.</div>
-          <div class="invoerform">
-            <div class="veld">
-              <label>Elektrisch vermogen WKK (kW)</label>
-              <input type="number" step="1" id="wkkKostVermogen">
-            </div>
-            <div class="veld">
-              <label>Gasverbruik per draaiuur (m&sup3;)</label>
-              <input type="number" step="1" id="wkkKostGasPerUur">
-            </div>
-            <div class="veld">
-              <label>Onderhoud per draaiuur (&euro;)</label>
-              <input type="number" step="0.1" id="wkkKostOnderhoud">
-            </div>
-            <div class="veld">
-              <label>Netto gasprijs inkoop (&euro;/m&sup3;)<br><span style="font-weight:400;font-size:12.5px;color:var(--sub);">excl. EB/ODE</span></label>
-              <input type="number" step="0.001" id="wkkKostGasprijsInkoop">
-            </div>
-          </div>
-          <div class="note">De energiebelasting/ODE op het gas wordt per maand berekend met de officiële schijven, op basis van je werkelijke cumulatieve gasverbruik dat jaar (uit dit jaaroverzicht &rarr; Locatie 207). Warmte-omrekenfactoren komen uit Instellingen.</div>
-        </div>
-
-        <div class="panel">
-          <h2>Per maand (jaar: <span id="wkkKostJaarLabel"></span>)</h2>
-          <div class="sub" style="margin-bottom:14px;">Beweeg over een regelnaam voor de rekenwijze. Hier kun je niets invoeren &mdash; het jaar volgt de jaarkeuze hierboven.</div>
-          <div class="tafel-scroll tafel-transposed">
-            <table>
-              <thead id="theadWkkKost"></thead>
-              <tbody id="tbodyWkkKost"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
   <div class="tab-paneel" id="rvoInformatieplicht">
     <div class="accordion-item">
@@ -887,14 +891,14 @@
       <button class="accordion-titel" type="button">Marktprijzen (forward-curve) <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
         <div class="sub" style="margin-bottom:14px;">Momentopname van de forward-curve gas- en stroomprijzen, gebruikt in de WP berekening. Marktprijzen (forward-curve), momentopname <span id="marktprijzenDatum"></span></div>
-        <div class="invoerform invoervelden" style="max-width:320px;">
-          <div class="veld">
-            <label for="marktprijzenJaarverbruikGas">Geschat jaarverbruik gas (m³/jaar) &mdash; voor de marginale EB/ODE-schijf bij "WKK-splitsing"</label>
-            <input type="number" step="1" id="marktprijzenJaarverbruikGas">
+        <div class="invoerform invoervelden" style="max-width:640px;background:var(--geel);">
+          <div class="veld" style="flex-direction:row;align-items:center;gap:10px;">
+            <label for="marktprijzenJaarverbruikGas" style="white-space:nowrap;">Geschat jaarverbruik gas (m³/jaar) &mdash; voor de marginale EB/ODE-schijf bij "WKK-splitsing"</label>
+            <input type="number" step="1" id="marktprijzenJaarverbruikGas" style="background:#fff;flex-shrink:0;width:110px;">
           </div>
         </div>
         <div class="tafel-scroll tafel-transposed">
-          <table><thead id="theadMarktprijzen"></thead><tbody id="tbodyMarktprijzen"></tbody></table>
+          <table class="tabel-compact"><thead id="theadMarktprijzen"></thead><tbody id="tbodyMarktprijzen"></tbody></table>
         </div>
         <div class="sub" style="margin-top:10px;color:#c06868;">Plak hier een kwartaaltabel (kwartaal, gas, peakload, baseload). Alleen Q1- en Q4-regels worden gebruikt — Q2/Q3 en alles tussen haakjes (de +/- wijzigingen) worden genegeerd. Bij verwerken wordt de hele tabel hierboven vervangen door de nieuwe cijfers.</div>
         <textarea class="plak-invoer" id="marktprijzenPlak" style="border:1.5px solid #c06868;"></textarea>
@@ -937,6 +941,45 @@
         <div class="toolbar" style="margin-top:8px;">
           <button class="actie secundair" id="elektraVerkoopVerwerken" type="button">Verwerken</button>
           <span id="elektraVerkoopStatus" class="sub" style="margin:0;"></span>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-titel" type="button">WKK kostprijs &amp; vernietigingsprijs <span class="accordion-pijl">&#9656;</span></button>
+      <div class="accordion-inhoud">
+        <div class="panel">
+          <h2>WKK kostprijs &amp; vernietigingsprijs elektriciteit</h2>
+          <div class="sub" style="margin-bottom:14px;">Losse rekentool voor Locatie 207. Kostprijs is het kantelpunt om (bij warmtevraag) over te schakelen naar de ketel + inkoop van stroom. Vernietigingsprijs is de ondergrens waarboven de WKK moet blijven draaien &oacute;&oacute;k zonder warmtevraag, omdat de stroomprijs dat rechtvaardigt.</div>
+          <div class="invoerform">
+            <div class="veld" style="background:var(--geel);padding:8px 10px;border-radius:7px;">
+              <label style="white-space:nowrap;">Elektrisch vermogen WKK (kW)</label>
+              <input type="number" step="1" id="wkkKostVermogen" style="background:#fff;">
+            </div>
+            <div class="veld" style="background:var(--geel);padding:8px 10px;border-radius:7px;">
+              <label style="white-space:nowrap;">Gasverbruik per draaiuur (m&sup3;)</label>
+              <input type="number" step="1" id="wkkKostGasPerUur" style="background:#fff;">
+            </div>
+            <div class="veld" style="background:var(--geel);padding:8px 10px;border-radius:7px;">
+              <label style="white-space:nowrap;">Onderhoud per draaiuur (&euro;)</label>
+              <input type="number" step="0.1" id="wkkKostOnderhoud" style="background:#fff;">
+            </div>
+            <div class="veld" style="background:var(--geel);padding:8px 10px;border-radius:7px;">
+              <label style="white-space:nowrap;">Netto gasprijs inkoop (&euro;/m&sup3;, excl. EB/ODE)</label>
+              <input type="number" step="0.001" id="wkkKostGasprijsInkoop" style="background:#fff;">
+            </div>
+          </div>
+          <div class="note">De energiebelasting/ODE op het gas wordt per maand berekend met de officiële schijven, op basis van je werkelijke cumulatieve gasverbruik dat jaar (uit dit jaaroverzicht &rarr; Locatie 207, tab DNO, MPS, AGRO). Warmte-omrekenfactoren komen uit Instellingen.</div>
+        </div>
+
+        <div class="panel">
+          <h2>Per maand (jaar: <span id="wkkKostJaarLabel"></span>)</h2>
+          <div class="sub" style="margin-bottom:14px;">Beweeg over een regelnaam voor de rekenwijze. Hier kun je niets invoeren &mdash; het jaar volgt de jaarkeuze bij Locatie 207 (tab DNO, MPS, AGRO).</div>
+          <div class="tafel-scroll tafel-transposed">
+            <table>
+              <thead id="theadWkkKost"></thead>
+              <tbody id="tbodyWkkKost"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -1050,7 +1093,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 26 juli 2026, 17:00</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 12 november 2026, 09:30</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -1587,6 +1630,119 @@ function bereken250(m){
   const totaal = (m.gaskosten||0) + (m.elektrakosten||0);
   return {gasprijs,warmte,elektraprijs,totaal};
 }
+// ---------- Maandenfilter (kolommen per maand aan/uit, alleen op dit apparaat onthouden) ----------
+const MAAND_FILTER_SLEUTEL = 'energie-wkk-maandfilter';
+const MAAND_FILTER_TABELLEN = ['theadLoc207','theadLoc250','theadFact','theadRvo207','theadWkkKost'];
+let maandZichtbaar = (function(){
+  try{
+    const o = JSON.parse(localStorage.getItem(MAAND_FILTER_SLEUTEL));
+    if(Array.isArray(o) && o.length===12) return o.map(Boolean);
+  }catch(e){}
+  return Array(12).fill(true);
+})();
+function bewaarMaandFilter(){
+  try{ localStorage.setItem(MAAND_FILTER_SLEUTEL, JSON.stringify(maandZichtbaar)); }catch(e){}
+}
+function syncMaandFilterBalken(){
+  document.querySelectorAll('.maand-filter').forEach(bar=>{
+    bar.querySelectorAll('input[data-m]').forEach(cb=>{ cb.checked = !!maandZichtbaar[+cb.getAttribute('data-m')]; });
+    const knop = bar.querySelector('.maand-dd-knop');
+    if(knop){
+      const n = maandZichtbaar.filter(Boolean).length;
+      knop.innerHTML = (n===12 ? 'Alle maanden' : n + ' van 12 maanden') + ' &#9662;';
+    }
+  });
+}
+document.addEventListener('click', e=>{
+  if(e.target.closest('.maand-dd')) return;
+  document.querySelectorAll('.maand-dd-lijst').forEach(l=> l.style.display='none');
+});
+function pasMaandFilterToe(){
+  MAAND_FILTER_TABELLEN.forEach(id=>{
+    const thead = document.getElementById(id);
+    if(!thead) return;
+    const table = thead.closest('table');
+    const kopRij = thead.rows[0];
+    // Eerst alles terugzetten, zodat we de breedte met 12 maanden kunnen meten.
+    table.style.width = '';
+    const blokken = [];
+    for(let el = table.parentElement; el && !el.classList.contains('tab-paneel'); el = el.parentElement){
+      if(el.classList.contains('accordion-item') || el.classList.contains('panel')) blokken.push(el);
+    }
+    blokken.forEach(b=> b.classList.remove('smal'));
+    table.querySelectorAll('tr').forEach(tr=>{
+      if(tr.children.length !== 14) return;
+      for(let i=0;i<14;i++){ tr.children[i].style.display = ''; }
+    });
+    // Jaartotaal-weergave (compacte tabel): blok smal maken, de rest is antraciet.
+    if(table.classList.contains('tabel-compact')) blokken.forEach(b=> b.classList.add('smal'));
+    if(!kopRij || kopRij.children.length !== 14) return;
+    // Huidige maand: koptekst in zacht geel, zoals in het voorbeeld.
+    kopRij.children[new Date().getMonth()+1].style.background = '#fff3b0';
+    for(let i=0;i<14;i++){ kopRij.children[i].style.width = ''; }
+    const alleZichtbaar = maandZichtbaar.every(Boolean);
+    if(alleZichtbaar) return;
+    const w0 = kopRij.children[0].getBoundingClientRect().width;
+    const wm = kopRij.children[1].getBoundingClientRect().width;
+    const wt = kopRij.children[13].getBoundingClientRect().width;
+    table.querySelectorAll('tr').forEach(tr=>{
+      if(tr.children.length !== 14) return;
+      for(let i=0;i<12;i++){ tr.children[i+1].style.display = maandZichtbaar[i] ? '' : 'none'; }
+    });
+    if(wm > 0){
+      const aantal = maandZichtbaar.filter(Boolean).length;
+      kopRij.children[0].style.width = w0 + 'px';
+      for(let i=0;i<12;i++){ if(maandZichtbaar[i]) kopRij.children[i+1].style.width = wm + 'px'; }
+      kopRij.children[13].style.width = wt + 'px';
+      table.style.width = (w0 + aantal*wm + wt) + 'px';
+      table.style.tableLayout = 'fixed';
+      blokken.forEach(b=> b.classList.add('smal'));
+    }
+  });
+}
+function bouwMaandFilterBalken(){
+  MAAND_FILTER_TABELLEN.forEach(id=>{
+    const thead = document.getElementById(id);
+    if(!thead) return;
+    const scroll = thead.closest('.tafel-scroll');
+    if(!scroll || scroll.previousElementSibling && scroll.previousElementSibling.classList.contains('maand-filter')) return;
+    const bar = document.createElement('div');
+    bar.className = 'maand-filter';
+    bar.innerHTML = '<span class="maand-filter-label">Maanden:</span>'
+      + '<div class="maand-dd"><button type="button" class="actie secundair maand-dd-knop" data-mf="open">Maanden &#9662;</button>'
+      + '<div class="maand-dd-lijst" style="display:none;">'
+      + '<div class="maand-dd-acties"><button type="button" class="actie secundair" data-mf="alles">Alles aan</button>'
+      + '<button type="button" class="actie secundair" data-mf="niets">Alles uit</button>'
+      + '<button type="button" class="actie secundair" data-mf="nu">Huidige maand</button></div>'
+      + maandNamenLijst.map((n,i)=>`<label class="maand-filter-optie"><input type="checkbox" data-m="${i}" checked> ${n}</label>`).join('')
+      + '</div></div>';
+    bar.addEventListener('change', e=>{
+      const cb = e.target.closest('input[data-m]');
+      if(!cb) return;
+      maandZichtbaar[+cb.getAttribute('data-m')] = cb.checked;
+      bewaarMaandFilter(); syncMaandFilterBalken(); pasMaandFilterToe();
+    });
+    bar.addEventListener('click', e=>{
+      const b = e.target.closest('button[data-mf]');
+      if(!b) return;
+      const w = b.getAttribute('data-mf');
+      if(w==='open'){
+        const lijst = bar.querySelector('.maand-dd-lijst');
+        const open = lijst.style.display === 'none';
+        document.querySelectorAll('.maand-dd-lijst').forEach(l=> l.style.display='none');
+        lijst.style.display = open ? 'block' : 'none';
+        return;
+      }
+      if(w==='alles') maandZichtbaar = Array(12).fill(true);
+      else if(w==='niets') maandZichtbaar = Array(12).fill(false);
+      else { const nu = new Date().getMonth(); maandZichtbaar = maandNamenLijst.map((_,i)=> i===nu); }
+      bewaarMaandFilter(); syncMaandFilterBalken(); pasMaandFilterToe();
+    });
+    scroll.parentNode.insertBefore(bar, scroll);
+  });
+  syncMaandFilterBalken();
+}
+bouwMaandFilterBalken();
 function render(){
   syncOverzichtWeergaveToggle();
   syncFactWeergaveToggle();
@@ -1608,6 +1764,7 @@ function render(){
   renderRvoMaatrGeidentificeerd();
   renderRvoStreefwaarden();
   verversMarkering();
+  pasMaandFilterToe();
   saveState();
 }
 // ---------- Markering MPS / AgroEnergy in de matrix ----------
@@ -2483,7 +2640,7 @@ function renderWpScenario(){
     'Netto investering ÷ gemiddelde besparing (5 jaar).');
   kernEl.innerHTML = kernHtml;
   let headHtml = '<tr><th class="th-sticky th-hoek"></th>';
-  jaren.forEach(j=> headHtml += `<th style="text-align:right;padding:6px 8px;">${j}</th>`);
+  jaren.forEach(j=> headHtml += `<th style="text-align:right;padding:5px 6px;">${j}</th>`);
   headHtml += '</tr>';
   theadEl.innerHTML = headHtml;
   function euroCelLokaal(v, dec){
@@ -2569,7 +2726,7 @@ function renderWpScenario(){
   const tbodyDrogerEl = document.getElementById('tbodyWp2Droger');
   if(theadDrogerEl && tbodyDrogerEl){
     let drogerHeadHtml = '<tr><th class="th-sticky th-hoek"></th>';
-    jaren.forEach(j=> drogerHeadHtml += `<th style="text-align:right;padding:6px 8px;">${j}</th>`);
+    jaren.forEach(j=> drogerHeadHtml += `<th style="text-align:right;padding:5px 6px;">${j}</th>`);
     drogerHeadHtml += '</tr>';
     theadDrogerEl.innerHTML = drogerHeadHtml;
     const wpPijlDroger = wp2TabelDrogerIngeklapt ? '&#9656;' : '&#9662;';
@@ -3272,7 +3429,7 @@ function renderPositieTabel(soort){
   const huidigJaar = state[def.stateKey].huidigJaar;
   const maanden = state[def.stateKey].jaren[huidigJaar].maanden;
   let headHtml = '<tr><th class="th-sticky th-hoek">Maand</th>';
-  maanden.forEach(m=> headHtml += `<th style="text-align:right;padding:6px 8px;">${m.naam}</th>`);
+  maanden.forEach(m=> headHtml += `<th style="text-align:right;padding:5px 6px;">${m.naam}</th>`);
   headHtml += `<th class="th-totaal">${huidigJaar}</th></tr>`;
   thead.innerHTML = headHtml;
   const totPrognose = maanden.reduce((s,m)=> s + (m.prognose||0), 0);
@@ -3305,7 +3462,7 @@ function renderPositieTabel(soort){
       ? `Werkelijk gasverbruik ("Gas totaal") per maand van ${vorigJaarData.jaar} — het laatst bekende volledige jaar bij "DNO, MPS, AGRO" → Locatie 207. Dient als referentie voor het % afgedekt.`
       : 'Geen volledig jaar (alle 12 maanden ingevuld) gevonden bij "DNO, MPS, AGRO" → Locatie 207.';
     bodyHtml += `<tr><td class="naam"><span class="tt tt-formule" data-tt="${uitleg}">${label}</span></td>`;
-    vorigJaarWaarden.forEach(v=> bodyHtml += `<td class="wit" style="text-align:right;padding:6px 8px;">${fmt(v,0)}</td>`);
+    vorigJaarWaarden.forEach(v=> bodyHtml += `<td class="wit" style="text-align:right;padding:5px 6px;">${fmt(v,0)}</td>`);
     bodyHtml += `<td class="wit th-totaal">${fmt(totVorigJaar,0)}</td></tr>`;
   } else {
     bodyHtml += invoerRij(`Prognose (${def.eenheidVolume})`, 'prognose', 0, false);
@@ -3315,7 +3472,7 @@ function renderPositieTabel(soort){
   maanden.forEach((m,i)=>{
     const noemer = def.gebruikVorigJaar ? vorigJaarWaarden[i] : m.prognose;
     const pct = noemer ? ((m.positie||0)/noemer*100) : 0;
-    bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(pct,0)}%</td>`;
+    bodyHtml += `<td class="groen" style="text-align:right;padding:5px 6px;">${fmt(pct,0)}%</td>`;
   });
   bodyHtml += `<td class="wit th-totaal">${fmt(totPct,0)}%</td></tr>`;
   bodyHtml += invoerRij(`${def.prijsLabel} (${def.eenheidPrijs})`, 'prijs', def.prijsDec, false);
@@ -3428,7 +3585,7 @@ function renderTariefTabel(theadId, tbodyId, schijvenData, schijfLabels, dec){
   if(!thead || !tbody) return;
   const jaren = Object.keys(schijvenData).map(Number).sort((a,b)=>a-b);
   let headHtml = '<tr><th class="th-sticky th-hoek">Schijf</th>';
-  jaren.forEach(j=> headHtml += `<th style="text-align:right;padding:6px 8px;">${j}</th>`);
+  jaren.forEach(j=> headHtml += `<th style="text-align:right;padding:5px 6px;">${j}</th>`);
   headHtml += '</tr>';
   thead.innerHTML = headHtml;
   let bodyHtml = '';
@@ -3436,7 +3593,7 @@ function renderTariefTabel(theadId, tbodyId, schijvenData, schijfLabels, dec){
     bodyHtml += `<tr><td class="naam">${label}</td>`;
     jaren.forEach(j=>{
       const schijf = schijvenData[j][i];
-      bodyHtml += `<td style="text-align:right;padding:6px 8px;">${schijf ? fmt(schijf.tarief,dec) : '–'}</td>`;
+      bodyHtml += `<td style="text-align:right;padding:5px 6px;">${schijf ? fmt(schijf.tarief,dec) : '–'}</td>`;
     });
     bodyHtml += '</tr>';
   });
@@ -3448,13 +3605,13 @@ function renderTariefWkkTabel(){
   if(!thead || !tbody) return;
   const jaren = Object.keys(WKK_SPLITSING_NORMEN).map(Number).sort((a,b)=>a-b);
   let headHtml = '<tr><th class="th-sticky th-hoek">Norm</th>';
-  jaren.forEach(j=> headHtml += `<th style="text-align:right;padding:6px 8px;">${j}</th>`);
+  jaren.forEach(j=> headHtml += `<th style="text-align:right;padding:5px 6px;">${j}</th>`);
   headHtml += '</tr>';
   thead.innerHTML = headHtml;
   let bodyHtml = '<tr><td class="naam">Teruglevering (m³/kWh)</td>';
-  jaren.forEach(j=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(WKK_SPLITSING_NORMEN[j].teruglevering,4)}</td>`);
+  jaren.forEach(j=> bodyHtml += `<td style="text-align:right;padding:5px 6px;">${fmt(WKK_SPLITSING_NORMEN[j].teruglevering,4)}</td>`);
   bodyHtml += '</tr><tr><td class="naam">Eigen gebruik (m³/kWh)</td>';
-  jaren.forEach(j=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(WKK_SPLITSING_NORMEN[j].eigenGebruik,4)}</td>`);
+  jaren.forEach(j=> bodyHtml += `<td style="text-align:right;padding:5px 6px;">${fmt(WKK_SPLITSING_NORMEN[j].eigenGebruik,4)}</td>`);
   bodyHtml += '</tr>';
   tbody.innerHTML = bodyHtml;
 }
@@ -3527,12 +3684,12 @@ function renderMarktprijzen(){
   const mp = state.marktprijzen || MARKT_PRIJZEN;
   if(datumEl) datumEl.textContent = mp.datum;
   thead.innerHTML = '<tr><th class="th-sticky th-hoek">Kwartaal</th>'
-    + '<th style="text-align:right;padding:6px 8px;">Gas (ct/m³)</th>'
-    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Gas + eerste-schijf EB/ODE-tarief van dat jaar (WKK-splitsing speelt hier geen rol).">Gas incl. belasting (ct/m³)</span></th>'
-    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Gas + het EB/ODE-tarief van de schijf waarin het ingevulde geschatte jaarverbruik valt (zelfde aanpak als de WKK kostprijs-tool).">Gas incl. belasting (WKK-splitsing, ct/m³)</span></th>'
-    + '<th style="text-align:right;padding:6px 8px;">Peakload (€/MWh)</th>'
-    + '<th style="text-align:right;padding:6px 8px;">Baseload (€/MWh)</th>'
-    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Off-peak = (Baseload × totaal uren − Peakload × piekuren) ÷ off-peak-uren. Piekuren = werkdagen 08:00-20:00 (12u/werkdag) in dat kwartaal.">Off-peak (€/MWh)</span></th>'
+    + '<th style="text-align:left;padding:5px 14px 5px 8px;">Gas (ct/m³)</th>'
+    + '<th style="text-align:left;padding:5px 14px 5px 8px;"><span class="tt tt-formule" data-tt="Gas + eerste-schijf EB/ODE-tarief van dat jaar (WKK-splitsing speelt hier geen rol).">Gas incl. belasting (ct/m³)</span></th>'
+    + '<th style="text-align:left;padding:5px 14px 5px 8px;"><span class="tt tt-formule" data-tt="Gas + het EB/ODE-tarief van de schijf waarin het ingevulde geschatte jaarverbruik valt (zelfde aanpak als de WKK kostprijs-tool).">Gas incl. belasting (WKK-splitsing, ct/m³)</span></th>'
+    + '<th style="text-align:left;padding:5px 14px 5px 8px;">Peakload (€/MWh)</th>'
+    + '<th style="text-align:left;padding:5px 14px 5px 8px;">Baseload (€/MWh)</th>'
+    + '<th style="text-align:left;padding:5px 14px 5px 8px;"><span class="tt tt-formule" data-tt="Off-peak = (Baseload × totaal uren − Peakload × piekuren) ÷ off-peak-uren. Piekuren = werkdagen 08:00-20:00 (12u/werkdag) in dat kwartaal.">Off-peak (€/MWh)</span></th>'
     + '</tr>';
   const dash = v=> (v===null||v===undefined||isNaN(v)) ? '&ndash;' : fmt(v,3);
   let bodyHtml = '';
@@ -3549,24 +3706,24 @@ function renderMarktprijzen(){
   });
   uitgebreid.forEach(r=>{
     bodyHtml += `<tr><td class="naam">${r.kwartaal}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dash(r.gas)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dash(r.gasInclBelasting)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dash(r.gasInclBelastingWkk)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dash(r.peakload)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dash(r.baseload)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dash(r.offpeak)}</td></tr>`;
+      + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(r.gas)}</td>`
+      + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(r.gasInclBelasting)}</td>`
+      + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(r.gasInclBelastingWkk)}</td>`
+      + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(r.peakload)}</td>`
+      + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(r.baseload)}</td>`
+      + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(r.offpeak)}</td></tr>`;
   });
   function gemiddelde(key){
     const w = uitgebreid.map(r=>r[key]).filter(v=> v!==null && v!==undefined && !isNaN(v));
     return w.length ? w.reduce((a,b)=>a+b,0)/w.length : null;
   }
   bodyHtml += `<tr class="totaal"><td class="naam">Gemiddelde</td>`
-    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('gas'))}</td>`
-    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('gasInclBelasting'))}</td>`
-    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('gasInclBelastingWkk'))}</td>`
-    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('peakload'))}</td>`
-    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('baseload'))}</td>`
-    + `<td style="text-align:right;padding:6px 8px;">${dash(gemiddelde('offpeak'))}</td></tr>`;
+    + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(gemiddelde('gas'))}</td>`
+    + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(gemiddelde('gasInclBelasting'))}</td>`
+    + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(gemiddelde('gasInclBelastingWkk'))}</td>`
+    + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(gemiddelde('peakload'))}</td>`
+    + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(gemiddelde('baseload'))}</td>`
+    + `<td style="text-align:left;padding:5px 14px 5px 8px;">${dash(gemiddelde('offpeak'))}</td></tr>`;
   tbody.innerHTML = bodyHtml;
   renderVergelijkingWp();
 }
@@ -3608,11 +3765,11 @@ function renderVergelijkingWp(){
   const dash = v=> (v===null||v===undefined||isNaN(v)) ? '&ndash;' : fmt(v,3);
   const dashPct = v=> (v===null||v===undefined||isNaN(v)) ? '&ndash;' : (v>=0?'+':'') + fmt(v,1) + '%';
   thead.innerHTML = '<tr><th class="th-sticky th-hoek">Kwartaal</th>'
-    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Gas incl. belasting (ct/m³) ÷ ketelfactor (kWh warmte per m³, uit Instellingen).">Kostprijs warmte gas (ct/kWh)</span></th>'
-    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Gewogen stroomprijs incl. belasting (€/MWh) ÷ 10 ÷ COP (uit WP berekening).">Kostprijs warmte WP (ct/kWh)</span></th>'
-    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Bij welke COP de warmtepomp precies even duur is als gas, gegeven de stroomprijs dat kwartaal. Hoger dan je werkelijke COP = WP voordeliger; lager = gas voordeliger.">Break-even COP</span></th>'
-    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Verandering t.o.v. hetzelfde kwartaal vorig jaar (Q1 met Q1, Q4 met Q4) — voorkomt seizoensvertekening.">Gas t.o.v. vorig jaar</span></th>'
-    + '<th style="text-align:right;padding:6px 8px;"><span class="tt tt-formule" data-tt="Verandering t.o.v. hetzelfde kwartaal vorig jaar (Q1 met Q1, Q4 met Q4) — voorkomt seizoensvertekening.">WP t.o.v. vorig jaar</span></th>'
+    + '<th style="text-align:right;padding:5px 6px;"><span class="tt tt-formule" data-tt="Gas incl. belasting (ct/m³) ÷ ketelfactor (kWh warmte per m³, uit Instellingen).">Kostprijs warmte gas (ct/kWh)</span></th>'
+    + '<th style="text-align:right;padding:5px 6px;"><span class="tt tt-formule" data-tt="Gewogen stroomprijs incl. belasting (€/MWh) ÷ 10 ÷ COP (uit WP berekening).">Kostprijs warmte WP (ct/kWh)</span></th>'
+    + '<th style="text-align:right;padding:5px 6px;"><span class="tt tt-formule" data-tt="Bij welke COP de warmtepomp precies even duur is als gas, gegeven de stroomprijs dat kwartaal. Hoger dan je werkelijke COP = WP voordeliger; lager = gas voordeliger.">Break-even COP</span></th>'
+    + '<th style="text-align:right;padding:5px 6px;"><span class="tt tt-formule" data-tt="Verandering t.o.v. hetzelfde kwartaal vorig jaar (Q1 met Q1, Q4 met Q4) — voorkomt seizoensvertekening.">Gas t.o.v. vorig jaar</span></th>'
+    + '<th style="text-align:right;padding:5px 6px;"><span class="tt tt-formule" data-tt="Verandering t.o.v. hetzelfde kwartaal vorig jaar (Q1 met Q1, Q4 met Q4) — voorkomt seizoensvertekening.">WP t.o.v. vorig jaar</span></th>'
     + '</tr>';
   let bodyHtml = '';
   rijen.forEach(r=>{
@@ -3625,11 +3782,11 @@ function renderVergelijkingWp(){
       else if(r.kostprijsGas < r.kostprijsWp){ kleurGas = 'background:#e3f5e6;'; kleurWp = 'background:#fbe9e9;'; }
     }
     bodyHtml += `<tr><td class="naam">${r.kwartaal}</td>`
-      + `<td style="text-align:right;padding:6px 8px;${kleurGas}">${dash(r.kostprijsGas)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;${kleurWp}">${dash(r.kostprijsWp)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dash(r.breakEvenCop)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dashPct(yoyGas)}</td>`
-      + `<td style="text-align:right;padding:6px 8px;">${dashPct(yoyWp)}</td></tr>`;
+      + `<td style="text-align:right;padding:5px 6px;${kleurGas}">${dash(r.kostprijsGas)}</td>`
+      + `<td style="text-align:right;padding:5px 6px;${kleurWp}">${dash(r.kostprijsWp)}</td>`
+      + `<td style="text-align:right;padding:5px 6px;">${dash(r.breakEvenCop)}</td>`
+      + `<td style="text-align:right;padding:5px 6px;">${dashPct(yoyGas)}</td>`
+      + `<td style="text-align:right;padding:5px 6px;">${dashPct(yoyWp)}</td></tr>`;
   });
   tbody.innerHTML = bodyHtml;
   // Grafiek
@@ -3805,14 +3962,14 @@ function renderWkkKostprijs(){
   const jaar = state.huidigJaarOverzicht;
   if(jaarLabel) jaarLabel.textContent = jaar;
   const jaarWeergave = state.overzichtWeergave === 'jaar';
-  thead.closest('table').classList.toggle('tabel-compact', jaarWeergave);
+  thead.closest('table').classList.add('tabel-compact');
   const maanden = maandenNu();
   const jarenLijst = alleJarenSorted();
   let headHtml = '<tr><th class="th-sticky th-hoek">Maand</th>';
   if(jaarWeergave){
     jarenLijst.forEach(j=> headHtml += `<th class="th-totaal">${j}</th>`);
   } else {
-    maanden.forEach(m=> headHtml += `<th style="text-align:right;padding:6px 8px;">${m.naam}</th>`);
+    maanden.forEach(m=> headHtml += `<th style="text-align:right;padding:5px 6px;">${m.naam}</th>`);
     headHtml += `<th class="th-totaal">${jaar}</th>`;
   }
   headHtml += '</tr>';
@@ -3826,28 +3983,28 @@ function renderWkkKostprijs(){
   bodyHtml += `<tr>${naamTt('Draaiuren', 'Werkelijke draaiuren van de WKK die maand, uit "DNO, MPS, AGRO" → Locatie 207.')}`;
   if(jaarWeergave) jaarUitkomsten.forEach(u=> bodyHtml += `<td class="wit th-totaal">${fmt(u.totDraaiuren,0)}</td>`);
   else{
-    rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.draaiuren,0)}</td>`);
+    rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:5px 6px;">${fmt(r.draaiuren,0)}</td>`);
     bodyHtml += `<td class="wit th-totaal">${fmt(totDraaiuren,0)}</td>`;
   }
   bodyHtml += '</tr>';
   bodyHtml += `<tr>${naamTt('EB/ODE gas (marginaal, ct/m³)', 'Energiebelasting/ODE over het gasverbruik van 1 draaiuur, berekend als het verschil tussen de EB op de cumulatieve gasstand vóór deze maand en die stand plus dit draaiuur-gasverbruik.')}`;
   if(jaarWeergave) jaarUitkomsten.forEach(u=> bodyHtml += `<td class="wit th-totaal">${fmt(u.gemEb*100,2)}</td>`);
   else{
-    rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.ebPerM3*100,2)}</td>`);
+    rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:5px 6px;">${fmt(r.ebPerM3*100,2)}</td>`);
     bodyHtml += `<td class="wit th-totaal">${fmt(gemEb*100,2)}</td>`;
   }
   bodyHtml += '</tr>';
   bodyHtml += `<tr class="rubriek-rij">${naamTt('Kostprijs (€/MWh)', 'Kostprijs van 1 MWh WKK-stroom: (gaskosten + onderhoud van 1 draaiuur) min de waarde van de warmte die je anders met de ketel had moeten opwekken, gedeeld door het vermogen.')}`;
   if(jaarWeergave) jaarUitkomsten.forEach(u=> bodyHtml += `<td class="wit th-totaal">${fmt(u.gemKostprijs,0)}</td>`);
   else{
-    rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(r.kostprijs,0)}</td>`);
+    rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:5px 6px;">${fmt(r.kostprijs,0)}</td>`);
     bodyHtml += `<td class="wit th-totaal">${fmt(gemKostprijs,0)}</td>`;
   }
   bodyHtml += '</tr>';
   bodyHtml += `<tr class="rubriek-rij">${naamTt('Vernietigingsprijs (€/MWh)', 'Ondergrens waarboven de WKK moet blijven draaien, óók zonder warmtevraag: (gaskosten + onderhoud van 1 draaiuur) gedeeld door het vermogen, zonder de warmte te crediteren.')}`;
   if(jaarWeergave) jaarUitkomsten.forEach(u=> bodyHtml += `<td class="wit th-totaal">${fmt(u.gemVernietiging,0)}</td>`);
   else{
-    rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(r.vernietiging,0)}</td>`);
+    rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:5px 6px;">${fmt(r.vernietiging,0)}</td>`);
     bodyHtml += `<td class="wit th-totaal">${fmt(gemVernietiging,0)}</td>`;
   }
   bodyHtml += '</tr>';
@@ -3945,14 +4102,14 @@ function renderRvoOnderzoeksplicht(){
   const tbody = document.getElementById('tbodyRvo207');
   if(!thead || !tbody) return;
   const jaarWeergave = state.overzichtWeergave === 'jaar';
-  thead.closest('table').classList.toggle('tabel-compact', jaarWeergave);
+  thead.closest('table').classList.add('tabel-compact');
   const maanden = maandenNu();
   const jarenLijst = alleJarenSorted();
   let headHtml = '<tr><th class="th-sticky th-hoek"></th>';
   if(jaarWeergave){
     jarenLijst.forEach(j=> headHtml += `<th class="th-totaal">${j}</th>`);
   } else {
-    maanden.forEach(m=> headHtml += `<th style="text-align:right;padding:6px 8px;">${m.naam}</th>`);
+    maanden.forEach(m=> headHtml += `<th style="text-align:right;padding:5px 6px;">${m.naam}</th>`);
     headHtml += `<th class="th-totaal">${state.huidigJaarOverzicht}</th>`;
   }
   headHtml += '</tr>';
@@ -3989,7 +4146,7 @@ function renderRvoOnderzoeksplicht(){
     return `<td class="${cls}">${fmt(totVeld(key),0)}</td>`;
   }
   const naamTt = (label, uitleg) => `<td class="naam"><span class="tt tt-formule" data-tt="${uitleg}">${label}</span></td>`;
-  const co2Cel = (co2Waarde, ruweWaarde, eenheid) => `<td class="groen" style="text-align:right;padding:6px 8px;"><span class="tt" data-tt="${fmt(ruweWaarde,0)} ${eenheid}">${fmt(co2Waarde,0)}</span></td>`;
+  const co2Cel = (co2Waarde, ruweWaarde, eenheid) => `<td class="groen" style="text-align:right;padding:5px 6px;"><span class="tt" data-tt="${fmt(ruweWaarde,0)} ${eenheid}">${fmt(co2Waarde,0)}</span></td>`;
   const legeKolommen = (jaarWeergave ? jarenLijst.length : maanden.length) + 1;
   const aanvoerIngeklapt = !!groepStatus.rvo['Aanvoer'];
   const aanvoerPijl = aanvoerIngeklapt ? '&#9656;' : '&#9662;';
@@ -4008,7 +4165,7 @@ function renderRvoOnderzoeksplicht(){
   if(!jaarWeergave) rijen.forEach(r=> bodyHtml += co2Cel(r.co2Teruggeleverd, r.teruggeleverd, 'kWh'));
   bodyHtml += totaalKolommen('co2Teruggeleverd') + '</tr>';
   bodyHtml += `<tr class="totaal">${naamTt('Totaal CO2 (kg)', 'Gas CO2 + Stroom inkoop CO2 + Teruggeleverde elektra CO2.')}`;
-  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.co2Aanvoer,0)}</td>`);
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:5px 6px;">${fmt(r.co2Aanvoer,0)}</td>`);
   bodyHtml += totaalKolommen('co2Aanvoer', 'th-totaal') + '</tr>';
   }
   bodyHtml += `<tr class="groep-scheiding" data-groep="Verbruik" data-tabel="rvo"><td class="groep-label">Verbruik<span class="groep-pijl">${verbruikPijl}</span></td>${'<td></td>'.repeat(legeKolommen)}</tr>`;
@@ -4040,10 +4197,10 @@ function renderRvoOnderzoeksplicht(){
     bodyHtml += '</tr>';
   });
   bodyHtml += `<tr class="totaal">${naamTt('Totaal CO2 verbruik (kg)', 'Ketelgas CO2 + Gas voor warmte CO2 + Overige bedrijfslast CO2 (= som van de Apparatenlijst-regels) samen — moet gelijk zijn aan Totaal CO2 (aanvoer) hierboven, ook per maand.')}`;
-  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(r.co2Ketelgas + r.co2GasWarmte + r.co2OverigeBedrijfslast,0)}</td>`);
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td style="text-align:right;padding:5px 6px;">${fmt(r.co2Ketelgas + r.co2GasWarmte + r.co2OverigeBedrijfslast,0)}</td>`);
   bodyHtml += totaalKolommen('co2VerbruikTotaal', 'th-totaal') + '</tr>';
   bodyHtml += `<tr class="rubriek-rij">${naamTt('Aardgas-equivalent totaal verbruik (m³)', 'Omgekeerde van de gas-CO2-formule: Totaal CO2 verbruik ÷ (31,65 ÷ 1000 × 56,2). Het aantal m³ aardgas dat dezelfde hoeveelheid CO2 zou uitstoten.')}`;
-  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(r.aardgasEquivalent,0)}</td>`);
+  if(!jaarWeergave) rijen.forEach(r=> bodyHtml += `<td class="groen" style="text-align:right;padding:5px 6px;">${fmt(r.aardgasEquivalent,0)}</td>`);
   bodyHtml += totaalKolommen('aardgasEquivalent') + '</tr>';
   }
   const teeltIngeklapt = !!groepStatus.rvo['Teelt'];
@@ -4059,7 +4216,7 @@ function renderRvoOnderzoeksplicht(){
       if(!jaarWeergave){
         rijen.forEach((r,i)=>{
           const v = (pctArr[i]/100) * r.aardgasEquivalent;
-          bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(v,0)}</td>`;
+          bodyHtml += `<td class="groen" style="text-align:right;padding:5px 6px;">${fmt(v,0)}</td>`;
         });
         const totJaar = rijen.reduce((s,r,i)=> s + (pctArr[i]/100)*r.aardgasEquivalent, 0);
         bodyHtml += `<td class="wit th-totaal">${fmt(totJaar,0)}</td>`;
@@ -4075,7 +4232,7 @@ function renderRvoOnderzoeksplicht(){
     if(!jaarWeergave){
       rijen.forEach((r,i)=>{
         const som = TEELTEN.reduce((s,t)=> s + (pctPerTeelt[t.key][i]/100)*r.aardgasEquivalent, 0);
-        bodyHtml += `<td style="text-align:right;padding:6px 8px;">${fmt(som,0)}</td>`;
+        bodyHtml += `<td style="text-align:right;padding:5px 6px;">${fmt(som,0)}</td>`;
       });
       const totAlles = rijen.reduce((s,r,i)=> s + TEELTEN.reduce((s2,t)=> s2 + (pctPerTeelt[t.key][i]/100)*r.aardgasEquivalent, 0), 0);
       bodyHtml += `<td class="th-totaal">${fmt(totAlles,0)}</td>`;
@@ -4086,7 +4243,7 @@ function renderRvoOnderzoeksplicht(){
       });
     }
     bodyHtml += '</tr>';
-    const m3PerStukCel = (m3PerStuk) => `<td class="groen" style="text-align:right;padding:6px 8px;"><span class="tt" data-tt="${fmt(co2Gas(m3PerStuk),1)} kg CO2/stuk">${fmt(m3PerStuk,3)}</span></td>`;
+    const m3PerStukCel = (m3PerStuk) => `<td class="groen" style="text-align:right;padding:5px 6px;"><span class="tt" data-tt="${fmt(co2Gas(m3PerStuk),1)} kg CO2/stuk">${fmt(m3PerStuk,3)}</span></td>`;
     TEELTEN.forEach(t=>{
       const stuks = state['teelt_'+t.key+'_stuks']||0;
       const pctArr = pctPerTeelt[t.key];
@@ -4120,8 +4277,8 @@ function renderTeeltVerdeling(){
   const thead = document.getElementById('theadTeeltVerdeling');
   const tbody = document.getElementById('tbodyTeeltVerdeling');
   if(!thead || !tbody) return;
-  let headHtml = '<tr><th class="th-sticky th-hoek">Teelt</th><th style="text-align:right;padding:6px 8px;">Aantal stuks</th>';
-  maandNamenLijst.forEach(naam=> headHtml += `<th style="text-align:right;padding:6px 8px;">${naam.slice(0,3)}</th>`);
+  let headHtml = '<tr><th class="th-sticky th-hoek">Teelt</th><th style="text-align:right;padding:5px 6px;">Aantal stuks</th>';
+  maandNamenLijst.forEach(naam=> headHtml += `<th style="text-align:right;padding:5px 6px;">${naam.slice(0,3)}</th>`);
   headHtml += '</tr>';
   thead.innerHTML = headHtml;
   let bodyHtml = '';
@@ -4139,7 +4296,7 @@ function renderTeeltVerdeling(){
   for(let i=0;i<12;i++){
     const som = TEELTEN.reduce((s,t)=> s + (state['teelt_'+t.key+'_pct_'+i]||0), 0);
     const ok = Math.abs(som-100)<0.001;
-    bodyHtml += `<td class="wit${ok?'':' neg'}" style="text-align:right;padding:6px 8px;">${fmt(som,0)}%</td>`;
+    bodyHtml += `<td class="wit${ok?'':' neg'}" style="text-align:right;padding:5px 6px;">${fmt(som,0)}%</td>`;
   }
   bodyHtml += '</tr>';
   tbody.innerHTML = bodyHtml;
@@ -4214,10 +4371,10 @@ function renderRvoApparaten(){
   const tbody = document.getElementById('tbodyRvoApparaten');
   if(!thead || !tbody) return;
   let headHtml = '<tr>';
-  RVO_APPARAAT_VELDEN.forEach(v=> headHtml += `<th style="text-align:${v.type==='tekst'?'left':'right'};padding:6px 8px;white-space:nowrap;">${v.label}</th>`);
-  headHtml += '<th style="text-align:right;padding:6px 8px;white-space:nowrap;">Elektriciteitsverbruik (kWh)</th>';
-  headHtml += '<th style="text-align:right;padding:6px 8px;white-space:nowrap;">CO2 (kg)</th>';
-  headHtml += '<th style="text-align:right;padding:6px 8px;white-space:nowrap;">% van totaal</th>';
+  RVO_APPARAAT_VELDEN.forEach(v=> headHtml += `<th style="text-align:${v.type==='tekst'?'left':'right'};padding:5px 6px;white-space:nowrap;">${v.label}</th>`);
+  headHtml += '<th style="text-align:right;padding:5px 6px;white-space:nowrap;">Elektriciteitsverbruik (kWh)</th>';
+  headHtml += '<th style="text-align:right;padding:5px 6px;white-space:nowrap;">CO2 (kg)</th>';
+  headHtml += '<th style="text-align:right;padding:5px 6px;white-space:nowrap;">% van totaal</th>';
   headHtml += '</tr>';
   thead.innerHTML = headHtml;
   const rijen = state.rvoApparaten||[];
@@ -4245,16 +4402,16 @@ function renderRvoApparaten(){
     });
     const verbruik = verbruiken[ri];
     if(rij.overig){
-      bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;"><span class="tt" data-tt="Sluitpost: totaal Apparatenlijst wordt zo gelijk aan Overige bedrijfslast (RVO Energiebalans, jaar ${state.huidigJaarOverzicht}) omgerekend naar kWh.">${fmt(verbruik,0)}</span></td>`;
+      bodyHtml += `<td class="groen" style="text-align:right;padding:5px 6px;"><span class="tt" data-tt="Sluitpost: totaal Apparatenlijst wordt zo gelijk aan Overige bedrijfslast (RVO Energiebalans, jaar ${state.huidigJaarOverzicht}) omgerekend naar kWh.">${fmt(verbruik,0)}</span></td>`;
     } else {
-      bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(verbruik,0)}</td>`;
+      bodyHtml += `<td class="groen" style="text-align:right;padding:5px 6px;">${fmt(verbruik,0)}</td>`;
     }
-    bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${fmt(co2Elektra(verbruik),0)}</td>`;
+    bodyHtml += `<td class="groen" style="text-align:right;padding:5px 6px;">${fmt(co2Elektra(verbruik),0)}</td>`;
     const pct = totaalVerbruik ? (verbruik/totaalVerbruik*100) : 0;
-    bodyHtml += `<td class="wit" style="text-align:right;padding:6px 8px;">${fmt(pct,1)}%</td>`;
+    bodyHtml += `<td class="wit" style="text-align:right;padding:5px 6px;">${fmt(pct,1)}%</td>`;
     bodyHtml += '</tr>';
   });
-  bodyHtml += `<tr><td class="naam">Totaal</td>${'<td></td>'.repeat(RVO_APPARAAT_VELDEN.length-1)}<td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">${fmt(totaalVerbruik,0)}</td><td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">${fmt(co2Elektra(totaalVerbruik),0)}</td><td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">100%</td></tr>`;
+  bodyHtml += `<tr><td class="naam">Totaal</td>${'<td></td>'.repeat(RVO_APPARAAT_VELDEN.length-1)}<td class="th-totaal" style="text-align:right;padding:5px 6px;font-weight:600;">${fmt(totaalVerbruik,0)}</td><td class="th-totaal" style="text-align:right;padding:5px 6px;font-weight:600;">${fmt(co2Elektra(totaalVerbruik),0)}</td><td class="th-totaal" style="text-align:right;padding:5px 6px;font-weight:600;">100%</td></tr>`;
   tbody.innerHTML = bodyHtml;
   tbody.querySelectorAll('input[data-veld]').forEach(inp=>{
     inp.addEventListener('change', e=>{
@@ -4276,14 +4433,14 @@ function renderRvoRapporten(){
     el.innerHTML = '<div class="sub">Nog geen rapporten toegevoegd.</div>';
     return;
   }
-  let html = '<table><thead><tr><th style="text-align:left;padding:6px 8px;">Jaar</th><th style="text-align:left;padding:6px 8px;">Naam</th><th style="text-align:left;padding:6px 8px;">Toegevoegd op</th><th style="padding:6px 8px;"></th><th style="padding:6px 8px;"></th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th style="text-align:left;padding:5px 6px;">Jaar</th><th style="text-align:left;padding:5px 6px;">Naam</th><th style="text-align:left;padding:5px 6px;">Toegevoegd op</th><th style="padding:5px 6px;"></th><th style="padding:5px 6px;"></th></tr></thead><tbody>';
   rapporten.forEach((r, ri)=>{
     html += `<tr>
-      <td style="padding:6px 8px;">${r.jaar||''}</td>
-      <td style="padding:6px 8px;">${(r.naam||r.bestandsnaam||'').replace(/</g,'&lt;')}</td>
-      <td style="padding:6px 8px;">${r.toegevoegdOp||''}</td>
-      <td style="padding:6px 8px;"><a href="${r.dataUrl}" download="${(r.bestandsnaam||'rapport.pdf').replace(/"/g,'')}" class="actie secundair" style="text-decoration:none;">Downloaden</a></td>
-      <td style="padding:6px 8px;"><button type="button" class="actie secundair" data-verwijder-rapport="${ri}">Verwijderen</button></td>
+      <td style="padding:5px 6px;">${r.jaar||''}</td>
+      <td style="padding:5px 6px;">${(r.naam||r.bestandsnaam||'').replace(/</g,'&lt;')}</td>
+      <td style="padding:5px 6px;">${r.toegevoegdOp||''}</td>
+      <td style="padding:5px 6px;"><a href="${r.dataUrl}" download="${(r.bestandsnaam||'rapport.pdf').replace(/"/g,'')}" class="actie secundair" style="text-decoration:none;">Downloaden</a></td>
+      <td style="padding:5px 6px;"><button type="button" class="actie secundair" data-verwijder-rapport="${ri}">Verwijderen</button></td>
     </tr>`;
   });
   html += '</tbody></table>';
@@ -4326,8 +4483,8 @@ function renderBewerkbareTabel(theadId, tbodyId, velden, rijen, opties){
   const tbody = document.getElementById(tbodyId);
   if(!thead || !tbody) return;
   let headHtml = '<tr>';
-  velden.forEach(v=> headHtml += `<th style="text-align:${v.type==='tekst'?'left':'right'};padding:6px 8px;white-space:nowrap;">${v.label}</th>`);
-  if(opties.extraKoppen) opties.extraKoppen.forEach(k=> headHtml += `<th style="text-align:right;padding:6px 8px;white-space:nowrap;">${k}</th>`);
+  velden.forEach(v=> headHtml += `<th style="text-align:${v.type==='tekst'?'left':'right'};padding:5px 6px;white-space:nowrap;">${v.label}</th>`);
+  if(opties.extraKoppen) opties.extraKoppen.forEach(k=> headHtml += `<th style="text-align:right;padding:5px 6px;white-space:nowrap;">${k}</th>`);
   if(opties.verwijderbaar) headHtml += '<th></th>';
   headHtml += '</tr>';
   thead.innerHTML = headHtml;
@@ -4343,8 +4500,8 @@ function renderBewerkbareTabel(theadId, tbodyId, velden, rijen, opties){
         bodyHtml += `<td class="geel"><input type="number" step="any" data-ri="${ri}" data-veld="${v.key}" value="${waarde===undefined||waarde===null?0:waarde}"></td>`;
       }
     });
-    if(opties.extraKolomWaarden) opties.extraKolomWaarden(rij, ri).forEach(w=> bodyHtml += `<td class="groen" style="text-align:right;padding:6px 8px;">${w}</td>`);
-    if(opties.verwijderbaar) bodyHtml += `<td style="padding:6px 8px;"><button type="button" class="actie secundair" data-verwijder-ri="${ri}">&times;</button></td>`;
+    if(opties.extraKolomWaarden) opties.extraKolomWaarden(rij, ri).forEach(w=> bodyHtml += `<td class="groen" style="text-align:right;padding:5px 6px;">${w}</td>`);
+    if(opties.verwijderbaar) bodyHtml += `<td style="padding:5px 6px;"><button type="button" class="actie secundair" data-verwijder-ri="${ri}">&times;</button></td>`;
     bodyHtml += '</tr>';
   });
   if(opties.totaalRij) bodyHtml += opties.totaalRij(rijen);
@@ -4379,7 +4536,7 @@ function renderRvoTransport(){
       totaalVerbruik += verbruik;
       return [fmt(verbruik,0), fmt(co2Elektra(verbruik),0)];
     },
-    totaalRij: ()=> `<tr><td class="naam">Totaal</td>${'<td></td>'.repeat(RVO_TRANSPORT_VELDEN.length-1)}<td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">${fmt(totaalVerbruik,0)}</td><td class="th-totaal" style="text-align:right;padding:6px 8px;font-weight:600;">${fmt(co2Elektra(totaalVerbruik),0)}</td></tr>`
+    totaalRij: ()=> `<tr><td class="naam">Totaal</td>${'<td></td>'.repeat(RVO_TRANSPORT_VELDEN.length-1)}<td class="th-totaal" style="text-align:right;padding:5px 6px;font-weight:600;">${fmt(totaalVerbruik,0)}</td><td class="th-totaal" style="text-align:right;padding:5px 6px;font-weight:600;">${fmt(co2Elektra(totaalVerbruik),0)}</td></tr>`
   });
 }
 function renderRvoMaatrGetroffen(){
@@ -4393,7 +4550,7 @@ function renderStreefTabel(theadId, tbodyId, veld){
   const tbody = document.getElementById(tbodyId);
   if(!thead || !tbody) return;
   let headHtml = '<tr><th class="th-sticky th-hoek">Teelt</th>';
-  STREEF_JAREN.forEach(j=> headHtml += `<th style="text-align:right;padding:6px 8px;">${j}</th>`);
+  STREEF_JAREN.forEach(j=> headHtml += `<th style="text-align:right;padding:5px 6px;">${j}</th>`);
   headHtml += '</tr>';
   thead.innerHTML = headHtml;
   let bodyHtml = '';
