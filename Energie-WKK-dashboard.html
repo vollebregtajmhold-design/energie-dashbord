@@ -377,6 +377,39 @@
   td.naam{background:var(--wit-gebroken);}
   tr.totaal td, td.wit, td.th-totaal, tr.eind-totaal-rij td, tr.groep-scheiding.groep-totaal-rij td, tr.groep-scheiding.groep-totaal-rij.sub-niveau td{background:var(--mint);}
   .accordion-item{border-left:4px solid var(--groen-merk);}
+  /* Invoer gebeurt via het maand-invoerscherm: velden in de tabellen zelf zijn alleen-lezen en gebroken wit */
+  #tbody td.geel, #tbody250 td.geel, #tbodyFact td.geel, #tbodyFact td.geel-licht{background:var(--wit-gebroken);cursor:pointer;}
+  #tbody td input, #tbody250 td input, #tbodyFact td input{cursor:pointer;}
+  .th-maand input{cursor:pointer;}
+  #maandPopup{position:fixed;inset:0;background:rgba(40,44,48,.6);z-index:900;display:flex;align-items:center;justify-content:center;padding:16px;}
+  .accordion-item.smal, .panel.smal{margin-left:auto;margin-right:auto;}
+  .maand-slider{position:relative;width:200px;height:22px;flex-shrink:0;}
+  .ms-track{position:absolute;top:9px;left:0;right:0;height:4px;background:#bdbdbd;border-radius:2px;}
+  .ms-vul{position:absolute;top:9px;height:4px;background:var(--donkergroen);border-radius:2px;}
+  .maand-slider input{position:absolute;left:0;top:0;width:100%;height:22px;margin:0;padding:0;background:none;border:none;pointer-events:none;-webkit-appearance:none;appearance:none;}
+  .maand-slider input::-webkit-slider-runnable-track{background:transparent;}
+  .maand-slider input::-moz-range-track{background:transparent;}
+  .maand-slider input::-webkit-slider-thumb{-webkit-appearance:none;pointer-events:auto;width:14px;height:20px;border-radius:4px;background:#fff;border:2px solid var(--donkergroen);cursor:pointer;}
+  .maand-slider input::-moz-range-thumb{pointer-events:auto;width:10px;height:16px;border-radius:4px;background:#fff;border:2px solid var(--donkergroen);cursor:pointer;}
+  .ms-label{font-size:13px;color:var(--tekst);font-weight:600;min-width:90px;}
+  .popup-doos{background:var(--wit-gebroken);border-radius:12px;border-top:3px solid var(--accent);border-bottom:3px solid var(--roze-merk);width:min(520px,100%);max-height:90vh;display:flex;flex-direction:column;padding:18px 20px;box-shadow:0 10px 30px rgba(0,0,0,.35);}
+  .popup-doos h2{font-size:17px;margin:0 0 12px;}
+  .popup-scroll{overflow-y:auto;flex:1;}
+  .popup-tabel{width:100%;border-collapse:collapse;table-layout:fixed;}
+  .popup-tabel th:nth-child(2), .popup-tabel td:nth-child(2){width:105px;}
+  .popup-tabel th:nth-child(3), .popup-tabel td:nth-child(3){width:125px;}
+  .popup-tabel th{position:sticky;top:0;background:var(--kop-grijs);padding:6px 10px;text-align:right;}
+  .popup-tabel td{border:1px solid var(--cel-rand);padding:0;white-space:nowrap;}
+  .popup-groep{background:var(--mint);font-weight:700;padding:5px 10px !important;text-transform:uppercase;font-size:12.5px;letter-spacing:.05em;}
+  .popup-naam{padding:6px 10px !important;text-align:left;font-weight:600;}
+  .popup-vorig{padding:6px 10px !important;text-align:right;color:var(--sub);background:#ebe7dc;}
+  .popup-in{background:var(--geel);}
+  .popup-in input{width:100%;border:none;background:#fff;padding:7px 10px;text-align:right;font-size:14.5px;font-family:inherit;}
+  .popup-in input:focus{outline:2px solid var(--accent);outline-offset:-2px;}
+  .popup-knoppen{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;}
+  .maand-filter{background:var(--wit-gebroken);border-radius:10px;padding:8px 12px;width:fit-content;max-width:100%;margin-bottom:16px;}
+  .maand-filter.in-rij{background:none;padding:0;margin:0 0 0 14px;border-radius:0;width:auto;}
+  .maand-filter .maand-filter-optie{font-size:13px;text-transform:none;letter-spacing:0;color:var(--tekst);font-weight:400;}
   .maand-dd{position:relative;}
   .maand-dd-lijst{position:absolute;top:100%;left:0;z-index:50;margin-top:4px;min-width:200px;padding:10px 12px;
     background:var(--wit-gebroken);border:1px solid var(--kader);border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.15);}
@@ -1100,7 +1133,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 12 november 2026, 11:00</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 12 november 2026, 15:00</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -1660,6 +1693,19 @@ function bewaarMaandFilter(){
 function syncMaandFilterBalken(){
   document.querySelectorAll('.maand-filter').forEach(bar=>{
     bar.querySelectorAll('input[data-m]').forEach(cb=>{ cb.checked = !!maandZichtbaar[+cb.getAttribute('data-m')]; });
+    const vanEl = bar.querySelector('.ms-van'), totEl = bar.querySelector('.ms-tot');
+    if(vanEl && totEl){
+      const eerste = maandZichtbaar.indexOf(true);
+      const laatste = maandZichtbaar.lastIndexOf(true);
+      if(eerste >= 0){
+        vanEl.value = eerste; totEl.value = laatste;
+        const vul = bar.querySelector('.ms-vul');
+        vul.style.left = (eerste/11*100) + '%';
+        vul.style.width = ((laatste-eerste)/11*100) + '%';
+        bar.querySelector('.ms-label').textContent = (eerste===0 && laatste===11) ? 'Alle maanden'
+          : (eerste===laatste ? maandNamenLijst[eerste] : maandNamenLijst[eerste].slice(0,3) + ' – ' + maandNamenLijst[laatste].slice(0,3));
+      }
+    }
     const knop = bar.querySelector('.maand-dd-knop');
     if(knop){
       const n = maandZichtbaar.filter(Boolean).length;
@@ -1677,6 +1723,14 @@ function pasMaandFilterToe(){
     if(!thead) return;
     const table = thead.closest('table');
     const kopRij = thead.rows[0];
+    if(!table.offsetParent){
+      // Niet zichtbaar (ingeklapt of ander tabblad): alleen kolommen verbergen, meten gebeurt zodra het zichtbaar wordt.
+      table.querySelectorAll('tr').forEach(tr=>{
+        if(tr.children.length !== 14) return;
+        for(let i=0;i<12;i++){ tr.children[i+1].style.display = maandZichtbaar[i] ? '' : 'none'; }
+      });
+      return;
+    }
     // Eerst alles terugzetten, zodat we de breedte met 12 maanden kunnen meten.
     table.style.width = '';
     const blokken = [];
@@ -1719,7 +1773,12 @@ function bouwMaandFilterBalken(){
     const thead = document.getElementById(id);
     if(!thead) return;
     const scroll = thead.closest('.tafel-scroll');
-    if(!scroll || scroll.previousElementSibling && scroll.previousElementSibling.classList.contains('maand-filter')) return;
+    if(!scroll) return;
+    // De balk staat BOVEN het blok (vast, beweegt niet mee als het blok groeit/krimpt) en is er 1x per tabblad.
+    let blok = scroll;
+    while(blok.parentElement && !blok.parentElement.classList.contains('tab-paneel')) blok = blok.parentElement;
+    const paneel = blok.parentElement;
+    if(!paneel || paneel.querySelector('.maand-filter')) return;
     const bar = document.createElement('div');
     bar.className = 'maand-filter';
     bar.innerHTML = '<span class="maand-filter-label">Maanden:</span>'
@@ -1729,7 +1788,28 @@ function bouwMaandFilterBalken(){
       + '<button type="button" class="actie secundair" data-mf="niets">Alles uit</button>'
       + '<button type="button" class="actie secundair" data-mf="nu">Huidige maand</button></div>'
       + maandNamenLijst.map((n,i)=>`<label class="maand-filter-optie"><input type="checkbox" data-m="${i}" checked> ${n}</label>`).join('')
-      + '</div></div>';
+      + '</div></div>'
+      + '<div class="maand-slider" title="Schuif om meer of minder maanden te tonen"><div class="ms-track"></div><div class="ms-vul"></div>'
+      + '<input type="range" min="0" max="11" value="0" class="ms-van" aria-label="Eerste maand">'
+      + '<input type="range" min="0" max="11" value="11" class="ms-tot" aria-label="Laatste maand"></div>'
+      + '<span class="ms-label"></span>';
+    bar.addEventListener('input', e=>{
+      const r = e.target.closest('.maand-slider input');
+      if(!r) return;
+      const van = bar.querySelector('.ms-van'), tot = bar.querySelector('.ms-tot');
+      let a = +van.value, b = +tot.value;
+      if(a > b){ if(r===van){ a = b; } else { b = a; } }
+      maandZichtbaar = maandNamenLijst.map((_,i)=> i>=a && i<=b);
+      // Hoogstens 1x per beeldscherm-update uitvoeren: voorkomt schokkerig schuiven.
+      if(!window.__msWacht){
+        window.__msWacht = true;
+        requestAnimationFrame(()=>{
+          window.__msWacht = false;
+          syncMaandFilterBalken(); pasMaandFilterToe();
+        });
+      }
+    });
+    bar.addEventListener('change', e=>{ if(e.target.closest('.maand-slider input')) bewaarMaandFilter(); });
     bar.addEventListener('change', e=>{
       const cb = e.target.closest('input[data-m]');
       if(!cb) return;
@@ -1752,11 +1832,130 @@ function bouwMaandFilterBalken(){
       else { const nu = new Date().getMonth(); maandZichtbaar = maandNamenLijst.map((_,i)=> i===nu); }
       bewaarMaandFilter(); syncMaandFilterBalken(); pasMaandFilterToe();
     });
-    scroll.parentNode.insertBefore(bar, scroll);
+    // Staat er bovenin het tabblad al een jaar-regel? Dan komt het maandenfilter erachter op dezelfde regel.
+    const rij = paneel.querySelector(':scope > .jaar-kiezer-inline');
+    if(rij){ bar.classList.add('in-rij'); rij.appendChild(bar); }
+    else paneel.insertBefore(bar, blok);
   });
   syncMaandFilterBalken();
 }
 bouwMaandFilterBalken();
+// ---------- Maand-invoerscherm (popup): invullen gebeurt alleen hier, de tabel zelf is alleen-lezen ----------
+const POPUP_TABELLEN = [
+  {tabel:'207',  thead:'theadLoc207', tbody:'tbody'},
+  {tabel:'250',  thead:'theadLoc250', tbody:'tbody250'},
+  {tabel:'fact', thead:'theadFact',   tbody:'tbodyFact'}
+];
+function popupConfig(tabel){
+  const jaar = tabel==='fact' ? state.huidigJaarFacturen : state.huidigJaarOverzicht;
+  const sleutel = tabel==='207' ? 'maanden' : (tabel==='250' ? 'maanden250' : 'facturen');
+  const titelTabel = {'207':'Locatie 207', '250':'Locatie 250', 'fact':'Facturen'}[tabel];
+  const maanden = state.jaren[jaar][sleutel];
+  const vorigJaar = state.jaren[+jaar - 1];
+  const vorigJaarMaanden = vorigJaar ? vorigJaar[sleutel] : null;
+  const groepen = [];
+  if(tabel==='207'){
+    groepenDefinitie207.forEach(g=>{
+      const v = g.velden.map(k=>veldenDefinitie207.find(d=>d.key===k)).filter(d=>d && d.type==='geel')
+        .map(d=>({key:d.key, label:d.label, soort:'dz'}));
+      if(v.length) groepen.push({titel:g.naam, velden:v});
+    });
+  } else if(tabel==='250'){
+    groepenDefinitie250.forEach(g=>{
+      const v = g.velden.map(k=>veldenDefinitie250.find(d=>d.key===k)).filter(d=>d && d.type==='geel')
+        .map(d=>({key:d.key, label:d.label, soort:'dz'}));
+      if(v.length) groepen.push({titel:g.naam, velden:v});
+    });
+  } else {
+    hoofdrubriekenFact.forEach(h=>{
+      h.subs.forEach(sub=>{
+        const v = subVeldenFactGesorteerd(sub).map(k=>veldDefFact(k)).filter(Boolean)
+          .map(d=>({key:d.key, label:d.label, soort: d.type==='volume' ? 'dz' : 'euro2'}));
+        if(v.length) groepen.push({titel:h.naam + ' — ' + sub.naam, velden:v});
+      });
+    });
+  }
+  return {jaar, titelTabel, maanden, vorigJaarMaanden, groepen};
+}
+function popupFormat(soort, v){
+  v = +v || 0;
+  return soort==='dz' ? Math.round(v).toLocaleString('nl-NL')
+                      : v.toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function sluitMaandPopup(){
+  const el = document.getElementById('maandPopup');
+  if(el) el.remove();
+}
+function openMaandPopup(tabel, i, focusKey){
+  sluitMaandPopup();
+  const cfg = popupConfig(tabel);
+  const m = cfg.maanden[i];
+  if(!m) return;
+  const vorige = i>0 ? cfg.maanden[i-1] : (cfg.vorigJaarMaanden ? cfg.vorigJaarMaanden[cfg.vorigJaarMaanden.length-1] : null);
+  const vorigeNaam = i>0 ? cfg.maanden[i-1].naam : (vorige ? vorige.naam + ' ' + (+cfg.jaar-1) : '');
+  let rijen = '';
+  cfg.groepen.forEach(g=>{
+    rijen += `<tr><td colspan="3" class="popup-groep">${g.titel}</td></tr>`;
+    g.velden.forEach(v=>{
+      const cls = v.soort==='dz' ? 'dz-invoer' : 'euro2-invoer';
+      rijen += `<tr><td class="popup-naam">${v.label}</td>`
+        + `<td class="popup-vorig">${vorige ? popupFormat(v.soort, vorige[v.key]) : '&ndash;'}</td>`
+        + `<td class="popup-in"><input type="text" inputmode="decimal" class="${cls}" data-key="${v.key}" data-soort="${v.soort}" value="${popupFormat(v.soort, m[v.key])}"></td></tr>`;
+    });
+  });
+  const overlay = document.createElement('div');
+  overlay.id = 'maandPopup';
+  overlay.innerHTML = `<div class="popup-doos" role="dialog" aria-label="Maand invullen">
+    <h2>${m.naam} ${cfg.jaar} &mdash; ${cfg.titelTabel}</h2>
+    <div class="popup-scroll"><table class="popup-tabel"><thead><tr><th style="text-align:left;">Omschrijving</th><th>${vorigeNaam || 'Vorige maand'}</th><th>${m.naam}</th></tr></thead><tbody>${rijen}</tbody></table></div>
+    <div class="popup-knoppen"><button type="button" class="actie secundair" id="popupAnnuleren">Annuleren</button><button type="button" class="actie" id="popupOpslaan">Opslaan</button></div>
+  </div>`;
+  document.body.appendChild(overlay);
+  const inputs = Array.from(overlay.querySelectorAll('input[data-key]'));
+  inputs.forEach((inp, idx)=>{
+    inp.addEventListener('focus', ()=>{ inp.value = inp.value.replace(/\./g,''); inp.select(); });
+    inp.addEventListener('blur', ()=>{
+      const n = inp.getAttribute('data-soort')==='dz' ? parseDuizendtal(inp.value) : parseEuroDec(inp.value);
+      inp.value = popupFormat(inp.getAttribute('data-soort'), n);
+    });
+    inp.addEventListener('keydown', e=>{
+      if(e.key==='Enter' || e.key==='ArrowDown'){ e.preventDefault(); const nxt = inputs[idx+1]; if(nxt) nxt.focus(); else document.getElementById('popupOpslaan').focus(); }
+      else if(e.key==='ArrowUp'){ e.preventDefault(); const prv = inputs[idx-1]; if(prv) prv.focus(); }
+    });
+  });
+  document.getElementById('popupAnnuleren').addEventListener('click', sluitMaandPopup);
+  document.getElementById('popupOpslaan').addEventListener('click', ()=>{
+    inputs.forEach(inp=>{
+      const soort = inp.getAttribute('data-soort');
+      m[inp.getAttribute('data-key')] = soort==='dz' ? parseDuizendtal(inp.value) : parseEuroDec(inp.value);
+    });
+    sluitMaandPopup();
+    render();
+  });
+  const start = (focusKey && inputs.find(x=>x.getAttribute('data-key')===focusKey)) || inputs[0];
+  if(start) start.focus();
+}
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') sluitMaandPopup(); });
+POPUP_TABELLEN.forEach(c=>{
+  document.getElementById(c.thead).addEventListener('click', e=>{
+    if(state.overzichtWeergave==='jaar' && c.tabel!=='fact') return;
+    if(state.factWeergave==='jaar' && c.tabel==='fact') return;
+    const th = e.target.closest('th');
+    const naamInput = th && th.querySelector('input[data-f="naam"]');
+    if(naamInput) openMaandPopup(c.tabel, +naamInput.getAttribute('data-i'));
+  });
+  document.getElementById(c.tbody).addEventListener('click', e=>{
+    const td = e.target.closest('td[data-mi]');
+    if(!td || !td.classList.contains('geel') && !td.classList.contains('geel-licht')) return;
+    openMaandPopup(c.tabel, +td.getAttribute('data-mi'), td.getAttribute('data-veld'));
+  });
+});
+function maakInvoerAlleenLezen(){
+  POPUP_TABELLEN.forEach(c=>{
+    document.querySelectorAll('#' + c.tbody + ' td.geel input, #' + c.tbody + ' td.geel-licht input').forEach(inp=>{ inp.readOnly = true; });
+    document.querySelectorAll('#' + c.thead + ' .th-maand input').forEach(inp=>{ inp.title = 'Klik om deze maand in te vullen'; });
+  });
+}
 function render(){
   syncOverzichtWeergaveToggle();
   syncFactWeergaveToggle();
@@ -1778,6 +1977,7 @@ function render(){
   renderRvoMaatrGeidentificeerd();
   renderRvoStreefwaarden();
   verversMarkering();
+  maakInvoerAlleenLezen();
   pasMaandFilterToe();
   saveState();
 }
@@ -3417,6 +3617,7 @@ document.getElementById('jaarToevoegenFacturen').addEventListener('click', ()=> 
     huidigeTab = id;
     panelen.forEach(p=> p.style.display = (p.id===id) ? 'block' : 'none');
     links.forEach(a=> a.classList.toggle('actief', a.getAttribute('data-tab') === id));
+    if(typeof pasMaandFilterToe === 'function') pasMaandFilterToe();
   }
   sidenav.addEventListener('click', function(e){
     const a = e.target.closest('a[data-tab]');
@@ -3441,6 +3642,7 @@ document.getElementById('jaarToevoegenFacturen').addEventListener('click', ()=> 
 document.querySelectorAll('.accordion-titel').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     btn.closest('.accordion-item').classList.toggle('open');
+    pasMaandFilterToe();
   });
 });
 // ---------- "Alles in-/uitklappen"-knop per tab (werkt op alle accordion-items direct in die tab) ----------
@@ -3454,6 +3656,7 @@ function wireAllesToggleAccordion(knopId, tabPaneelId){
     const alleOpen = Array.from(items).every(it=> it.classList.contains('open'));
     items.forEach(it=> it.classList.toggle('open', !alleOpen));
     knop.textContent = alleOpen ? 'Alles uitklappen' : 'Alles inklappen';
+    pasMaandFilterToe();
   });
 }
 wireAllesToggleAccordion('wpAllesToggle', 'wpberekening');
