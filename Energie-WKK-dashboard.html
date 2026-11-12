@@ -1051,11 +1051,18 @@
     <div class="accordion-item">
       <button class="accordion-titel" type="button">Cloud-opslag (Firebase, live sync) <span class="accordion-pijl">&#9656;</span></button>
       <div class="accordion-inhoud">
-        <div class="sub" style="margin-bottom:14px;">Automatische live synchronisatie tussen pc's via Firebase Realtime Database. Zodra deze pagina open staat, wordt elke wijziging direct gedeeld — geen knoppen nodig. Bij elke wijziging wordt ook automatisch een tijdgestempelde reservekopie in Firebase bewaard (de laatste 30), zodat er altijd op terug te vallen is.</div>
+        <div class="sub" style="margin-bottom:14px;">Automatische live synchronisatie tussen pc's via Firebase Realtime Database. Zodra deze pagina open staat, wordt elke wijziging direct gedeeld — geen knoppen nodig. Elke dag wordt automatisch een reservekopie in Firebase bewaard (45 dagen lang). Die kun je hieronder terugzetten.</div>
         <div class="toolbar">
           <span id="firebaseStatus" class="sub" style="margin:0;">Verbinden...</span>
           <button class="actie secundair" id="firebaseUploadEerste" type="button" style="display:none;">Mijn huidige data naar Firebase uploaden</button>
           <button class="actie secundair" id="firebaseUitloggen" type="button">Uitloggen</button>
+        </div>
+        <div class="sub" style="margin-top:14px;margin-bottom:6px;font-weight:600;color:var(--tekst);">Terugzetten uit reservekopie</div>
+        <div class="toolbar">
+          <button class="actie secundair" id="herstelLaden" type="button">Reservekopieën tonen</button>
+          <select id="herstelKeuze" style="padding:6px 8px;border:1px solid var(--kader);border-radius:6px;background:var(--wit-gebroken);min-width:200px;"></select>
+          <button class="actie secundair" id="herstelUitvoeren" type="button">Terugzetten</button>
+          <span id="herstelStatus" class="sub" style="margin:0;"></span>
         </div>
         <div class="sub" style="margin-top:8px;">Let op: als 2 pc's tegelijk op hetzelfde moment dezelfde regel wijzigen, wint de laatste wijziging. Voor de rest synchroniseert alles automatisch.</div>
       </div>
@@ -1093,7 +1100,7 @@
       </div>
     </div>
   </div>
-  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 12 november 2026, 09:30</footer>
+  <footer id="versieFooter">Alles wordt automatisch opgeslagen in je browser. Gegevens blijven lokaal. &mdash; Versie: 12 november 2026, 11:00</footer>
 </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
@@ -1589,11 +1596,18 @@ function loadState(){
   }catch(e){}
   return JSON.parse(JSON.stringify(seedData));
 }
+// "opgeslagenOp" = tijdstip van de laatste ECHTE wijziging in de gegevens (niet bij elke render).
+// Daarmee kan de app zien welk apparaat de nieuwste gegevens heeft en nooit nieuwere data overschrijven.
+let laatsteBasisJson = null;
+function basisJson(){ return JSON.stringify(state, (k,v)=> k==='opgeslagenOp' ? undefined : v); }
 function saveState(){
+  const basis = basisJson();
+  if(basis !== laatsteBasisJson){ laatsteBasisJson = basis; state.opgeslagenOp = Date.now(); }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   if(typeof firebaseOpslaanGedebouncet === 'function') firebaseOpslaanGedebouncet();
 }
 let state = loadState();
+laatsteBasisJson = basisJson();
 function maandenNu(){ return state.jaren[state.huidigJaarOverzicht].maanden; }
 function maanden250Nu(){ return state.jaren[state.huidigJaarOverzicht].maanden250; }
 function maandenFactNu(){ return state.jaren[state.huidigJaarFacturen].facturen; }
@@ -2921,11 +2935,41 @@ function toonFirebaseStatus(tekst, opgeslagen){
     el.className = opgeslagen ? 'sub opgeslagen' : 'sub';
   }
 }
+let firebaseEersteOntvangen = false;
+function datumTekst(ms){ return new Date(ms).toLocaleString('nl-NL'); }
+function toonSyncWaarschuwing(tekst){
+  let el = document.getElementById('syncWaarschuwing');
+  if(!tekst){ if(el) el.style.display = 'none'; return; }
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'syncWaarschuwing';
+    el.style.cssText = 'background:#fde8e8;border:1px solid #c06868;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13.5px;color:#7a1f1f;font-weight:600;';
+    const wrap = document.querySelector('.wrap');
+    wrap.insertBefore(el, wrap.firstChild);
+  }
+  el.textContent = tekst;
+  el.style.display = 'block';
+}
 function firebaseVerwerkOntvangen(data){
   const json = JSON.stringify(data);
+  const eerste = !firebaseEersteOntvangen;
+  firebaseEersteOntvangen = true;
   if(json === laatsteFirebaseJson) return; // eigen echo, negeren
+  // Bij het allereerste contact: heeft DIT apparaat nieuwere gegevens dan de cloud? Dan nooit blind overschrijven.
+  if(eerste && data.opgeslagenOp && state.opgeslagenOp && state.opgeslagenOp > data.opgeslagenOp + 1000){
+    const lokaalGebruiken = confirm('Dit apparaat heeft NIEUWERE gegevens (' + datumTekst(state.opgeslagenOp)
+      + ') dan de cloud (' + datumTekst(data.opgeslagenOp) + ').\n\nOK = gegevens van dit apparaat gebruiken en de cloud bijwerken.\nAnnuleren = gegevens uit de cloud gebruiken (wijzigingen van dit apparaat gaan verloren).');
+    if(lokaalGebruiken){
+      firebaseHistorieBewaren(data, true); // eerst de cloudversie veiligstellen
+      laatsteFirebaseJson = json;
+      firebaseOpslaanGedebouncet();
+      toonFirebaseStatus('Cloud wordt bijgewerkt met de gegevens van dit apparaat...', false);
+      return;
+    }
+  }
   laatsteFirebaseJson = json;
   state = normaliseerState(data);
+  laatsteBasisJson = basisJson();
   laadAlleJaarOpties();
   laadPositieJaarOpties('gas');
   laadPositieJaarOpties('elektra');
@@ -2937,24 +2981,59 @@ function firebaseVerwerkOntvangen(data){
 // oude kopieën op zodat er nooit meer dan FIREBASE_HISTORY_BEWAREN overblijven. Dit is de vangnet
 // tegen dataverlies: bij problemen kun je in de Firebase-console (Realtime Database → Data →
 // energie-wkk-history) een oudere kopie terugvinden en handmatig terugzetten.
-function firebaseHistorieBewaren(data){
+// Reservekopie: hoogstens 1x per ~20 uur (of geforceerd), 45 dagen bewaard. Een klein overzicht
+// staat in "_index", zodat we nooit alle kopieën hoeven te downloaden (dat veroorzaakte de enorme dataverbruik).
+function firebaseHistorieBewaren(data, forceer){
   if(!firebaseHistoryRef) return;
-  const sleutel = new Date().toISOString().replace(/[.:]/g,'-');
+  const nu = Date.now();
+  const laatste = +localStorage.getItem('energie-wkk-laatste-historie') || 0;
+  if(!forceer && nu - laatste < 20*3600*1000) return;
+  localStorage.setItem('energie-wkk-laatste-historie', String(nu));
+  const sleutel = new Date(nu).toISOString().replace(/[.:]/g,'-');
   firebaseHistoryRef.child(sleutel).set(data).then(()=>{
-    firebaseHistoryRef.orderByKey().once('value').then(snap=>{
-      const sleutels = [];
-      snap.forEach(child=>{ sleutels.push(child.key); });
-      const teVeel = sleutels.length - FIREBASE_HISTORY_BEWAREN;
-      if(teVeel > 0){
-        const updates = {};
-        sleutels.slice(0, teVeel).forEach(k=> updates[k] = null);
-        firebaseHistoryRef.update(updates);
-      }
+    firebaseHistoryRef.child('_index/' + sleutel).set(nu);
+    const grens = new Date(nu - 45*86400000).toISOString().replace(/[.:]/g,'-');
+    firebaseHistoryRef.orderByKey().endAt(grens).once('value').then(snap=>{
+      const updates = {};
+      snap.forEach(child=>{ updates[child.key] = null; updates['_index/' + child.key] = null; });
+      if(Object.keys(updates).length) firebaseHistoryRef.update(updates);
     });
   }).catch(()=>{});
 }
+function firebaseHerstelLijstLaden(){
+  const sel = document.getElementById('herstelKeuze');
+  const st = document.getElementById('herstelStatus');
+  if(!firebaseHistoryRef){ st.textContent = 'Eerst inloggen.'; return; }
+  st.textContent = 'Laden...';
+  firebaseHistoryRef.child('_index').once('value').then(snap=>{
+    const sl = [];
+    snap.forEach(c=>{ sl.push({key:c.key, ms:c.val()}); });
+    sl.sort((a,b)=> b.ms - a.ms);
+    sel.innerHTML = sl.map(x=>`<option value="${x.key}">${datumTekst(x.ms)}</option>`).join('');
+    st.textContent = sl.length ? sl.length + ' reservekopieën gevonden.' : 'Nog geen reservekopieën (die komen vanaf nu elke dag).';
+  }).catch(err=> st.textContent = 'Laden mislukt: ' + err.message);
+}
+function firebaseHerstelKopie(){
+  const sel = document.getElementById('herstelKeuze');
+  const st = document.getElementById('herstelStatus');
+  if(!sel.value){ st.textContent = 'Kies eerst een reservekopie.'; return; }
+  if(!confirm('Alle gegevens terugzetten naar de reservekopie van ' + sel.options[sel.selectedIndex].text + '?\n\nDe huidige gegevens worden eerst als reservekopie bewaard.')) return;
+  firebaseHistoryRef.child(sel.value).once('value').then(snap=>{
+    const data = snap.val();
+    if(!data){ st.textContent = 'Reservekopie is leeg.'; return; }
+    firebaseHistorieBewaren(state, true);
+    state = normaliseerState(data);
+    state.opgeslagenOp = Date.now();
+    laatsteBasisJson = basisJson();
+    laatsteFirebaseJson = null;
+    laadAlleJaarOpties();
+    render();
+    st.textContent = 'Teruggezet.';
+  }).catch(err=> st.textContent = 'Terugzetten mislukt: ' + err.message);
+}
 function firebaseOpslaanGedebouncet(){
-  if(!firebaseActief || !firebaseDbRef) return;
+  // Pas schrijven nadat de cloudgegevens zijn binnengekomen: zo kan een apparaat met oude of lege data nooit de cloud overschrijven.
+  if(!firebaseActief || !firebaseDbRef || !firebaseEersteOntvangen) return;
   if(firebaseSchrijfTimer) clearTimeout(firebaseSchrijfTimer);
   firebaseSchrijfTimer = setTimeout(()=>{
     const json = JSON.stringify(state);
@@ -2963,9 +3042,14 @@ function firebaseOpslaanGedebouncet(){
     firebaseDbRef.set(state)
       .then(()=>{
         toonFirebaseStatus('Live synchronisatie actief — laatst gedeeld om ' + new Date().toLocaleTimeString('nl-NL'), true);
+        toonSyncWaarschuwing('');
         firebaseHistorieBewaren(state);
       })
-      .catch(err=> toonFirebaseStatus('Synchroniseren mislukt: ' + err.message, false));
+      .catch(err=>{
+        laatsteFirebaseJson = null; // volgende wijziging opnieuw proberen
+        toonFirebaseStatus('Synchroniseren mislukt: ' + err.message, false);
+        toonSyncWaarschuwing('LET OP: opslaan in de cloud is mislukt. Je laatste wijzigingen staan alleen op dit apparaat. Controleer je internet en de Firebase-regels (' + err.message + ').');
+      });
   }, 800);
 }
 function firebaseUploadEersteKeer(){
@@ -2985,9 +3069,11 @@ function toonLoginOverlay(tonen){
 }
 function firebaseVerderMetSync(){
   try{
+    firebaseEersteOntvangen = false;
     firebaseDbRef = firebase.database().ref('energie-wkk');
     firebaseHistoryRef = firebase.database().ref('energie-wkk-history');
     firebaseDbRef.on('value', snap=>{
+      toonSyncWaarschuwing('');
       const data = snap.val();
       if(!data){
         // Nog niks in Firebase: NIET automatisch overschrijven (voorkomt dat 2 apparaten die
@@ -2998,6 +3084,9 @@ function firebaseVerderMetSync(){
         return;
       }
       firebaseVerwerkOntvangen(data);
+    }, err=>{
+      toonFirebaseStatus('Lezen uit de cloud mislukt: ' + err.message, false);
+      toonSyncWaarschuwing('LET OP: de gegevens uit de cloud konden niet worden gelezen (' + err.message + '). Wijzigingen worden NIET gedeeld. Controleer de Firebase-regels en of je bent ingelogd.');
     });
     firebaseActief = true;
     toonFirebaseStatus('Verbonden — live synchronisatie actief.', true);
@@ -3085,6 +3174,8 @@ document.getElementById('loginWachtwoord').addEventListener('keydown', e=>{
   if(e.key==='Enter') firebaseInloggen();
 });
 document.getElementById('firebaseUploadEerste').addEventListener('click', firebaseUploadEersteKeer);
+document.getElementById('herstelLaden').addEventListener('click', firebaseHerstelLijstLaden);
+document.getElementById('herstelUitvoeren').addEventListener('click', firebaseHerstelKopie);
 document.getElementById('firebaseUitloggen').addEventListener('click', ()=>{
   firebase.auth().signOut();
 });
